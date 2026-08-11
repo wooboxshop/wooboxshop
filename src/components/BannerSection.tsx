@@ -22,10 +22,10 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
   return (
     <section className="mb-4 space-y-3">
       {/* Compact Main Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0d0a18] via-[#140e26] to-[#0d0a18] border border-zinc-800/90 p-4 sm:p-5 shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-[#100d18] border border-zinc-800/90 p-4 sm:p-5 shadow-xl">
         
         {/* Glow Effect */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[150px] bg-pink-600/15 blur-[70px] pointer-events-none rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[120px] bg-pink-600/10 blur-[80px] pointer-events-none rounded-full" />
         
         <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           
@@ -77,7 +77,7 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
 
             <button
               onClick={onExploreClick}
-              className="px-4 py-2 bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2 bg-pink-500 hover:bg-pink-400 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5 shrink-0"
             >
               <span>Explorar</span>
               <ArrowRight className="w-3.5 h-3.5" />

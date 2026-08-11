@@ -130,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                   <button
                     type="button"
-                    className="p-1.5 bg-gradient-to-r from-pink-500 to-amber-500 text-white rounded-full hover:opacity-90 transition-opacity shadow-md shadow-pink-500/20 cursor-pointer"
+                    className="p-1.5 bg-pink-500 text-white rounded-full hover:bg-pink-400 transition-opacity shadow-md shadow-pink-500/20 cursor-pointer"
                   >
                     <Search className="w-3.5 h-3.5" />
                   </button>
@@ -177,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <Heart className={`w-4 h-4 ${showFavoritesOnly ? 'fill-pink-500 text-pink-500' : 'text-zinc-300'}`} />
                 {favoritesCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-pink-500 to-amber-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md">
+                  <span className="absolute -top-1.5 -right-1.5 bg-pink-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md">
                     {favoritesCount}
                   </span>
                 )}

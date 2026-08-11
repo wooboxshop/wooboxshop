@@ -54,10 +54,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onClick={() => onClickProduct(product)}
       className={`group relative bg-[#0d0c15]/90 border transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden cursor-pointer rounded-2xl shadow-lg ${
         !product.isActive
-          ? 'opacity-60 border-amber-500/40 bg-amber-950/20'
+          ? 'opacity-60 border-amber-500/30 bg-amber-950/10'
           : product.isFeatured
-          ? 'border-pink-500/60 shadow-pink-500/10 hover:border-pink-500 hover:shadow-pink-500/20'
-          : 'border-zinc-800/80 hover:border-pink-500/40'
+          ? 'border-pink-500/35 shadow-pink-500/5 hover:border-pink-500/60 hover:shadow-pink-500/10'
+          : 'border-zinc-800/80 hover:border-pink-500/30'
       }`}
     >
       {/* Product Image Box */}
@@ -72,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         />
 
         {/* Gradient Overlay for badges legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0c15] via-transparent to-black/40 opacity-90 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0c15]/95 via-transparent to-black/30 opacity-90 pointer-events-none" />
 
         {/* Top Badges Row */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10">
@@ -101,12 +101,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {rankIndex !== undefined && rankIndex > 0 && rankIndex <= 3 && (
           <div className="absolute top-12 left-3 z-10">
             <span
-              className={`px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1 border ${
+              className={`px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide shadow-md flex items-center gap-1 border backdrop-blur-sm ${
                 rankIndex === 1
-                  ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-zinc-950 border-amber-300 ring-2 ring-amber-400/50'
+                  ? 'bg-amber-400/90 text-zinc-950 border-amber-300/80'
                   : rankIndex === 2
-                  ? 'bg-gradient-to-r from-slate-200 via-slate-300 to-slate-400 text-zinc-950 border-slate-200 ring-2 ring-slate-300/40'
-                  : 'bg-gradient-to-r from-amber-700 via-amber-600 to-amber-800 text-amber-100 border-amber-500 ring-2 ring-amber-600/40'
+                  ? 'bg-zinc-200/90 text-zinc-900 border-zinc-100/80'
+                  : 'bg-amber-700/90 text-amber-50 border-amber-500/70'
               }`}
             >
               <Trophy className="w-3 h-3 text-amber-300" />
@@ -120,7 +120,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Featured / Curated Badge overlay when product isFeatured and not in top 3 ranking */}
         {product.isFeatured && (!rankIndex || rankIndex > 3) && (
           <div className="absolute top-12 left-3 z-10">
-            <span className="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white shadow-lg border border-pink-400/40 flex items-center gap-1">
+            <span className="px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide bg-zinc-950/80 text-pink-200 shadow-md border border-pink-400/30 backdrop-blur-sm flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-yellow-300 fill-yellow-300" /> Destaque da Loja
             </span>
           </div>
@@ -130,7 +130,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 z-10">
           <div className="flex flex-wrap items-center gap-1.5">
             {product.badge && (
-              <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-600 text-white text-[10px] font-black uppercase shadow-md">
+              <span className="px-2 py-0.5 rounded-full bg-pink-500/90 text-white text-[9px] font-extrabold uppercase tracking-wide shadow-sm">
                 {product.badge}
               </span>
             )}
@@ -142,7 +142,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Clicks Counter */}
-          <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-800 text-pink-400 text-[10px] font-bold flex items-center gap-1 shrink-0">
+          <span className="px-2 py-0.5 rounded-full bg-zinc-950/85 border border-zinc-700/70 text-pink-300 text-[10px] font-semibold flex items-center gap-1 shrink-0 backdrop-blur-sm">
             <Flame className="w-3 h-3 text-pink-500 fill-pink-500" />
             {product.clicksCount || 0}
           </span>
@@ -154,7 +154,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div>
           {/* Category & Rating */}
           <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mb-1.5">
-            <span className="text-pink-400 font-extrabold text-[10px] uppercase tracking-wider">
+            <span className="text-pink-300 font-bold text-[9px] uppercase tracking-[0.08em]">
               {product.category}
             </span>
             <div className="flex items-center gap-1 text-amber-400 font-bold">
@@ -165,7 +165,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Title */}
-          <h3 className="font-bold text-sm text-white line-clamp-2 group-hover:text-pink-300 transition-colors leading-snug">
+          <h3 className="font-bold text-sm text-zinc-100 line-clamp-2 group-hover:text-pink-200 transition-colors leading-snug">
             {product.title}
           </h3>
 
@@ -194,7 +194,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={(e) => onBuyClick(product, e)}
-              className="flex-1 py-2.5 px-3 bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white text-xs font-black rounded-xl shadow-md shadow-pink-500/20 flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
+              className="flex-1 py-2.5 px-3 bg-pink-500 hover:bg-pink-400 text-white text-xs font-black rounded-xl shadow-md shadow-pink-500/15 flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
             >
               <ShoppingBag className="w-3.5 h-3.5 group-hover/btn:rotate-12 transition-transform" />
               <span>Comprar</span>

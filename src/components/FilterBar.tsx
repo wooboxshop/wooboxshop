@@ -145,14 +145,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 }}
                 className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs transition-all font-semibold cursor-pointer border ${
                   isSelected
-                    ? 'bg-gradient-to-r from-pink-600 to-amber-600 text-white border-pink-500/80 shadow-md shadow-pink-500/20'
+                    ? 'bg-pink-500/15 text-pink-100 border-pink-500/60 shadow-sm shadow-pink-500/10'
                     : 'bg-zinc-900/60 hover:bg-zinc-800/80 text-zinc-300 hover:text-white border-zinc-800/60 hover:border-zinc-700'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <div
                     className={`p-1.5 rounded-lg ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-zinc-800 text-pink-400'
+                      isSelected ? 'bg-pink-500/20 text-pink-100' : 'bg-zinc-800/90 text-pink-300'
                     }`}
                   >
                     {getCategoryIcon(cat.icon)}
@@ -163,7 +163,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <span
                   className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
                     isSelected
-                      ? 'bg-white/20 text-white'
+                      ? 'bg-pink-500/20 text-pink-100'
                       : 'bg-zinc-950 text-zinc-400 border border-zinc-800'
                   }`}
                 >
