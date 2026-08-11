@@ -74,6 +74,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Gradient Overlay for badges legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d0c15]/95 via-transparent to-black/30 opacity-90 pointer-events-none" />
 
+        {/* Subtle vignette to unify photos with varied backgrounds/lighting */}
+        <div className="absolute inset-0 shadow-[inset_0_0_36px_16px_rgba(5,5,8,0.4)] pointer-events-none" />
+
         {/* Top Badges Row */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10">
           {/* Platform Tag */}
@@ -130,7 +133,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 z-10">
           <div className="flex flex-wrap items-center gap-1.5">
             {product.badge && (
-              <span className="px-2 py-0.5 rounded-full bg-pink-500/90 text-white text-[9px] font-extrabold uppercase tracking-wide shadow-sm">
+              <span className="px-2 py-0.5 rounded-full bg-zinc-950/85 text-pink-200 text-[9px] font-extrabold uppercase tracking-wide shadow-sm border border-pink-400/30 backdrop-blur-sm">
                 {product.badge}
               </span>
             )}

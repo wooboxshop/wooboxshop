@@ -450,7 +450,7 @@ export default function App() {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
                       selectedCategory === cat.id
-                        ? 'bg-pink-500 text-white border-pink-500 shadow-sm'
+                        ? 'bg-pink-500/15 text-pink-100 border-pink-500/60 shadow-sm shadow-pink-500/10'
                         : 'bg-zinc-900/90 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
                     }`}
                   >

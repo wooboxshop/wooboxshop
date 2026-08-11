@@ -82,6 +82,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent md:hidden" />
+          <div className="absolute inset-0 shadow-[inset_0_0_48px_20px_rgba(5,5,8,0.4)] pointer-events-none" />
 
           {/* Badges on Image */}
           <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
@@ -89,8 +90,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {platformBadge.label}
             </span>
             {product.badge && (
-              <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 text-white text-xs font-extrabold shadow-md flex items-center gap-1">
-                <Tag className="w-3.5 h-3.5" />
+              <span className="px-3 py-1 rounded-xl bg-zinc-950/80 text-pink-200 text-xs font-extrabold shadow-md flex items-center gap-1 border border-pink-400/30 backdrop-blur-sm">
+                <Tag className="w-3.5 h-3.5 text-pink-300" />
                 {product.badge}
               </span>
             )}
