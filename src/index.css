@@ -42,5 +42,5 @@ button, a, input, select {
 
 /* Kept as a restrained emphasis for the top product, without animated glow. */
 .woobox-hot-glow {
-  box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.28);
+  box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.22);
 }

@@ -52,15 +52,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={() => onClickProduct(product)}
-      className={`group relative bg-[#0d0c15]/90 border transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden cursor-pointer rounded-2xl shadow-md ${
-        rankIndex === 1 ? 'woobox-hot-glow border-pink-500/30' : ''
+      className={`group relative bg-[#0d0c15]/95 border transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between overflow-hidden cursor-pointer rounded-2xl shadow-md ${
+        rankIndex === 1 ? 'woobox-hot-glow' : ''
       } ${
         !product.isActive
           ? 'opacity-60 border-amber-500/30 bg-amber-950/10'
           : product.isFeatured
-          ? 'border-pink-500/25 shadow-pink-500/5 hover:border-pink-500/45 hover:shadow-pink-500/5'
-          : 'border-zinc-800/80 hover:border-pink-500/30'
-      }`}
+          ? 'border-zinc-700/90 hover:border-pink-500/35 hover:shadow-pink-500/5'
+          : 'border-zinc-800/80 hover:border-zinc-700'
+      }`}}
     >
       {/* Product Image Box */}
       <div className="relative aspect-square w-full overflow-hidden bg-[#0d0c15] isolate">
@@ -83,7 +83,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10">
           {/* Platform Tag */}
           <span
-            className={`px-2.5 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider shadow-sm border ${platformBadge.bg} ${platformBadge.text}`}
+            className={`px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wider shadow-sm border border-zinc-600/70 bg-zinc-950/85 text-zinc-100 backdrop-blur-sm`}
           >
             {platformBadge.label}
           </span>
@@ -91,7 +91,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Favorite Button */}
           <button
             onClick={(e) => onToggleFavorite(product.id, e)}
-            className={`p-2 rounded-full transition-transform active:scale-90 ${
+            className={`p-2 rounded-full transition-transform active:scale-95 ${
               isFavorite
                 ? 'bg-rose-500 text-white shadow-md'
                 : 'bg-zinc-950/90 hover:bg-zinc-800 text-zinc-300 hover:text-rose-400 border border-zinc-700/60'
@@ -106,12 +106,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {rankIndex !== undefined && rankIndex > 0 && rankIndex <= 3 && (
           <div className="absolute top-12 left-3 z-10">
             <span
-              className={`px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide shadow-md flex items-center gap-1 border backdrop-blur-sm ${
+              className={`px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide shadow-sm flex items-center gap-1 border backdrop-blur-sm ${
                 rankIndex === 1
-                  ? 'bg-amber-400/90 text-zinc-950 border-amber-300/80'
+                  ? 'bg-amber-400/95 text-zinc-950 border-amber-300/80'
                   : rankIndex === 2
-                  ? 'bg-zinc-200/90 text-zinc-900 border-zinc-100/80'
-                  : 'bg-amber-700/90 text-amber-50 border-amber-500/70'
+                  ? 'bg-zinc-200/95 text-zinc-900 border-zinc-100/80'
+                  : 'bg-amber-700/90 text-amber-50 border-amber-500/60'
               }`}
             >
               <Trophy className="w-3 h-3 text-amber-300" />
@@ -125,8 +125,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Featured / Curated Badge overlay when product isFeatured and not in top 3 ranking */}
         {product.isFeatured && (!rankIndex || rankIndex > 3) && (
           <div className="absolute top-12 left-3 z-10">
-            <span className="px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide bg-zinc-950/80 text-pink-200 shadow-md border border-pink-400/30 backdrop-blur-sm flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-yellow-300 fill-yellow-300" /> Destaque da Loja
+            <span className="px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide bg-zinc-950/85 text-zinc-100 shadow-sm border border-zinc-600/70 backdrop-blur-sm flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-300" /> Destaque da Loja
             </span>
           </div>
         )}
@@ -135,7 +135,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 z-10">
           <div className="flex flex-wrap items-center gap-1.5">
             {product.badge && (
-              <span className="px-2 py-0.5 rounded-full bg-zinc-950/85 text-pink-200 text-[9px] font-extrabold uppercase tracking-wide shadow-sm border border-pink-400/30 backdrop-blur-sm">
+              <span className="px-2 py-0.5 rounded-full bg-zinc-950/85 text-zinc-100 text-[8px] font-extrabold uppercase tracking-wide shadow-sm border border-zinc-600/70 backdrop-blur-sm">
                 {product.badge}
               </span>
             )}
@@ -147,18 +147,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Clicks Counter — real interaction data, labeled so it reads as social proof */}
-          <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-700/60 text-pink-200 text-[10px] font-semibold flex items-center gap-1 shrink-0 backdrop-blur-sm">
-            <Flame className="w-3 h-3 text-pink-500 fill-pink-500" />
+          <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-700/60 text-zinc-200 text-[9px] font-semibold flex items-center gap-1 shrink-0 backdrop-blur-sm">
+            <Flame className="w-3 h-3 text-pink-400 fill-pink-400" />
             {product.clicksCount || 0} viram</span>
         </div>
       </div>
 
       {/* Product Content */}
-      <div className="p-4 flex-1 flex flex-col justify-between space-y-3 bg-[#0d0c15] relative z-10 -mt-px">
+      <div className="p-4 pt-3.5 flex-1 flex flex-col justify-between space-y-4 bg-[#0d0c15] relative z-10 -mt-px">
         <div>
           {/* Category & Rating */}
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mb-1.5">
-            <span className="text-pink-300 font-bold text-[9px] uppercase tracking-[0.08em]">
+          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mb-2">
+            <span className="text-pink-300 font-bold text-[8px] uppercase tracking-[0.08em]">
               {product.category}
             </span>
             <div className="flex items-center gap-1 text-amber-400 font-bold">
@@ -174,13 +174,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </h3>
 
           {/* Description snippet */}
-          <p className="text-xs text-zinc-400 line-clamp-2 mt-1 font-normal leading-relaxed">
+          <p className="text-xs text-zinc-400 line-clamp-2 mt-1.5 font-normal leading-relaxed">
             {product.description}
           </p>
         </div>
 
         {/* Pricing & Buy Button */}
-        <div className="pt-2 border-t border-zinc-800/80 space-y-3">
+        <div className="pt-3 border-t border-zinc-800/80 space-y-3">
           <div className="flex items-baseline justify-between">
             <div>
               <span className="text-base sm:text-lg font-black text-white tracking-tight">
