@@ -60,7 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           : product.isFeatured
           ? 'border-zinc-700/90 hover:border-pink-500/35 hover:shadow-pink-500/5'
           : 'border-zinc-800/80 hover:border-zinc-700'
-      }`}}
+      }`}
     >
       {/* Product Image Box */}
       <div className="relative aspect-square w-full overflow-hidden bg-[#0d0c15] isolate">
