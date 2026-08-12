@@ -28,3 +28,7 @@ Facilitar a sua experiência de compra online, economizando seu tempo e ajudando
 <p align="center">
   <b>Woobox Shop</b> • Curadoria inteligente de produtos virais.
 </p>
+
+
+## Refinamento visual
+Esta versão parte da versão mais recente `wooboxshop.zip` e mantém a lógica/Firebase, com refinamentos de hierarquia visual, contraste e redução de efeitos chamativos.

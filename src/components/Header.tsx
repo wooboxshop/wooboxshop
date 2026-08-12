@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#09090e]/95 backdrop-blur-md border-b border-zinc-800/80 shadow-2xl text-white transform-gpu">
+      <header className="sticky top-0 z-40 bg-[#09090e]/98 backdrop-blur-md border-b border-zinc-800/70 shadow-lg text-white transform-gpu">
         {/* Main Header Bar */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3">
           <div className="flex items-center justify-between gap-3 sm:gap-6">
@@ -90,14 +90,14 @@ export const Header: React.FC<HeaderProps> = ({
                       <>
                         <div className="text-base sm:text-lg font-black tracking-tight">
                           <span className="text-white">WOO</span>
-                          <span className="bg-gradient-to-r from-pink-500 to-amber-500 bg-clip-text text-transparent">BOX</span>
+                          <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent">BOX</span>
                         </div>
                         <span className="text-[10px] sm:text-[11px] text-zinc-300 font-black uppercase tracking-[0.22em] text-center mt-0.5">
                           SHOP
                         </span>
                       </>
                     ) : (
-                      <span className="bg-gradient-to-r from-white via-pink-300 to-amber-300 bg-clip-text text-transparent text-base sm:text-lg">
+                      <span className="bg-gradient-to-r from-white to-pink-300 bg-clip-text text-transparent text-base sm:text-lg">
                         {storeName}
                       </span>
                     )}
@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="Buscar produtos por nome ou categoria..."
-                  className="w-full pl-4 sm:pl-5 pr-12 py-2 text-xs sm:text-sm bg-zinc-900/90 text-zinc-100 placeholder-zinc-500 rounded-full border border-zinc-800 focus:border-pink-500/80 focus:ring-1 focus:ring-pink-500/20 transition-all outline-none"
+                  className="w-full pl-4 sm:pl-5 pr-12 py-2 text-xs sm:text-sm bg-zinc-900/90 text-zinc-100 placeholder-zinc-500 rounded-full border border-zinc-800 focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/10 transition-all outline-none"
                 />
 
                 <div className="absolute right-1.5 flex items-center gap-1">
@@ -130,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                   <button
                     type="button"
-                    className="p-1.5 bg-pink-500 text-white rounded-full hover:bg-pink-400 transition-opacity shadow-md shadow-pink-500/20 cursor-pointer"
+                    className="p-1.5 bg-pink-500 text-white rounded-full hover:bg-pink-400 transition-opacity shadow-sm shadow-pink-500/15 cursor-pointer"
                   >
                     <Search className="w-3.5 h-3.5" />
                   </button>
@@ -216,14 +216,14 @@ export const Header: React.FC<HeaderProps> = ({
                       <>
                         <div className="text-base font-black tracking-tight">
                           <span className="text-white">WOO</span>
-                          <span className="bg-gradient-to-r from-pink-500 to-amber-500 bg-clip-text text-transparent">BOX</span>
+                          <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent">BOX</span>
                         </div>
                         <span className="text-[10px] text-zinc-300 font-black uppercase tracking-[0.22em] mt-0.5">
                           SHOP
                         </span>
                       </>
                     ) : (
-                      <span className="bg-gradient-to-r from-white via-pink-300 to-amber-300 bg-clip-text text-transparent text-base font-black">
+                      <span className="bg-gradient-to-r from-white to-pink-300 bg-clip-text text-transparent text-base font-black">
                         {storeName}
                       </span>
                     )}

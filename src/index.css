@@ -27,9 +27,7 @@ html {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 50% -10%, rgba(236, 72, 153, 0.055), transparent 34rem),
-    #050508;
+  background: #050508;
   color: #f4f4f5;
 }
 
@@ -42,17 +40,7 @@ button, a, input, select {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Subtle "hot item" glow for the #1 trending product — reinforces the viral/em-alta positioning */
-@keyframes woobox-hot-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.35), 0 0 0 0 rgba(236, 72, 153, 0.28); }
-  50% { box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.55), 0 0 22px 3px rgba(236, 72, 153, 0.22); }
-}
+/* Kept as a restrained emphasis for the top product, without animated glow. */
 .woobox-hot-glow {
-  animation: woobox-hot-pulse 2.6s ease-in-out infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .woobox-hot-glow {
-    animation: none;
-    box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.45);
-  }
+  box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.28);
 }

@@ -29,50 +29,50 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
   switch (platform.toLowerCase()) {
     case 'tiktok':
       return {
-        bg: 'bg-zinc-900',
-        text: 'text-cyan-400',
+        bg: 'bg-zinc-900/95',
+        text: 'text-cyan-300',
         border: 'border-pink-500/30',
         label: 'TikTok Shop',
       };
     case 'instagram':
       return {
-        bg: 'bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500',
-        text: 'text-white',
+        bg: 'bg-zinc-900/95',
+        text: 'text-pink-300',
         border: 'border-pink-300/40',
         label: 'Instagram',
       };
     case 'shopee':
       return {
-        bg: 'bg-orange-500',
-        text: 'text-white',
+        bg: 'bg-zinc-900/95',
+        text: 'text-orange-300',
         border: 'border-orange-400/30',
         label: 'Shopee',
       };
     case 'amazon':
       return {
-        bg: 'bg-amber-500',
-        text: 'text-slate-950',
+        bg: 'bg-zinc-900/95',
+        text: 'text-amber-300',
         border: 'border-amber-400/30',
         label: 'Amazon',
       };
     case 'mercadolivre':
       return {
-        bg: 'bg-yellow-400',
-        text: 'text-slate-900',
+        bg: 'bg-zinc-900/95',
+        text: 'text-yellow-300',
         border: 'border-yellow-300/40',
         label: 'Mercado Livre',
       };
     case 'aliexpress':
       return {
-        bg: 'bg-red-600',
-        text: 'text-white',
+        bg: 'bg-zinc-900/95',
+        text: 'text-red-300',
         border: 'border-red-500/30',
         label: 'AliExpress',
       };
     default:
       return {
-        bg: 'bg-pink-600',
-        text: 'text-white',
+        bg: 'bg-zinc-900/95',
+        text: 'text-pink-300',
         border: 'border-pink-500/30',
         label: 'Afiliado Oficial',
       };

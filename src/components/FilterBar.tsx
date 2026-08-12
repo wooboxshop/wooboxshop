@@ -110,11 +110,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             onChange={(e) => onSortChange(e.target.value)}
             className="w-full bg-zinc-900/90 border border-zinc-800 text-white text-xs font-bold rounded-xl px-3 py-2.5 outline-none appearance-none cursor-pointer focus:border-pink-500 transition-colors pr-8"
           >
-            <option value="populares">🔥 Mais Populares</option>
-            <option value="menor-preco">💰 Menor Preço</option>
-            <option value="maior-preco">💎 Maior Preço</option>
-            <option value="maior-desconto">⚡ Maior Desconto (%)</option>
-            <option value="recentes">✨ Mais Recentes</option>
+            <option value="populares">Mais Populares</option>
+            <option value="menor-preco">Menor Preço</option>
+            <option value="maior-preco">Maior Preço</option>
+            <option value="maior-desconto">Maior Desconto (%)</option>
+            <option value="recentes">Mais Recentes</option>
           </select>
           <ArrowUpDown className="w-3.5 h-3.5 text-zinc-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
@@ -189,7 +189,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     <>
       {/* Desktop Sidebar Container */}
       <aside className="hidden lg:block w-72 shrink-0">
-        <div className="sticky top-20 bg-[#0e0d16]/90 backdrop-blur-md rounded-3xl p-5 border border-zinc-800/80 shadow-xl">
+        <div className="sticky top-20 bg-[#0d0c14] rounded-3xl p-5 border border-zinc-800/80 shadow-lg">
           {SidebarContent}
         </div>
       </aside>

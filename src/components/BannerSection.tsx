@@ -22,7 +22,7 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
   return (
     <section className="mb-4 space-y-3">
       {/* Compact Main Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#100d18] border border-zinc-800/90 p-4 sm:p-5 shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-[#0d0c14] border border-zinc-800 p-4 sm:p-5 shadow-lg">
         
         {/* Glow Effect */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[120px] bg-pink-600/10 blur-[80px] pointer-events-none rounded-full" />
@@ -34,7 +34,7 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
             <img
               src={storeSettings.logoUrl || DEFAULT_STORE_SETTINGS.logoUrl}
               alt={storeSettings.storeName || DEFAULT_STORE_SETTINGS.storeName}
-              className="w-12 h-12 rounded-2xl object-cover ring-2 ring-pink-500/40 shadow-lg shrink-0 hidden xs:block"
+              className="w-12 h-12 rounded-2xl object-cover ring-1 ring-pink-500/40 shadow-md shrink-0 hidden xs:block"
               referrerPolicy="no-referrer"
             />
             
@@ -51,7 +51,7 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
 
               <h1 className="text-base sm:text-xl font-black text-white tracking-tight leading-tight">
                 {storeSettings.bannerHeadline || 'Os melhores produtos reunidos com os'}{' '}
-                <span className="bg-gradient-to-r from-pink-500 to-amber-400 bg-clip-text text-transparent">
+                <span className="text-pink-400">
                   {storeSettings.bannerHeadlineGradient || 'melhores preços.'}
                 </span>
               </h1>
@@ -77,7 +77,7 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
 
             <button
               onClick={onExploreClick}
-              className="px-4 py-2 bg-pink-500 hover:bg-pink-400 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2 bg-pink-500 hover:bg-pink-400 text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1.5 shrink-0"
             >
               <span>Explorar</span>
               <ArrowRight className="w-3.5 h-3.5" />
