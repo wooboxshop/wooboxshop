@@ -53,6 +53,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <div
       onClick={() => onClickProduct(product)}
       className={`group relative bg-[#0d0c15]/90 border transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden cursor-pointer rounded-2xl shadow-lg ${
+        rankIndex === 1 ? 'woobox-hot-glow border-pink-500/40' : ''
+      } ${
         !product.isActive
           ? 'opacity-60 border-amber-500/30 bg-amber-950/10'
           : product.isFeatured
@@ -144,11 +146,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
 
-          {/* Clicks Counter */}
+          {/* Clicks Counter — real interaction data, labeled so it reads as social proof */}
           <span className="px-2 py-0.5 rounded-full bg-zinc-950/85 border border-zinc-700/70 text-pink-300 text-[10px] font-semibold flex items-center gap-1 shrink-0 backdrop-blur-sm">
             <Flame className="w-3 h-3 text-pink-500 fill-pink-500" />
-            {product.clicksCount || 0}
-          </span>
+            {product.clicksCount || 0} viram</span>
         </div>
       </div>
 
