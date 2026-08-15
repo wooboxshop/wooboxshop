@@ -1,40 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Product } from '../types';
 import { formatCurrency, calculateDiscount, getPlatformBadgeColor } from '../utils/helpers';
+import { PlatformIcon } from './PlatformIcon';
 import {
   ExternalLink,
-  Heart,
   Star,
   Flame,
   Share2,
   Check,
   ShoppingBag,
-  Sparkles,
   Trophy,
+  Truck,
 } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
   onClickProduct: (product: Product) => void;
   onBuyClick: (product: Product, e: React.MouseEvent) => void;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string, e: React.MouseEvent) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string, e: React.MouseEvent) => void;
   onShareClick?: (product: Product, e: React.MouseEvent) => void;
   rankIndex?: number;
   activeTab?: string;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
+const ProductCardComponent: React.FC<ProductCardProps> = ({
   product,
   onClickProduct,
   onBuyClick,
-  isFavorite,
-  onToggleFavorite,
   onShareClick,
   rankIndex,
-  activeTab,
 }) => {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
   const discount = calculateDiscount(product.price, product.originalPrice);
   const platformBadge = getPlatformBadgeColor(product.platform);
 
@@ -58,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         !product.isActive
           ? 'opacity-60 border-amber-500/30 bg-amber-950/10'
           : product.isFeatured
-          ? 'border-zinc-700/90 hover:border-pink-500/35 hover:shadow-pink-500/5'
+          ? 'border-zinc-700/90 hover:border-[var(--wb-primary)]/35 hover:shadow-[var(--wb-primary)]/5'
           : 'border-zinc-800/80 hover:border-zinc-700'
       }`}
     >
@@ -79,34 +76,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Subtle vignette to unify photos with varied backgrounds/lighting */}
         <div className="absolute inset-0 shadow-[inset_0_0_28px_10px_rgba(5,5,8,0.28)] pointer-events-none" />
 
-        {/* Top Badges Row */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10">
-          {/* Platform Tag */}
-          <span
-            className={`px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wider shadow-sm border border-zinc-600/70 bg-zinc-950/85 text-zinc-100 backdrop-blur-sm`}
-          >
-            {platformBadge.label}
-          </span>
+        {/* Top Badges Row: Store Platform Real Logo Badge & Ranking Badge */}
+        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1 z-10 pointer-events-none">
+          {/* Real Platform Logo */}
+          <div className="shrink-0 shadow-lg rounded-lg overflow-hidden flex items-center justify-center" title={platformBadge.label}>
+            <PlatformIcon platform={product.platform} className="w-7 h-7 shrink-0" />
+          </div>
 
-          {/* Favorite Button */}
-          <button
-            onClick={(e) => onToggleFavorite(product.id, e)}
-            className={`p-2 rounded-full transition-transform active:scale-95 ${
-              isFavorite
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'bg-zinc-950/90 hover:bg-zinc-800 text-zinc-300 hover:text-rose-400 border border-zinc-700/60'
-            }`}
-            title={isFavorite ? 'Remover dos salvos' : 'Salvar produto'}
-          >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} />
-          </button>
-        </div>
-
-        {/* Ranking Badge overlay for 'Mais Vendidos' tab (strictly Top 3) */}
-        {rankIndex !== undefined && rankIndex > 0 && rankIndex <= 3 && (
-          <div className="absolute top-12 left-3 z-10">
+          {/* Ranking Badge overlay */}
+          {rankIndex !== undefined && rankIndex > 0 && rankIndex <= 3 && (
             <span
-              className={`px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide shadow-sm flex items-center gap-1 border backdrop-blur-sm ${
+              className={`px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide shadow-md flex items-center gap-1 border backdrop-blur-md shrink-0 whitespace-nowrap ${
                 rankIndex === 1
                   ? 'bg-amber-400/95 text-zinc-950 border-amber-300/80'
                   : rankIndex === 2
@@ -114,42 +94,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   : 'bg-amber-700/90 text-amber-50 border-amber-500/60'
               }`}
             >
-              <Trophy className="w-3 h-3 text-amber-300" />
+              <Trophy className="w-3 h-3 text-amber-300 shrink-0" />
               {rankIndex === 1 && '1º MAIS VENDIDO'}
               {rankIndex === 2 && '2º MAIS VENDIDO'}
               {rankIndex === 3 && '3º MAIS VENDIDO'}
             </span>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Featured / Curated Badge overlay when product isFeatured and not in top 3 ranking */}
-        {product.isFeatured && (!rankIndex || rankIndex > 3) && (
-          <div className="absolute top-12 left-3 z-10">
-            <span className="px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide bg-zinc-950/85 text-zinc-100 shadow-sm border border-zinc-600/70 backdrop-blur-sm flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-amber-300" /> Destaque da Loja
-            </span>
-          </div>
-        )}
-
-        {/* Bottom Image Badges */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 z-10">
-          <div className="flex flex-wrap items-center gap-1.5">
-            {product.badge && (
-              <span className="px-2 py-0.5 rounded-full bg-zinc-950/85 text-zinc-100 text-[8px] font-extrabold uppercase tracking-wide shadow-sm border border-zinc-600/70 backdrop-blur-sm">
-                {product.badge}
-              </span>
-            )}
-            {discount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-md">
-                -{discount}% OFF
-              </span>
-            )}
-          </div>
-
-          {/* Clicks Counter — real interaction data, labeled so it reads as social proof */}
+        {/* Bottom Right Image Badge: Clicks Counter */}
+        <div className="absolute bottom-3 right-3 z-10">
           <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-700/60 text-zinc-200 text-[9px] font-semibold flex items-center gap-1 shrink-0 backdrop-blur-sm">
             <Flame className="w-3 h-3 text-pink-400 fill-pink-400" />
-            {product.clicksCount || 0} viram</span>
+            {product.clicksCount || 0} viram
+          </span>
         </div>
       </div>
 
@@ -158,7 +116,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div>
           {/* Category & Rating */}
           <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mb-2">
-            <span className="text-pink-300 font-bold text-[8px] uppercase tracking-[0.08em]">
+            <span className="text-[var(--wb-primary-light)] font-bold text-[8px] uppercase tracking-[0.08em]">
               {product.category}
             </span>
             <div className="flex items-center gap-1 text-amber-400 font-bold">
@@ -169,7 +127,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Title */}
-          <h3 className="font-bold text-sm text-zinc-100 line-clamp-2 group-hover:text-pink-200 transition-colors leading-snug">
+          <h3 className="font-bold text-sm text-zinc-100 line-clamp-2 group-hover:text-[var(--wb-primary-light)] transition-colors leading-snug">
             {product.title}
           </h3>
 
@@ -181,24 +139,39 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Pricing & Buy Button */}
         <div className="pt-3 border-t border-zinc-800/80 space-y-3">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-base sm:text-lg font-black text-white tracking-tight">
+          <div className="flex flex-col justify-end min-h-[38px]">
+            {product.originalPrice && product.originalPrice > product.price ? (
+              <span className="text-[11px] text-zinc-400 line-through font-medium leading-tight">
+                {formatCurrency(product.originalPrice)}
+              </span>
+            ) : (
+              <span className="text-[11px] opacity-0 leading-tight select-none pointer-events-none">
+                &nbsp;
+              </span>
+            )}
+            <div className="flex items-center gap-2 flex-wrap mt-0.5">
+              <span className="text-base sm:text-lg font-black text-white tracking-tight leading-none">
                 {formatCurrency(product.price)}
               </span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-xs text-zinc-500 line-through ml-2 font-medium">
-                  {formatCurrency(product.originalPrice)}
+              {discount > 0 && (
+                <span className="px-2 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-sm shrink-0 whitespace-nowrap">
+                  -{discount}% OFF
                 </span>
               )}
             </div>
+            {product.hasFreeShipping && (
+              <div className="flex items-center gap-1 text-emerald-400 text-[10px] font-bold mt-1">
+                <Truck className="w-3 h-3 shrink-0" />
+                <span>Frete grátis</span>
+              </div>
+            )}
           </div>
 
           {/* Primary Action Button */}
           <div className="flex items-center gap-2">
             <button
               onClick={(e) => onBuyClick(product, e)}
-              className="flex-1 py-2.5 px-3 bg-pink-500 hover:bg-pink-400 text-white text-xs font-black rounded-xl shadow-sm shadow-pink-500/10 flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
+              className="flex-1 py-2.5 px-3 bg-[var(--wb-primary)] hover:brightness-110 text-white text-xs font-black rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
             >
               <ShoppingBag className="w-3.5 h-3.5 group-hover/btn:rotate-12 transition-transform" />
               <span>Comprar</span>
@@ -220,3 +193,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   );
 };
 
+// Memoized: with dozens of cards rendered at once, an unmemoized ProductCard re-runs
+// its full render for every card whenever ANY app state changes (e.g. opening another
+// product's detail modal), which is the main cause of jank on mobile/tablet. Since the
+// callback props passed down from App are now stable (useCallback) and `product` only
+// gets a new object reference when that specific product actually changes, this lets
+// React skip re-rendering cards that aren't affected by a given state update.
+export const ProductCard = React.memo(ProductCardComponent);

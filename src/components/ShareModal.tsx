@@ -69,7 +69,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 lg:bg-black/80 lg:backdrop-blur-md animate-in fade-in duration-200">
       <div
         className="relative bg-[#0d0c15] text-zinc-100 w-full max-w-md rounded-3xl shadow-2xl p-6 border border-zinc-800 space-y-6"
         onClick={(e) => e.stopPropagation()}

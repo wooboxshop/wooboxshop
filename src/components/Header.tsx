@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#09090e]/98 backdrop-blur-md border-b border-zinc-800/70 shadow-lg text-white transform-gpu">
+      <header className="sticky top-0 z-40 bg-[#09090e]/98 lg:backdrop-blur-md border-b border-zinc-800/70 shadow-lg text-white transform-gpu">
         {/* Main Header Bar */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3">
           <div className="flex items-center justify-between gap-3 sm:gap-6">
@@ -90,14 +90,14 @@ export const Header: React.FC<HeaderProps> = ({
                       <>
                         <div className="text-base sm:text-lg font-black tracking-tight">
                           <span className="text-white">WOO</span>
-                          <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent">BOX</span>
+                          <span className="bg-gradient-to-r from-[var(--wb-primary-light)] to-[var(--wb-primary)] bg-clip-text text-transparent">BOX</span>
                         </div>
                         <span className="text-[10px] sm:text-[11px] text-zinc-300 font-black uppercase tracking-[0.22em] text-center mt-0.5">
                           SHOP
                         </span>
                       </>
                     ) : (
-                      <span className="bg-gradient-to-r from-white to-pink-300 bg-clip-text text-transparent text-base sm:text-lg">
+                      <span className="bg-gradient-to-r from-white to-[var(--wb-primary-light)] bg-clip-text text-transparent text-base sm:text-lg">
                         {storeName}
                       </span>
                     )}
@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="Buscar produtos por nome ou categoria..."
-                  className="w-full pl-4 sm:pl-5 pr-12 py-2 text-xs sm:text-sm bg-zinc-900/90 text-zinc-100 placeholder-zinc-500 rounded-full border border-zinc-800 focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/10 transition-all outline-none"
+                  className="w-full pl-4 sm:pl-5 pr-12 py-2 text-xs sm:text-sm bg-zinc-900/90 text-zinc-100 placeholder-zinc-500 rounded-full border border-zinc-800 focus:border-[var(--wb-primary)]/60 focus:ring-1 focus:ring-[var(--wb-primary)]/10 transition-all outline-none"
                 />
 
                 <div className="absolute right-1.5 flex items-center gap-1">
@@ -130,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                   <button
                     type="button"
-                    className="p-1.5 bg-pink-500 text-white rounded-full hover:bg-pink-400 transition-opacity shadow-sm shadow-pink-500/15 cursor-pointer"
+                    className="p-1.5 bg-[var(--wb-primary)] text-white rounded-full hover:brightness-110 transition-all shadow-sm cursor-pointer"
                   >
                     <Search className="w-3.5 h-3.5" />
                   </button>
@@ -170,12 +170,12 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={onToggleFavoritesOnly}
                 className={`relative p-2 rounded-xl border text-xs font-semibold flex items-center justify-center transition-all cursor-pointer ${
                   showFavoritesOnly
-                    ? 'bg-pink-500/20 border-pink-500 text-pink-400'
+                    ? 'bg-[var(--wb-primary)]/20 border-[var(--wb-primary)] text-[var(--wb-primary)]'
                     : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700'
                 }`}
                 title="Salvos"
               >
-                <Heart className={`w-4 h-4 ${showFavoritesOnly ? 'fill-pink-500 text-pink-500' : 'text-zinc-300'}`} />
+                <Heart className={`w-4 h-4 ${showFavoritesOnly ? 'fill-[var(--wb-primary)] text-[var(--wb-primary)]' : 'text-zinc-300'}`} />
                 {favoritesCount > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 bg-pink-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md">
                     {favoritesCount}
@@ -195,7 +195,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Backdrop Overlay */}
           <div
             onClick={() => setIsMobileMenuOpen(false)}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in transition-opacity"
+            className="fixed inset-0 bg-black/90 animate-in fade-in transition-opacity"
           />
 
           {/* Drawer Content */}
@@ -216,14 +216,14 @@ export const Header: React.FC<HeaderProps> = ({
                       <>
                         <div className="text-base font-black tracking-tight">
                           <span className="text-white">WOO</span>
-                          <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent">BOX</span>
+                          <span className="bg-gradient-to-r from-[var(--wb-primary-light)] to-[var(--wb-primary)] bg-clip-text text-transparent">BOX</span>
                         </div>
                         <span className="text-[10px] text-zinc-300 font-black uppercase tracking-[0.22em] mt-0.5">
                           SHOP
                         </span>
                       </>
                     ) : (
-                      <span className="bg-gradient-to-r from-white to-pink-300 bg-clip-text text-transparent text-base font-black">
+                      <span className="bg-gradient-to-r from-white to-[var(--wb-primary-light)] bg-clip-text text-transparent text-base font-black">
                         {storeName}
                       </span>
                     )}
@@ -249,12 +249,12 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => handleNavClick('inicio')}
                     className={`w-full p-3 rounded-2xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
                       activeTab === 'inicio' && !showFavoritesOnly
-                        ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+                        ? 'bg-[var(--wb-primary)]/20 text-[var(--wb-primary)] border border-[var(--wb-primary)]/30'
                         : 'bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Home className="w-4 h-4 text-pink-500" />
+                      <Home className="w-4 h-4 text-[var(--wb-primary)]" />
                       <span>Início & Catálogo</span>
                     </div>
                     <ChevronRight className="w-4 h-4 text-zinc-400" />
@@ -264,7 +264,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => handleNavClick('ofertas')}
                     className={`w-full p-3 rounded-2xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
                       activeTab === 'ofertas'
-                        ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+                        ? 'bg-[var(--wb-primary)]/20 text-[var(--wb-primary)] border border-[var(--wb-primary)]/30'
                         : 'bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800'
                     }`}
                   >
@@ -279,7 +279,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => handleNavClick('mais-vendidos')}
                     className={`w-full p-3 rounded-2xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
                       activeTab === 'mais-vendidos'
-                        ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+                        ? 'bg-[var(--wb-primary)]/20 text-[var(--wb-primary)] border border-[var(--wb-primary)]/30'
                         : 'bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800'
                     }`}
                   >
@@ -294,7 +294,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => handleNavClick('lancamentos')}
                     className={`w-full p-3 rounded-2xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
                       activeTab === 'lancamentos'
-                        ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+                        ? 'bg-[var(--wb-primary)]/20 text-[var(--wb-primary)] border border-[var(--wb-primary)]/30'
                         : 'bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800'
                     }`}
                   >
@@ -333,7 +333,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }}
                   className={`w-full p-3 rounded-2xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
                     showFavoritesOnly
-                      ? 'bg-pink-600 text-white shadow-lg'
+                      ? 'bg-[var(--wb-primary)] text-white shadow-lg'
                       : 'bg-zinc-900 border border-zinc-800 text-zinc-200 hover:bg-zinc-800'
                   }`}
                 >
@@ -342,7 +342,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <span>Seus Achadinhos Salvos</span>
                   </div>
                   {favoritesCount > 0 && (
-                    <span className="px-2 py-0.5 bg-pink-500 text-white font-black text-[10px] rounded-full">
+                    <span className="px-2 py-0.5 bg-[var(--wb-primary)] text-white font-black text-[10px] rounded-full">
                       {favoritesCount}
                     </span>
                   )}

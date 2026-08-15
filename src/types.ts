@@ -12,6 +12,8 @@ export interface Product {
   category: string;
   platform: PlatformType;
   badge?: string;
+  badgeIcon?: string; // Icon name from the shared icon set (same as category icons)
+  hasFreeShipping?: boolean; // Product characteristic (like price) — rendered as a plain indicator, never as a badge/selo
   highlightId?: string; // Links product to special events like "dia-dos-pais", "dia-dos-namorados"
   isFeatured: boolean;
   isActive: boolean;
@@ -92,6 +94,8 @@ export interface StoreSettings {
   badgeTag2: string;
   promoPillText: string;
   topNoticeText?: string;
+  themePrimaryColor?: string; // Main brand color (buttons, links, active states)
+  themeAccentColor?: string; // Secondary brand color (gradients, highlights)
   updatedAt?: string;
 }
 
@@ -105,5 +109,7 @@ export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   badgeTag2: 'Ofertas Verificadas',
   promoPillText: 'Até 40% OFF',
   topNoticeText: '',
+  themePrimaryColor: '#ec4899',
+  themeAccentColor: '#f59e0b',
 };
 

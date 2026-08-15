@@ -1,0 +1,6 @@
+{
+  "name": "Woobox Shop",
+  "description": "Loja virtual e curadoria de produtos virais com links de afiliados para TikTok e Instagram, busca, categorias e lista de favoritos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

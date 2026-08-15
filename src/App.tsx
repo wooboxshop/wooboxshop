@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useDeferredValue } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useDeferredValue } from 'react';
 import { Header } from './components/Header';
 import { BannerSection } from './components/BannerSection';
 import { FilterBar } from './components/FilterBar';
@@ -93,6 +93,24 @@ export default function App() {
     return counts;
   }, [products, categories]);
 
+  // Filter out categories with 0 active registered products from the public homepage
+  const visibleCategories = useMemo(() => {
+    return categories.filter((cat) => {
+      if (cat.id === 'todos') return true;
+      return (categoryCounts[cat.id] || 0) > 0;
+    });
+  }, [categories, categoryCounts]);
+
+  // Reset selected category to 'todos' if the selected category has 0 products
+  useEffect(() => {
+    if (selectedCategory !== 'todos') {
+      const isStillVisible = visibleCategories.some((c) => c.id === selectedCategory);
+      if (!isStillVisible) {
+        setSelectedCategory('todos');
+      }
+    }
+  }, [visibleCategories, selectedCategory]);
+
   // Sub-navigation tabs click handler
   const handleSelectTab = (tab: string) => {
     setActiveTab(tab);
@@ -185,19 +203,29 @@ export default function App() {
     };
   }, []);
 
+  // Apply the store's configurable theme colors as CSS variables so the whole
+  // app (buttons, gradients, active states) reflects what's set in the admin panel.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--wb-primary', storeSettings.themePrimaryColor || DEFAULT_STORE_SETTINGS.themePrimaryColor!);
+    root.style.setProperty('--wb-accent', storeSettings.themeAccentColor || DEFAULT_STORE_SETTINGS.themeAccentColor!);
+  }, [storeSettings.themePrimaryColor, storeSettings.themeAccentColor]);
+
   // Toggle favorite item
-  const handleToggleFavorite = (id: string, e?: React.MouseEvent) => {
+  const handleToggleFavorite = useCallback((id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setFavorites((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
-  };
+  }, []);
 
   // Affiliate link purchase redirect + click tracking
-  const handleBuyClick = async (product: Product, e?: React.MouseEvent) => {
+  const handleBuyClick = useCallback(async (product: Product, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
 
-    // Increment local clicks counter instantly
+    // Increment local clicks counter instantly (only the clicked product's object
+    // reference changes — untouched cards keep their same reference, so a memoized
+    // ProductCard correctly skips re-rendering for everything else).
     setProducts((prev) =>
       prev.map((p) => (p.id === product.id ? { ...p, clicksCount: (p.clicksCount || 0) + 1 } : p))
     );
@@ -207,7 +235,19 @@ export default function App() {
 
     // Open affiliate link in new tab
     window.open(product.affiliateUrl, '_blank', 'noopener,noreferrer');
-  };
+  }, []);
+
+  // Stable handlers passed down to every ProductCard — kept referentially stable via
+  // useCallback so React.memo on ProductCard can actually skip re-rendering cards that
+  // aren't affected by a given state change (e.g. opening another card's detail modal).
+  const handleProductClick = useCallback((p: Product) => {
+    setSelectedProductDetail(p);
+  }, []);
+
+  const handleShareClick = useCallback((p: Product, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setSharingProduct(p);
+  }, []);
 
   const deferredMaxPriceLimit = useDeferredValue(maxPriceLimit);
   const deferredSearchQuery = useDeferredValue(searchQuery);
@@ -391,7 +431,7 @@ export default function App() {
           
           {/* Left Sidebar Filters */}
           <FilterBar
-            categories={categories}
+            categories={visibleCategories}
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}
             sortBy={sortBy}
@@ -427,14 +467,14 @@ export default function App() {
                   <Sparkles className="w-4.5 h-4.5 text-pink-500 fill-pink-500/20" />
                   <h2 className="text-sm font-extrabold text-white">
                     {selectedCategory !== 'todos'
-                      ? categories.find((c) => c.id === selectedCategory)?.name
+                      ? visibleCategories.find((c) => c.id === selectedCategory)?.name
                       : sortBy === 'populares'
-                      ? '🔥 Mais Populares'
+                      ? 'Mais Populares'
                       : sortBy === 'recentes'
-                      ? '✨ Lançamentos Recentes'
+                      ? 'Lançamentos Recentes'
                       : sortBy === 'maior-desconto'
-                      ? '🏷️ Maiores Ofertas'
-                      : '✨ Vitrine de Produtos'}
+                      ? 'Maiores Ofertas'
+                      : 'Vitrine de Produtos'}
                   </h2>
                   <span className="text-xs text-zinc-400 font-normal">
                     ({processedProducts.length} itens)
@@ -444,7 +484,7 @@ export default function App() {
 
               {/* Horizontal Category Pill Scrollbar */}
               <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 lg:pb-0 scrollbar-none">
-                {categories.map((cat) => (
+                {visibleCategories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
@@ -498,14 +538,11 @@ export default function App() {
                     key={product.id}
                     product={product}
                     rankIndex={sortBy === 'populares' ? index + 1 : undefined}
-                    onClickProduct={(p) => setSelectedProductDetail(p)}
+                    onClickProduct={handleProductClick}
                     onBuyClick={handleBuyClick}
                     isFavorite={favorites.includes(product.id)}
                     onToggleFavorite={handleToggleFavorite}
-                    onShareClick={(p, e) => {
-                      if (e) e.stopPropagation();
-                      setSharingProduct(p);
-                    }}
+                    onShareClick={handleShareClick}
                   />
                 ))}
               </div>

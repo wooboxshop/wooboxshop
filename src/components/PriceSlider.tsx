@@ -45,7 +45,7 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
     <div className={`bg-zinc-900/90 p-3.5 rounded-2xl border border-zinc-800/80 space-y-2.5 ${className}`}>
       <div className="flex items-center justify-between text-xs">
         <span className="text-zinc-400 font-medium">Preço Máximo:</span>
-        <span className="font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
+        <span className="font-black text-[var(--wb-accent)] bg-[var(--wb-accent)]/10 px-2 py-0.5 rounded-lg border border-[var(--wb-accent)]/20">
           Até {formatBRL(localVal)}
         </span>
       </div>
@@ -60,7 +60,7 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
           onChange={handleInputChange}
           onMouseUp={handleCommit}
           onTouchEnd={handleCommit}
-          className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-pink-500 focus:outline-none touch-action-none"
+          className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[var(--wb-primary)] focus:outline-none touch-action-none"
         />
       </div>
 

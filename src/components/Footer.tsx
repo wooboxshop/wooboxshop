@@ -87,14 +87,14 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                   <>
                     <div className="text-xl font-black tracking-tight">
                       <span className="text-white">WOO</span>
-                      <span className="bg-gradient-to-r from-pink-500 to-amber-500 bg-clip-text text-transparent">BOX</span>
+                      <span className="bg-gradient-to-r from-[var(--wb-primary)] to-[var(--wb-accent)] bg-clip-text text-transparent">BOX</span>
                     </div>
                     <span className="text-xs text-zinc-300 font-black uppercase tracking-[0.22em] text-center w-full mt-0.5">
                       SHOP
                     </span>
                   </>
                 ) : (
-                  <span className="bg-gradient-to-r from-white via-pink-300 to-amber-300 bg-clip-text text-transparent text-xl font-black">
+                  <span className="bg-gradient-to-r from-white via-[var(--wb-primary-light)] to-[var(--wb-accent)] bg-clip-text text-transparent text-xl font-black">
                     {storeName}
                   </span>
                 )}
@@ -111,7 +111,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                 href="https://www.tiktok.com/@woobox.shop"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-zinc-900 hover:bg-pink-500/20 text-zinc-400 hover:text-white rounded-xl transition-all border border-zinc-800"
+                className="p-2 bg-zinc-900 hover:bg-[var(--wb-primary)]/20 text-zinc-400 hover:text-white rounded-xl transition-all border border-zinc-800"
                 title="Siga no TikTok"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -122,7 +122,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                 href="https://www.instagram.com/wooboxshop/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-zinc-900 hover:bg-pink-500/20 text-zinc-400 hover:text-pink-400 rounded-xl transition-all border border-zinc-800"
+                className="p-2 bg-zinc-900 hover:bg-[var(--wb-primary)]/20 text-zinc-400 hover:text-[var(--wb-primary)] rounded-xl transition-all border border-zinc-800"
                 title="Siga no Instagram"
               >
                 <Instagram className="w-4 h-4" />
@@ -134,10 +134,10 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
           <div className="space-y-3">
             <h4 className="text-xs font-black uppercase tracking-widest text-white">Navegação</h4>
             <ul className="space-y-2 text-xs text-zinc-400 font-medium">
-              <li><a href="#" className="hover:text-pink-400 transition-colors">Início</a></li>
-              <li><a href="#categorias" className="hover:text-pink-400 transition-colors">Categorias</a></li>
-              <li><a href="#catalogo" className="hover:text-pink-400 transition-colors">Ofertas em Destaque</a></li>
-              <li><a href="#catalogo" className="hover:text-pink-400 transition-colors">Mais Vendidos</a></li>
+              <li><a href="#" className="hover:text-[var(--wb-primary)] transition-colors">Início</a></li>
+              <li><a href="#categorias" className="hover:text-[var(--wb-primary)] transition-colors">Categorias</a></li>
+              <li><a href="#catalogo" className="hover:text-[var(--wb-primary)] transition-colors">Ofertas em Destaque</a></li>
+              <li><a href="#catalogo" className="hover:text-[var(--wb-primary)] transition-colors">Mais Vendidos</a></li>
             </ul>
           </div>
 
@@ -178,14 +178,14 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                       if (error) setError('');
                     }}
                     placeholder={isUnsubscribeMode ? "E-mail para remover..." : "Seu e-mail..."}
-                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 outline-none focus:border-pink-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 outline-none focus:border-[var(--wb-primary)]"
                   />
                   <button
                     type="submit"
                     className={`p-2 text-white rounded-xl hover:opacity-90 transition-opacity shrink-0 cursor-pointer ${
                       isUnsubscribeMode
                         ? 'bg-rose-600 hover:bg-rose-700'
-                        : 'bg-gradient-to-r from-pink-500 to-amber-500'
+                        : 'bg-gradient-to-r from-[var(--wb-primary)] to-[var(--wb-accent)]'
                     }`}
                     title={isUnsubscribeMode ? "Desinscrever" : "Inscrever-se"}
                   >
@@ -201,7 +201,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                       setIsUnsubscribeMode(!isUnsubscribeMode);
                       setError('');
                     }}
-                    className="text-[11px] text-zinc-500 hover:text-pink-400 underline transition-colors cursor-pointer"
+                    className="text-[11px] text-zinc-500 hover:text-[var(--wb-primary)] underline transition-colors cursor-pointer"
                   >
                     {isUnsubscribeMode ? 'Voltar para Inscrição' : 'Cancelar inscrição / Desinscrever e-mail'}
                   </button>
@@ -218,7 +218,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
             <p>© {new Date().getFullYear()} Woobox Shop. Todos os direitos reservados.</p>
           </div>
           <p className="flex items-center gap-1">
-            Qualidade e seleção especial para você <Heart className="w-3.5 h-3.5 text-pink-500 fill-pink-500 ml-0.5" />
+            Qualidade e seleção especial para você <Heart className="w-3.5 h-3.5 text-[var(--wb-primary)] fill-[var(--wb-primary)] ml-0.5" />
           </p>
         </div>
 

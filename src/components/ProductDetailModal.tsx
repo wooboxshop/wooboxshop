@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { formatCurrency, calculateDiscount, getPlatformBadgeColor } from '../utils/helpers';
+import { PlatformIcon } from './PlatformIcon';
+import { renderCategoryIcon } from '../utils/categoryIcons';
 import {
   X,
   ExternalLink,
@@ -12,7 +14,7 @@ import {
   Flame,
   Truck,
   Heart,
-  Tag,
+  Sparkles,
 } from 'lucide-react';
 
 interface ProductDetailModalProps {
@@ -35,7 +37,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [copied, setCopied] = useState(false);
 
   // Lock body scroll when modal is open
-  React.useEffect(() => {
+  useEffect(() => {
     if (product) {
       document.body.style.overflow = 'hidden';
       return () => {
@@ -60,7 +62,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 lg:bg-black/80 lg:backdrop-blur-md animate-in fade-in duration-200">
       <div
         className="relative bg-[#0d0c15] text-zinc-100 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:flex-row border border-zinc-800"
         onClick={(e) => e.stopPropagation()}
@@ -68,38 +70,46 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-zinc-900/80 hover:bg-zinc-800 text-white border border-zinc-700/60 backdrop-blur-md transition-all"
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-zinc-900/95 hover:bg-zinc-800 text-white border border-zinc-700/60 transition-all"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Left Image Section */}
-        <div className="md:w-1/2 relative bg-zinc-950 min-h-[280px] md:min-h-full">
+        <div className="md:w-1/2 relative bg-zinc-950 aspect-[4/3] md:aspect-auto md:min-h-full shrink-0">
           <img
             src={product.imageUrl}
             alt={product.title}
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent md:hidden" />
           <div className="absolute inset-0 shadow-[inset_0_0_48px_20px_rgba(5,5,8,0.4)] pointer-events-none" />
 
-          {/* Badges on Image */}
-          <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
-            <span className={`px-3 py-1 rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-md ${platformBadge.bg} ${platformBadge.text}`}>
+          {/* Badges on Image — compact horizontal row */}
+          <div className="absolute top-3 left-3 right-3 pr-11 flex flex-wrap items-center gap-1.5 z-10">
+            <span className={`px-2 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide shadow-md flex items-center gap-1 ${platformBadge.bg} ${platformBadge.text}`}>
+              <PlatformIcon platform={product.platform} className="w-3.5 h-3.5 shrink-0 rounded-[4px]" />
               {platformBadge.label}
             </span>
             {product.badge && (
-              <span className="px-3 py-1 rounded-xl bg-zinc-950/80 text-pink-200 text-xs font-extrabold shadow-md flex items-center gap-1 border border-pink-400/30 backdrop-blur-sm">
-                <Tag className="w-3.5 h-3.5 text-pink-300" />
+              <span className="px-2 py-1 rounded-lg bg-zinc-950/95 text-pink-200 text-[10px] font-extrabold shadow-md flex items-center gap-1 border border-pink-400/30">
+                {renderCategoryIcon(product.badgeIcon, 'w-3 h-3 text-pink-300 shrink-0')}
                 {product.badge}
+              </span>
+            )}
+            {product.isFeatured && (
+              <span className="px-2 py-1 rounded-lg bg-zinc-950/95 text-amber-200 text-[10px] font-extrabold shadow-md flex items-center gap-1 border border-amber-400/30">
+                <Sparkles className="w-3 h-3 text-amber-300 shrink-0" />
+                Destaque da Loja
               </span>
             )}
           </div>
 
-          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white z-10 md:hidden">
-            <span className="text-2xl font-black">{formatCurrency(product.price)}</span>
-            <span className="text-xs bg-zinc-950/90 border border-zinc-800 px-2.5 py-1 rounded-xl flex items-center gap-1 font-bold text-pink-400">
+          {/* Clicks counter — compact corner badge, no longer duplicating the price panel below */}
+          <div className="absolute bottom-3 right-3 z-10">
+            <span className="text-[10px] bg-zinc-950/95 border border-zinc-800 px-2.5 py-1 rounded-xl flex items-center gap-1 font-bold text-pink-400">
               <Flame className="w-3.5 h-3.5 text-pink-500 fill-pink-500" />
               {product.clicksCount} acessos
             </span>
@@ -107,18 +117,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </div>
 
         {/* Right Info Section */}
-        <div className="md:w-1/2 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto space-y-6">
+        <div className="md:w-1/2 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto space-y-6 flex-1 min-h-0 md:flex-none">
           <div className="space-y-4">
-            {/* Category & Ratings */}
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-xl border border-pink-500/30">
+            {/* Category & Ratings — sober, minimal treatment */}
+            <div className="flex items-center justify-between gap-3 pb-3 border-b border-zinc-800/70 md:pr-9">
+              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-400 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--wb-primary)]/80 shrink-0" />
                 {product.category}
               </span>
 
-              <div className="flex items-center gap-1.5 text-xs text-amber-400 font-bold bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/30">
-                <Star className="w-4 h-4 fill-amber-400" />
-                <span>{product.rating.toFixed(1)}</span>
-                <span className="text-zinc-500 font-normal">({product.reviewsCount} avaliações)</span>
+              <div className="flex items-center gap-1 text-xs font-semibold text-zinc-300">
+                <Star className="w-3.5 h-3.5 text-amber-400/80 fill-amber-400/80" />
+                <span className="text-zinc-100">{product.rating.toFixed(1)}</span>
+                <span className="text-zinc-500 font-normal">({product.reviewsCount})</span>
               </div>
             </div>
 
@@ -141,6 +152,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     </span>
                   )}
                 </div>
+                {product.hasFreeShipping && (
+                  <div className="flex items-center gap-1 text-emerald-400 text-[11px] font-bold mt-1.5">
+                    <Truck className="w-3.5 h-3.5 shrink-0" />
+                    <span>Frete grátis para todo o Brasil</span>
+                  </div>
+                )}
               </div>
 
               {discount > 0 && (
@@ -167,7 +184,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <span>Loja Oficial Segura</span>
               </div>
               <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-pink-400 shrink-0" />
+                <Truck className="w-4 h-4 text-[var(--wb-primary)] shrink-0" />
                 <span>Compra Direta na Loja</span>
               </div>
             </div>
@@ -177,7 +194,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div className="space-y-3 pt-4 border-t border-zinc-800">
             <button
               onClick={() => onBuyClick(product)}
-              className="w-full py-3.5 px-6 bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white font-black text-sm rounded-2xl shadow-xl shadow-pink-500/25 flex items-center justify-center gap-2.5 transition-transform active:scale-98"
+              className="w-full py-3.5 px-6 bg-gradient-to-r from-[var(--wb-primary)] to-[var(--wb-accent)] hover:brightness-110 text-white font-black text-sm rounded-2xl shadow-xl flex items-center justify-center gap-2.5 transition-transform active:scale-98"
             >
               <ShoppingBag className="w-5 h-5" />
               <span>Ir para Oferta na {platformBadge.label}</span>

@@ -71,7 +71,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-400">
+          <div className="p-1.5 rounded-lg bg-[var(--wb-primary)]/10 text-[var(--wb-primary)]">
             <SlidersHorizontal className="w-4 h-4" />
           </div>
           <h2 className="text-sm font-extrabold text-white uppercase tracking-wider">
@@ -82,7 +82,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         {isFiltered && (
           <button
             onClick={onResetFilters}
-            className="text-[11px] text-zinc-400 hover:text-pink-400 flex items-center gap-1 transition-colors font-semibold"
+            className="text-[11px] text-zinc-400 hover:text-[var(--wb-primary)] flex items-center gap-1 transition-colors font-semibold"
             title="Limpar todos os filtros"
           >
             <RotateCcw className="w-3 h-3" />
@@ -108,7 +108,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <select
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
-            className="w-full bg-zinc-900/90 border border-zinc-800 text-white text-xs font-bold rounded-xl px-3 py-2.5 outline-none appearance-none cursor-pointer focus:border-pink-500 transition-colors pr-8"
+            className="w-full bg-zinc-900/90 border border-zinc-800 text-white text-xs font-bold rounded-xl px-3 py-2.5 outline-none appearance-none cursor-pointer focus:border-[var(--wb-primary)] transition-colors pr-8"
           >
             <option value="populares">Mais Populares</option>
             <option value="menor-preco">Menor Preço</option>
@@ -145,14 +145,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 }}
                 className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs transition-all font-semibold cursor-pointer border ${
                   isSelected
-                    ? 'bg-pink-500/15 text-pink-100 border-pink-500/60 shadow-sm shadow-pink-500/10'
+                    ? 'bg-[var(--wb-primary)]/15 text-[var(--wb-primary-light)] border-[var(--wb-primary)]/60 shadow-sm shadow-[var(--wb-primary)]/10'
                     : 'bg-zinc-900/60 hover:bg-zinc-800/80 text-zinc-300 hover:text-white border-zinc-800/60 hover:border-zinc-700'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <div
                     className={`p-1.5 rounded-lg ${
-                      isSelected ? 'bg-pink-500/20 text-pink-100' : 'bg-zinc-800/90 text-pink-300'
+                      isSelected ? 'bg-[var(--wb-primary)]/20 text-[var(--wb-primary-light)]' : 'bg-zinc-800/90 text-[var(--wb-primary-light)]'
                     }`}
                   >
                     {getCategoryIcon(cat.icon)}
@@ -163,7 +163,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <span
                   className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
                     isSelected
-                      ? 'bg-pink-500/20 text-pink-100'
+                      ? 'bg-[var(--wb-primary)]/20 text-[var(--wb-primary-light)]'
                       : 'bg-zinc-950 text-zinc-400 border border-zinc-800'
                   }`}
                 >
@@ -179,7 +179,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400">
         <span>Exibindo:</span>
         <span className="text-white font-black bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800">
-          <strong className="text-pink-400">{totalResults}</strong> produtos
+          <strong className="text-[var(--wb-primary)]">{totalResults}</strong> produtos
         </span>
       </div>
     </div>
@@ -200,7 +200,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           {/* Backdrop */}
           <div
             onClick={onCloseMobile}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
+            className="fixed inset-0 bg-black/85 animate-fade-in"
           />
 
           {/* Drawer Panel */}
@@ -208,7 +208,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <div>
               <div className="flex items-center justify-between pb-4 mb-4 border-b border-zinc-800">
                 <span className="text-sm font-black text-white flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-pink-500" /> Filtros
+                  <Filter className="w-4 h-4 text-[var(--wb-primary)]" /> Filtros
                 </span>
                 <button
                   onClick={onCloseMobile}

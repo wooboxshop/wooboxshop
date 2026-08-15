@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Theme colors — configurable via the admin panel (Configurações > Tema Visual). 
+   Only two hex values are needed; hover/darker/lighter shades are derived with color-mix(). */
+:root {
+  --wb-primary: #ec4899;
+  --wb-primary-dark: color-mix(in srgb, var(--wb-primary) 82%, black);
+  --wb-primary-light: color-mix(in srgb, var(--wb-primary) 65%, white);
+  --wb-accent: #f59e0b;
+  --wb-accent-dark: color-mix(in srgb, var(--wb-accent) 82%, black);
+}
+
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -10,11 +20,11 @@
     border-radius: 9999px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(236, 72, 153, 0.4);
+    background: color-mix(in srgb, var(--wb-primary) 40%, transparent);
     border-radius: 9999px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(236, 72, 153, 0.8);
+    background: color-mix(in srgb, var(--wb-primary) 80%, transparent);
   }
 }
 
@@ -32,7 +42,7 @@ body {
 }
 
 ::selection {
-  background: rgba(236, 72, 153, 0.65);
+  background: color-mix(in srgb, var(--wb-primary) 65%, transparent);
   color: white;
 }
 
@@ -42,5 +52,5 @@ button, a, input, select {
 
 /* Kept as a restrained emphasis for the top product, without animated glow. */
 .woobox-hot-glow {
-  box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.22);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wb-primary) 22%, transparent);
 }
