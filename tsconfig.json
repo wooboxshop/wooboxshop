@@ -1,26 +1,45 @@
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-    "module": "ESNext",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "allowJs": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    },
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public catalog: storefront can read, but cannot create/delete/edit catalog data.
+    match /products/{productId} {
+      allow read: if true;
+      allow update: if
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clicksCount']) &&
+        request.resource.data.clicksCount == resource.data.clicksCount + 1;
+      allow create, delete: if false;
+    }
+
+    match /highlights/{highlightId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /settings/store {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Public actions performed by the storefront.
+    match /clickLogs/{logId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
+    match /subscribers/{subscriberId} {
+      allow create, delete: if true;
+      allow read, update: if false;
+    }
+
+    // Everything else is inaccessible from the public storefront.
+    match /{document=**} {
+      allow read, write: if false;
+    }
   }
 }

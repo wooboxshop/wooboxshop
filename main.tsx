@@ -1,40 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Product } from '../types';
 import { formatCurrency, calculateDiscount, getPlatformBadgeColor } from '../utils/helpers';
+import { PlatformIcon } from './PlatformIcon';
 import {
   ExternalLink,
-  Heart,
   Star,
   Flame,
   Share2,
   Check,
   ShoppingBag,
-  Sparkles,
   Trophy,
+  Truck,
 } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
   onClickProduct: (product: Product) => void;
   onBuyClick: (product: Product, e: React.MouseEvent) => void;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string, e: React.MouseEvent) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string, e: React.MouseEvent) => void;
   onShareClick?: (product: Product, e: React.MouseEvent) => void;
   rankIndex?: number;
   activeTab?: string;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
+const ProductCardComponent: React.FC<ProductCardProps> = ({
   product,
   onClickProduct,
   onBuyClick,
-  isFavorite,
-  onToggleFavorite,
   onShareClick,
   rankIndex,
-  activeTab,
 }) => {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
   const discount = calculateDiscount(product.price, product.originalPrice);
   const platformBadge = getPlatformBadgeColor(product.platform);
 
@@ -52,12 +49,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={() => onClickProduct(product)}
-      className={`group relative bg-[#0d0c15]/90 border transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden cursor-pointer rounded-2xl shadow-lg ${
+      className={`group relative bg-[#0d0c15]/95 border transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between overflow-hidden cursor-pointer rounded-2xl shadow-md ${
+        rankIndex === 1 ? 'woobox-hot-glow' : ''
+      } ${
         !product.isActive
-          ? 'opacity-60 border-amber-500/40 bg-amber-950/20'
+          ? 'opacity-60 border-amber-500/30 bg-amber-950/10'
           : product.isFeatured
-          ? 'border-pink-500/60 shadow-pink-500/10 hover:border-pink-500 hover:shadow-pink-500/20'
-          : 'border-zinc-800/80 hover:border-pink-500/40'
+          ? 'border-zinc-700/90 hover:border-[var(--wb-primary)]/35 hover:shadow-[var(--wb-primary)]/5'
+          : 'border-zinc-800/80 hover:border-zinc-700'
       }`}
     >
       {/* Product Image Box */}
@@ -65,96 +64,59 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <img
           src={product.imageUrl}
           alt={product.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out transform-gpu [backface-visibility:hidden]"
+          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 ease-out transform-gpu [backface-visibility:hidden]"
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
         />
 
         {/* Gradient Overlay for badges legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0c15] via-transparent to-black/40 opacity-90 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0c15]/95 via-transparent to-black/30 opacity-75 pointer-events-none" />
 
-        {/* Top Badges Row */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10">
-          {/* Platform Tag */}
-          <span
-            className={`px-2.5 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider shadow-md ${platformBadge.bg} ${platformBadge.text}`}
-          >
-            {platformBadge.label}
-          </span>
+        {/* Subtle vignette to unify photos with varied backgrounds/lighting */}
+        <div className="absolute inset-0 shadow-[inset_0_0_28px_10px_rgba(5,5,8,0.28)] pointer-events-none" />
 
-          {/* Favorite Button */}
-          <button
-            onClick={(e) => onToggleFavorite(product.id, e)}
-            className={`p-2 rounded-full transition-transform active:scale-90 ${
-              isFavorite
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'bg-zinc-950/90 hover:bg-zinc-800 text-zinc-300 hover:text-rose-400 border border-zinc-700/60'
-            }`}
-            title={isFavorite ? 'Remover dos salvos' : 'Salvar produto'}
-          >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} />
-          </button>
-        </div>
+        {/* Top Badges Row: Store Platform Real Logo Badge & Ranking Badge */}
+        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1 z-10 pointer-events-none">
+          {/* Real Platform Logo */}
+          <div className="shrink-0 shadow-lg rounded-lg overflow-hidden flex items-center justify-center" title={platformBadge.label}>
+            <PlatformIcon platform={product.platform} className="w-7 h-7 shrink-0" />
+          </div>
 
-        {/* Ranking Badge overlay for 'Mais Vendidos' tab (strictly Top 3) */}
-        {rankIndex !== undefined && rankIndex > 0 && rankIndex <= 3 && (
-          <div className="absolute top-12 left-3 z-10">
+          {/* Ranking Badge overlay */}
+          {rankIndex !== undefined && rankIndex > 0 && rankIndex <= 3 && (
             <span
-              className={`px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1 border ${
+              className={`px-2 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide shadow-md flex items-center gap-1 border backdrop-blur-md shrink-0 whitespace-nowrap ${
                 rankIndex === 1
-                  ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-zinc-950 border-amber-300 ring-2 ring-amber-400/50'
+                  ? 'bg-amber-400/95 text-zinc-950 border-amber-300/80'
                   : rankIndex === 2
-                  ? 'bg-gradient-to-r from-slate-200 via-slate-300 to-slate-400 text-zinc-950 border-slate-200 ring-2 ring-slate-300/40'
-                  : 'bg-gradient-to-r from-amber-700 via-amber-600 to-amber-800 text-amber-100 border-amber-500 ring-2 ring-amber-600/40'
+                  ? 'bg-zinc-200/95 text-zinc-900 border-zinc-100/80'
+                  : 'bg-amber-700/90 text-amber-50 border-amber-500/60'
               }`}
             >
-              <Trophy className="w-3 h-3 text-amber-300" />
+              <Trophy className="w-3 h-3 text-amber-300 shrink-0" />
               {rankIndex === 1 && '1º MAIS VENDIDO'}
               {rankIndex === 2 && '2º MAIS VENDIDO'}
               {rankIndex === 3 && '3º MAIS VENDIDO'}
             </span>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Featured / Curated Badge overlay when product isFeatured and not in top 3 ranking */}
-        {product.isFeatured && (!rankIndex || rankIndex > 3) && (
-          <div className="absolute top-12 left-3 z-10">
-            <span className="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white shadow-lg border border-pink-400/40 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-yellow-300 fill-yellow-300" /> Destaque da Loja
-            </span>
-          </div>
-        )}
-
-        {/* Bottom Image Badges */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 z-10">
-          <div className="flex flex-wrap items-center gap-1.5">
-            {product.badge && (
-              <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-600 text-white text-[10px] font-black uppercase shadow-md">
-                {product.badge}
-              </span>
-            )}
-            {discount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-md">
-                -{discount}% OFF
-              </span>
-            )}
-          </div>
-
-          {/* Clicks Counter */}
-          <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-800 text-pink-400 text-[10px] font-bold flex items-center gap-1 shrink-0">
-            <Flame className="w-3 h-3 text-pink-500 fill-pink-500" />
-            {product.clicksCount || 0}
+        {/* Bottom Right Image Badge: Clicks Counter */}
+        <div className="absolute bottom-3 right-3 z-10">
+          <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-700/60 text-zinc-200 text-[9px] font-semibold flex items-center gap-1 shrink-0 backdrop-blur-sm">
+            <Flame className="w-3 h-3 text-pink-400 fill-pink-400" />
+            {product.clicksCount || 0} viram
           </span>
         </div>
       </div>
 
       {/* Product Content */}
-      <div className="p-4 flex-1 flex flex-col justify-between space-y-3 bg-[#0d0c15] relative z-10 -mt-px">
+      <div className="p-4 pt-3.5 flex-1 flex flex-col justify-between space-y-4 bg-[#0d0c15] relative z-10 -mt-px">
         <div>
           {/* Category & Rating */}
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mb-1.5">
-            <span className="text-pink-400 font-extrabold text-[10px] uppercase tracking-wider">
+          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mb-2">
+            <span className="text-[var(--wb-primary-light)] font-bold text-[8px] uppercase tracking-[0.08em]">
               {product.category}
             </span>
             <div className="flex items-center gap-1 text-amber-400 font-bold">
@@ -165,26 +127,45 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Title */}
-          <h3 className="font-bold text-sm text-white line-clamp-2 group-hover:text-pink-300 transition-colors leading-snug">
+          <h3 className="font-bold text-sm text-zinc-100 line-clamp-2 group-hover:text-[var(--wb-primary-light)] transition-colors leading-snug">
             {product.title}
           </h3>
 
           {/* Description snippet */}
-          <p className="text-xs text-zinc-400 line-clamp-2 mt-1 font-normal leading-relaxed">
+          <p className="text-xs text-zinc-400 line-clamp-2 mt-1.5 font-normal leading-relaxed">
             {product.description}
           </p>
         </div>
 
         {/* Pricing & Buy Button */}
-        <div className="pt-2 border-t border-zinc-800/80 space-y-3">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-base sm:text-lg font-black text-white tracking-tight">
+        <div className="pt-3 border-t border-zinc-800/80 space-y-3">
+          <div className="flex flex-col justify-end min-h-[38px]">
+            {/* Top row: Previous Price (left) & Free Shipping (right, above %off) */}
+            <div className="flex items-center justify-between gap-1.5 min-h-[16px]">
+              {product.originalPrice && product.originalPrice > product.price ? (
+                <span className="text-[11px] text-zinc-400 line-through font-medium leading-tight">
+                  {formatCurrency(product.originalPrice)}
+                </span>
+              ) : (
+                <span className="text-[11px] opacity-0 select-none pointer-events-none">&nbsp;</span>
+              )}
+
+              {product.hasFreeShipping && (
+                <div className="flex items-center gap-1 text-emerald-400 text-[10px] font-bold shrink-0 whitespace-nowrap">
+                  <Truck className="w-3 h-3 shrink-0" />
+                  <span>Frete grátis</span>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom row: Current Price (left) & Discount Badge (right) */}
+            <div className="flex items-center justify-between gap-2 mt-0.5">
+              <span className="text-base sm:text-lg font-black text-white tracking-tight leading-none">
                 {formatCurrency(product.price)}
               </span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-xs text-zinc-500 line-through ml-2 font-medium">
-                  {formatCurrency(product.originalPrice)}
+              {discount > 0 && (
+                <span className="px-2 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-sm shrink-0 whitespace-nowrap">
+                  -{discount}% OFF
                 </span>
               )}
             </div>
@@ -194,7 +175,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={(e) => onBuyClick(product, e)}
-              className="flex-1 py-2.5 px-3 bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white text-xs font-black rounded-xl shadow-md shadow-pink-500/20 flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
+              className="flex-1 py-2.5 px-3 bg-[var(--wb-primary)] hover:brightness-110 text-white text-xs font-black rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
             >
               <ShoppingBag className="w-3.5 h-3.5 group-hover/btn:rotate-12 transition-transform" />
               <span>Comprar</span>
@@ -216,3 +197,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   );
 };
 
+// Memoized: with dozens of cards rendered at once, an unmemoized ProductCard re-runs
+// its full render for every card whenever ANY app state changes (e.g. opening another
+// product's detail modal), which is the main cause of jank on mobile/tablet. Since the
+// callback props passed down from App are now stable (useCallback) and `product` only
+// gets a new object reference when that specific product actually changes, this lets
+// React skip re-rendering cards that aren't affected by a given state update.
+export const ProductCard = React.memo(ProductCardComponent);

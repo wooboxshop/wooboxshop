@@ -1,73 +1,263 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { Product, Highlight, CategoryOption } from '../types';
 
-interface PriceSliderProps {
-  value: number;
-  min: number;
-  max: number;
-  onChange: (val: number) => void;
-  className?: string;
-}
+export const INITIAL_CATEGORIES: CategoryOption[] = [
+  { id: 'todos', name: 'Todos os Produtos', icon: 'Sparkles' },
+  { id: 'tech', name: 'Tech & Gadgets', icon: 'Smartphone' },
+  { id: 'tendencias', name: 'Tendências & Destaques', icon: 'Flame' },
+  { id: 'casa', name: 'Casa & Setup', icon: 'Home' },
+  { id: 'moda', name: 'Moda & Estilo', icon: 'ShoppingBag' },
+  { id: 'beleza', name: 'Beleza & Autocuidado', icon: 'Heart' },
+];
 
-export const PriceSlider: React.FC<PriceSliderProps> = ({
-  value,
-  min,
-  max,
-  onChange,
-  className = '',
-}) => {
-  const [localVal, setLocalVal] = useState<number>(value);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+export const INITIAL_HIGHLIGHTS: Highlight[] = [
+  {
+    id: 'dia-dos-pais',
+    title: 'Especial Dia dos Pais',
+    subtitle: 'Gadgets, utilidades e presentes que todo pai tecnologico quer ganhar!',
+    badge: 'DESTAQUE DA SEMANA',
+    bannerUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80',
+    themeColor: 'from-amber-600 via-rose-600 to-pink-600',
+    iconName: 'Gift',
+    isActive: true,
+    tagFilter: 'dia-dos-pais',
+  },
+  {
+    id: 'dia-dos-namorados',
+    title: 'Especial Dia dos Namorados',
+    subtitle: 'Achadinhos românticos e presentes inesquecíveis para surpreender seu amor!',
+    badge: 'EDICAO ESPECIAL',
+    bannerUrl: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1200&q=80',
+    themeColor: 'from-pink-600 via-rose-500 to-purple-600',
+    iconName: 'Heart',
+    isActive: true,
+    tagFilter: 'dia-dos-namorados',
+  },
+  {
+    id: 'virais-tiktok',
+    title: 'Virais da "For You"',
+    subtitle: 'Os produtos que bateram milhões de visualizações e você precisa testar!',
+    badge: 'EM ALTA NO TIKTOK',
+    bannerUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=80',
+    themeColor: 'from-fuchsia-600 via-pink-500 to-purple-700',
+    iconName: 'Flame',
+    isActive: true,
+    tagFilter: 'virais',
+  },
+];
 
-  // Sync with prop when external filter resets or updates
-  useEffect(() => {
-    setLocalVal(value);
-  }, [value]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVal = Number(e.target.value);
-    setLocalVal(newVal);
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      onChange(newVal);
-    }, 70);
-  };
-
-  const handleCommit = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    onChange(localVal);
-  };
-
-  const formatBRL = (val: number) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
-
-  return (
-    <div className={`bg-zinc-900/90 p-3.5 rounded-2xl border border-zinc-800/80 space-y-2.5 ${className}`}>
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-zinc-400 font-medium">Preço Máximo:</span>
-        <span className="font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
-          Até {formatBRL(localVal)}
-        </span>
-      </div>
-
-      <div className="relative py-1">
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={1}
-          value={localVal}
-          onChange={handleInputChange}
-          onMouseUp={handleCommit}
-          onTouchEnd={handleCommit}
-          className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-pink-500 focus:outline-none touch-action-none"
-        />
-      </div>
-
-      <div className="flex justify-between items-center text-[10px] text-zinc-500 font-bold">
-        <span>Min: {formatBRL(min)}</span>
-        <span>Max: {formatBRL(max)}</span>
-      </div>
-    </div>
-  );
-};
+export const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'prod-1',
+    title: 'Luminária de Pôr do Sol Sunset Lamp RGB',
+    description: 'Transforme o clima do seu quarto ou cenários de vídeos do TikTok com essa iluminação quente e estética. Rotação 360°, múltiplos efeitos luminosos e controle por app.',
+    price: 49.90,
+    originalPrice: 89.90,
+    imageUrl: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://shopee.com.br',
+    category: 'Tendências & Destaques',
+    platform: 'tiktok',
+    badge: 'Viral no TikTok',
+    badgeIcon: 'Flame',
+    hasFreeShipping: true,
+    highlightId: 'virais-tiktok',
+    isFeatured: true,
+    isActive: true,
+    clicksCount: 342,
+    rating: 4.9,
+    reviewsCount: 128,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-2',
+    title: 'Mini Projetor Portátil Smart 4K Wi-Fi Android',
+    description: 'Cinema no teto do seu quarto! Projetor super compacto com suporte a 4K, Wi-Fi integrado, alto-falante potente e ajuste automático de foco. Presente perfeito para o Dia dos Pais ou Namorados.',
+    price: 289.00,
+    originalPrice: 450.00,
+    imageUrl: 'https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://amazon.com.br',
+    category: 'Tech & Gadgets',
+    platform: 'amazon',
+    badge: 'Ideia Dia dos Pais',
+    badgeIcon: 'Gift',
+    highlightId: 'dia-dos-pais',
+    isFeatured: true,
+    isActive: true,
+    clicksCount: 512,
+    rating: 4.8,
+    reviewsCount: 215,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-3',
+    title: 'Umidificador e Aromatizador de Ar com Efeito Chama LED',
+    description: 'Parece fogo de verdade! Esse umidificador ultra-silencioso deixa o ar fresco, difunde óleos essenciais e decora a sua mesa de trabalho com iluminação de chama hipnotizante.',
+    price: 79.90,
+    originalPrice: 129.90,
+    imageUrl: 'https://images.unsplash.com/photo-1602928321679-560bb453f190?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://shopee.com.br',
+    category: 'Casa & Setup',
+    platform: 'shopee',
+    badge: 'Queridinho dos Namorados',
+    badgeIcon: 'Heart',
+    hasFreeShipping: true,
+    highlightId: 'dia-dos-namorados',
+    isFeatured: true,
+    isActive: true,
+    clicksCount: 420,
+    rating: 4.9,
+    reviewsCount: 189,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-4',
+    title: 'Fone de Ouvido Bluetooth TWS Sem Fio com Display LED',
+    description: 'Áudio cristalino com graves marcantes, isolamento acústico e case carregadora inteligente que mostra a porcentagem exata de bateria. Resistente a suor e respingos.',
+    price: 59.90,
+    originalPrice: 119.00,
+    imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://aliexpress.com',
+    category: 'Tech & Gadgets',
+    platform: 'aliexpress',
+    badge: 'Presente Top Dia dos Pais',
+    badgeIcon: 'Gift',
+    highlightId: 'dia-dos-pais',
+    isFeatured: false,
+    isActive: true,
+    clicksCount: 280,
+    rating: 4.7,
+    reviewsCount: 94,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-5',
+    title: 'Kit Vlogger Microfone Sem Fio Lapela para Celular iPhone / Android',
+    description: 'Capture áudio profissional sem chiado para seus vídeos no TikTok e Reels! Conexão plug and play automática, longo alcance de até 20 metros e redução de ruído ativa.',
+    price: 68.50,
+    originalPrice: 135.00,
+    imageUrl: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://shopee.com.br',
+    category: 'Tendências & Destaques',
+    platform: 'instagram',
+    badge: 'Essencial para Creators',
+    badgeIcon: 'Camera',
+    highlightId: 'virais-tiktok',
+    isFeatured: true,
+    isActive: true,
+    clicksCount: 610,
+    rating: 5.0,
+    reviewsCount: 310,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-6',
+    title: 'Relógio Smartwatch Esportivo com Monitor de Saúde e Chamadas',
+    description: 'Smartwatch completo com tela HD sensível ao toque, faz e recebe chamadas, mede frequência cardíaca, oxigenação no sangue, passos e notificações do WhatsApp/Instagram.',
+    price: 139.90,
+    originalPrice: 249.90,
+    imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://mercadolivre.com.br',
+    category: 'Tech & Gadgets',
+    platform: 'mercadolivre',
+    badge: 'Destaque Dia dos Pais',
+    badgeIcon: 'Gift',
+    hasFreeShipping: true,
+    highlightId: 'dia-dos-pais',
+    isFeatured: true,
+    isActive: true,
+    clicksCount: 390,
+    rating: 4.8,
+    reviewsCount: 162,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-7',
+    title: 'Luminária de Mesa Articulada em Madeira Escandinava Minimalista',
+    description: 'O toque de sofisticação que faltava no seu estúdio ou mesa de trabalho. Base em madeira maciça, braço ajustável e acabamento metálico matte impecável.',
+    price: 119.00,
+    originalPrice: 189.00,
+    imageUrl: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://amazon.com.br',
+    category: 'Casa & Setup',
+    platform: 'amazon',
+    badge: 'Design Minimalista',
+    badgeIcon: 'Sparkles',
+    highlightId: 'dia-dos-namorados',
+    isFeatured: false,
+    isActive: true,
+    clicksCount: 195,
+    rating: 4.9,
+    reviewsCount: 77,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-8',
+    title: 'Organizador Giratório 360° de Acrílico para Maquiagem e Skincare',
+    description: 'Chega de bagunça no banheiro ou penteadeira! Armazena cremes, perfumes, pincéis e maquiagens com acesso fácil de 360 graus. Altura das prateleiras ajustável.',
+    price: 64.90,
+    originalPrice: 110.00,
+    imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://shopee.com.br',
+    category: 'Beleza & Autocuidado',
+    platform: 'shopee',
+    badge: 'Queridinho do Instagram',
+    badgeIcon: 'Heart',
+    highlightId: 'dia-dos-namorados',
+    isFeatured: true,
+    isActive: true,
+    clicksCount: 480,
+    rating: 4.9,
+    reviewsCount: 204,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-9',
+    title: 'Copo Térmico Manta Vacuum Inox com Tampa e Abridor de Garrafa 473ml',
+    description: 'Mantém sua bebida trincando de gelada por até 5 horas! Aço inox de alta durabilidade, parede dupla com isolamento a vácuo e abridor embutido na tampa. Ideal para churrasco e rolês.',
+    price: 45.00,
+    originalPrice: 89.00,
+    imageUrl: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://shopee.com.br',
+    category: 'Casa & Setup',
+    platform: 'shopee',
+    badge: 'Sucesso Dia dos Pais',
+    badgeIcon: 'Gift',
+    hasFreeShipping: true,
+    highlightId: 'dia-dos-pais',
+    isFeatured: false,
+    isActive: true,
+    clicksCount: 520,
+    rating: 4.8,
+    reviewsCount: 230,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'prod-10',
+    title: 'Mini Processador e Triturador Elétrico de Alimentos sem Fio',
+    description: 'Triture alho, cebola, pimentas e temperos em 5 segundos sem sujar as mãos! Recarregável via USB, lâminas duplas em aço inox super afiadas.',
+    price: 34.90,
+    originalPrice: 69.90,
+    imageUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80',
+    affiliateUrl: 'https://shopee.com.br',
+    category: 'Tendências & Destaques',
+    platform: 'tiktok',
+    badge: 'Baratinho Útil',
+    badgeIcon: 'Zap',
+    highlightId: 'virais-tiktok',
+    isFeatured: false,
+    isActive: true,
+    clicksCount: 690,
+    rating: 4.7,
+    reviewsCount: 340,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+];

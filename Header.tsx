@@ -1,249 +1,229 @@
-import { Product, Highlight, CategoryOption } from '../types';
+import React, { useState } from 'react';
+import { ShieldCheck, Heart, Instagram, Send, Shield, Check, UserX } from 'lucide-react';
+import { addSubscriber, removeSubscriber } from '../services/api';
+import { StoreSettings, DEFAULT_STORE_SETTINGS } from '../types';
 
-export const INITIAL_CATEGORIES: CategoryOption[] = [
-  { id: 'todos', name: 'Todos os Produtos', icon: 'Sparkles' },
-  { id: 'tech', name: 'Tech & Gadgets', icon: 'Smartphone' },
-  { id: 'tendencias', name: 'Tendências & Destaques', icon: 'Flame' },
-  { id: 'casa', name: 'Casa & Setup', icon: 'Home' },
-  { id: 'moda', name: 'Moda & Estilo', icon: 'ShoppingBag' },
-  { id: 'beleza', name: 'Beleza & Autocuidado', icon: 'Heart' },
-];
+interface FooterProps {
+  storeSettings?: StoreSettings;
+}
 
-export const INITIAL_HIGHLIGHTS: Highlight[] = [
-  {
-    id: 'dia-dos-pais',
-    title: 'Especial Dia dos Pais 👔',
-    subtitle: 'Gadgets, utilidades e presentes que todo pai tecnologico quer ganhar!',
-    badge: 'DESTAQUE DA SEMANA',
-    bannerUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80',
-    themeColor: 'from-amber-600 via-rose-600 to-pink-600',
-    iconName: 'Gift',
-    isActive: true,
-    tagFilter: 'dia-dos-pais',
-  },
-  {
-    id: 'dia-dos-namorados',
-    title: 'Especial Dia dos Namorados ❤️',
-    subtitle: 'Achadinhos românticos e presentes inesquecíveis para surpreender seu amor!',
-    badge: 'EDICAO ESPECIAL',
-    bannerUrl: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1200&q=80',
-    themeColor: 'from-pink-600 via-rose-500 to-purple-600',
-    iconName: 'Heart',
-    isActive: true,
-    tagFilter: 'dia-dos-namorados',
-  },
-  {
-    id: 'virais-tiktok',
-    title: 'Virais da "For You" 🔥',
-    subtitle: 'Os produtos que bateram milhões de visualizações e você precisa testar!',
-    badge: 'EM ALTA NO TIKTOK',
-    bannerUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=80',
-    themeColor: 'from-fuchsia-600 via-pink-500 to-purple-700',
-    iconName: 'Flame',
-    isActive: true,
-    tagFilter: 'virais',
-  },
-];
+export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SETTINGS }) => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [unsubscribed, setUnsubscribed] = useState(false);
+  const [isUnsubscribeMode, setIsUnsubscribeMode] = useState(false);
+  const [error, setError] = useState('');
 
-export const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: 'prod-1',
-    title: 'Luminária de Pôr do Sol Sunset Lamp RGB',
-    description: 'Transforme o clima do seu quarto ou cenários de vídeos do TikTok com essa iluminação quente e estética. Rotação 360°, múltiplos efeitos luminosos e controle por app.',
-    price: 49.90,
-    originalPrice: 89.90,
-    imageUrl: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://shopee.com.br',
-    category: 'Tendências & Destaques',
-    platform: 'tiktok',
-    badge: '🔥 Viral no TikTok',
-    highlightId: 'virais-tiktok',
-    isFeatured: true,
-    isActive: true,
-    clicksCount: 342,
-    rating: 4.9,
-    reviewsCount: 128,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-2',
-    title: 'Mini Projetor Portátil Smart 4K Wi-Fi Android',
-    description: 'Cinema no teto do seu quarto! Projetor super compacto com suporte a 4K, Wi-Fi integrado, alto-falante potente e ajuste automático de foco. Presente perfeito para o Dia dos Pais ou Namorados.',
-    price: 289.00,
-    originalPrice: 450.00,
-    imageUrl: 'https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://amazon.com.br',
-    category: 'Tech & Gadgets',
-    platform: 'amazon',
-    badge: '👔 Ideia Dia dos Pais',
-    highlightId: 'dia-dos-pais',
-    isFeatured: true,
-    isActive: true,
-    clicksCount: 512,
-    rating: 4.8,
-    reviewsCount: 215,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-3',
-    title: 'Umidificador e Aromatizador de Ar com Efeito Chama LED',
-    description: 'Parece fogo de verdade! Esse umidificador ultra-silencioso deixa o ar fresco, difunde óleos essenciais e decora a sua mesa de trabalho com iluminação de chama hipnotizante.',
-    price: 79.90,
-    originalPrice: 129.90,
-    imageUrl: 'https://images.unsplash.com/photo-1602928321679-560bb453f190?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://shopee.com.br',
-    category: 'Casa & Setup',
-    platform: 'shopee',
-    badge: '❤️ Queridinho dos Namorados',
-    highlightId: 'dia-dos-namorados',
-    isFeatured: true,
-    isActive: true,
-    clicksCount: 420,
-    rating: 4.9,
-    reviewsCount: 189,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-4',
-    title: 'Fone de Ouvido Bluetooth TWS Sem Fio com Display LED',
-    description: 'Áudio cristalino com graves marcantes, isolamento acústico e case carregadora inteligente que mostra a porcentagem exata de bateria. Resistente a suor e respingos.',
-    price: 59.90,
-    originalPrice: 119.00,
-    imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://aliexpress.com',
-    category: 'Tech & Gadgets',
-    platform: 'aliexpress',
-    badge: '👔 Presente Top Dia dos Pais',
-    highlightId: 'dia-dos-pais',
-    isFeatured: false,
-    isActive: true,
-    clicksCount: 280,
-    rating: 4.7,
-    reviewsCount: 94,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-5',
-    title: 'Kit Vlogger Microfone Sem Fio Lapela para Celular iPhone / Android',
-    description: 'Capture áudio profissional sem chiado para seus vídeos no TikTok e Reels! Conexão plug and play automática, longo alcance de até 20 metros e redução de ruído ativa.',
-    price: 68.50,
-    originalPrice: 135.00,
-    imageUrl: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://shopee.com.br',
-    category: 'Tendências & Destaques',
-    platform: 'instagram',
-    badge: '📸 Essencial para Creators',
-    highlightId: 'virais-tiktok',
-    isFeatured: true,
-    isActive: true,
-    clicksCount: 610,
-    rating: 5.0,
-    reviewsCount: 310,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-6',
-    title: 'Relógio Smartwatch Esportivo com Monitor de Saúde e Chamadas',
-    description: 'Smartwatch completo com tela HD sensível ao toque, faz e recebe chamadas, mede frequência cardíaca, oxigenação no sangue, passos e notificações do WhatsApp/Instagram.',
-    price: 139.90,
-    originalPrice: 249.90,
-    imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://mercadolivre.com.br',
-    category: 'Tech & Gadgets',
-    platform: 'mercadolivre',
-    badge: '👔 Destaque Dia dos Pais',
-    highlightId: 'dia-dos-pais',
-    isFeatured: true,
-    isActive: true,
-    clicksCount: 390,
-    rating: 4.8,
-    reviewsCount: 162,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-7',
-    title: 'Luminária de Mesa Articulada em Madeira Escandinava Minimalista',
-    description: 'O toque de sofisticação que faltava no seu estúdio ou mesa de trabalho. Base em madeira maciça, braço ajustável e acabamento metálico matte impecável.',
-    price: 119.00,
-    originalPrice: 189.00,
-    imageUrl: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://amazon.com.br',
-    category: 'Casa & Setup',
-    platform: 'amazon',
-    badge: '✨ Design Minimalista',
-    highlightId: 'dia-dos-namorados',
-    isFeatured: false,
-    isActive: true,
-    clicksCount: 195,
-    rating: 4.9,
-    reviewsCount: 77,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-8',
-    title: 'Organizador Giratório 360° de Acrílico para Maquiagem e Skincare',
-    description: 'Chega de bagunça no banheiro ou penteadeira! Armazena cremes, perfumes, pincéis e maquiagens com acesso fácil de 360 graus. Altura das prateleiras ajustável.',
-    price: 64.90,
-    originalPrice: 110.00,
-    imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://shopee.com.br',
-    category: 'Beleza & Autocuidado',
-    platform: 'shopee',
-    badge: '❤️ Queridinho do Instagram',
-    highlightId: 'dia-dos-namorados',
-    isFeatured: true,
-    isActive: true,
-    clicksCount: 480,
-    rating: 4.9,
-    reviewsCount: 204,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-9',
-    title: 'Copo Térmico Manta Vacuum Inox com Tampa e Abridor de Garrafa 473ml',
-    description: 'Mantém sua bebida trincando de gelada por até 5 horas! Aço inox de alta durabilidade, parede dupla com isolamento a vácuo e abridor embutido na tampa. Ideal para churrasco e rolês.',
-    price: 45.00,
-    originalPrice: 89.00,
-    imageUrl: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://shopee.com.br',
-    category: 'Casa & Setup',
-    platform: 'shopee',
-    badge: '👔 Sucesso Dia dos Pais',
-    highlightId: 'dia-dos-pais',
-    isFeatured: false,
-    isActive: true,
-    clicksCount: 520,
-    rating: 4.8,
-    reviewsCount: 230,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'prod-10',
-    title: 'Mini Processador e Triturador Elétrico de Alimentos sem Fio',
-    description: 'Triture alho, cebola, pimentas e temperos em 5 segundos sem sujar as mãos! Recarregável via USB, lâminas duplas em aço inox super afiadas.',
-    price: 34.90,
-    originalPrice: 69.90,
-    imageUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80',
-    affiliateUrl: 'https://shopee.com.br',
-    category: 'Tendências & Destaques',
-    platform: 'tiktok',
-    badge: '⚡ Baratinho Útil',
-    highlightId: 'virais-tiktok',
-    isFeatured: false,
-    isActive: true,
-    clicksCount: 690,
-    rating: 4.7,
-    reviewsCount: 340,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-];
+  const storeName = storeSettings?.storeName || DEFAULT_STORE_SETTINGS.storeName;
+  const storeSlogan = storeSettings?.storeSlogan || DEFAULT_STORE_SETTINGS.storeSlogan;
+  const logoUrl = storeSettings?.logoUrl || DEFAULT_STORE_SETTINGS.logoUrl;
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      setError('Por favor, digite um e-mail válido.');
+      return;
+    }
+
+    try {
+      await addSubscriber(cleanEmail);
+    } catch {
+      // fallback
+    }
+
+    setSubscribed(true);
+    setEmail('');
+    setTimeout(() => {
+      setSubscribed(false);
+    }, 5000);
+  };
+
+  const handleUnsubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      setError('Por favor, digite um e-mail válido.');
+      return;
+    }
+
+    try {
+      await removeSubscriber(cleanEmail);
+    } catch {
+      // fallback
+    }
+
+    setUnsubscribed(true);
+    setEmail('');
+    setTimeout(() => {
+      setUnsubscribed(false);
+      setIsUnsubscribeMode(false);
+    }, 5000);
+  };
+
+  return (
+    <footer className="mt-16 bg-[#07060b] text-zinc-400 border-t border-zinc-800/80 pt-12 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-zinc-800/80">
+          
+          {/* Brand Info */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2.5">
+              <img
+                src={logoUrl}
+                alt={storeName}
+                className="w-10 h-10 rounded-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+
+              <div className="flex flex-col items-start leading-none font-black font-sans">
+                {storeName === 'Woobox Shop' ? (
+                  <>
+                    <div className="text-xl font-black tracking-tight">
+                      <span className="text-white">WOO</span>
+                      <span className="bg-gradient-to-r from-[var(--wb-primary)] to-[var(--wb-accent)] bg-clip-text text-transparent">BOX</span>
+                    </div>
+                    <span className="text-xs text-zinc-300 font-black uppercase tracking-[0.22em] text-center w-full mt-0.5">
+                      SHOP
+                    </span>
+                  </>
+                ) : (
+                  <span className="bg-gradient-to-r from-white via-[var(--wb-primary-light)] to-[var(--wb-accent)] bg-clip-text text-transparent text-xl font-black">
+                    {storeName}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <p className="text-xs text-zinc-400 leading-relaxed font-normal">
+              {storeSlogan}
+            </p>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-2 pt-1">
+              <a
+                href="https://www.tiktok.com/@woobox.shop"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-zinc-900 hover:bg-[var(--wb-primary)]/20 text-zinc-400 hover:text-white rounded-xl transition-all border border-zinc-800"
+                title="Siga no TikTok"
+              >
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.65 6.34 6.34 0 0 0 9.35 22a6.33 6.33 0 0 0 6.32-6.33V9.17a8.16 8.16 0 0 0 3.92 1V6.69z" />
+                </svg>
+              </a>
+              <a
+                href="https://www.instagram.com/wooboxshop/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-zinc-900 hover:bg-[var(--wb-primary)]/20 text-zinc-400 hover:text-[var(--wb-primary)] rounded-xl transition-all border border-zinc-800"
+                title="Siga no Instagram"
+              >
+                <Instagram className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-black uppercase tracking-widest text-white">Navegação</h4>
+            <ul className="space-y-2 text-xs text-zinc-400 font-medium">
+              <li><a href="#" className="hover:text-[var(--wb-primary)] transition-colors">Início</a></li>
+              <li><a href="#categorias" className="hover:text-[var(--wb-primary)] transition-colors">Categorias</a></li>
+              <li><a href="#catalogo" className="hover:text-[var(--wb-primary)] transition-colors">Ofertas em Destaque</a></li>
+              <li><a href="#catalogo" className="hover:text-[var(--wb-primary)] transition-colors">Mais Vendidos</a></li>
+            </ul>
+          </div>
+
+          {/* Verification & Security */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-black uppercase tracking-widest text-white flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Qualidade & Segurança
+            </h4>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Todos os itens exibidos passam por rigoroso filtro de reputação do vendedor e procedência em grandes plataformas como Shopee, Amazon, AliExpress e Mercado Livre.
+            </p>
+          </div>
+
+          {/* Newsletter */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-black uppercase tracking-widest text-white">
+              {isUnsubscribeMode ? 'Desinscrever-se' : 'Receba novidades'}
+            </h4>
+            
+            {subscribed ? (
+              <div className="p-3 bg-emerald-950/80 border border-emerald-500/50 rounded-xl text-emerald-400 text-xs flex items-center gap-2 animate-in fade-in">
+                <Check className="w-4 h-4 shrink-0 text-emerald-400" />
+                <span>E-mail cadastrado! Você receberá nossas melhores ofertas.</span>
+              </div>
+            ) : unsubscribed ? (
+              <div className="p-3 bg-zinc-900 border border-zinc-700 rounded-xl text-zinc-300 text-xs flex items-center gap-2 animate-in fade-in">
+                <UserX className="w-4 h-4 shrink-0 text-amber-400" />
+                <span>Seu e-mail foi removido da lista de novidades.</span>
+              </div>
+            ) : (
+              <form onSubmit={isUnsubscribeMode ? handleUnsubscribe : handleSubscribe} className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (error) setError('');
+                    }}
+                    placeholder={isUnsubscribeMode ? "E-mail para remover..." : "Seu e-mail..."}
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 outline-none focus:border-[var(--wb-primary)]"
+                  />
+                  <button
+                    type="submit"
+                    className={`p-2 text-white rounded-xl hover:opacity-90 transition-opacity shrink-0 cursor-pointer ${
+                      isUnsubscribeMode
+                        ? 'bg-rose-600 hover:bg-rose-700'
+                        : 'bg-gradient-to-r from-[var(--wb-primary)] to-[var(--wb-accent)]'
+                    }`}
+                    title={isUnsubscribeMode ? "Desinscrever" : "Inscrever-se"}
+                  >
+                    {isUnsubscribeMode ? <UserX className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+                  </button>
+                </div>
+                {error && <p className="text-[11px] text-rose-400 font-medium">{error}</p>}
+                
+                <div className="pt-0.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsUnsubscribeMode(!isUnsubscribeMode);
+                      setError('');
+                    }}
+                    className="text-[11px] text-zinc-500 hover:text-[var(--wb-primary)] underline transition-colors cursor-pointer"
+                  >
+                    {isUnsubscribeMode ? 'Voltar para Inscrição' : 'Cancelar inscrição / Desinscrever e-mail'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          <div className="flex items-center gap-3">
+            <p>© {new Date().getFullYear()} Woobox Shop. Todos os direitos reservados.</p>
+          </div>
+          <p className="flex items-center gap-1">
+            Qualidade e seleção especial para você <Heart className="w-3.5 h-3.5 text-[var(--wb-primary)] fill-[var(--wb-primary)] ml-0.5" />
+          </p>
+        </div>
+
+      </div>
+    </footer>
+  );
+};
+
