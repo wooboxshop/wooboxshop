@@ -1,115 +1,45 @@
-export type PlatformType = 'tiktok' | 'instagram' | 'shopee' | 'amazon' | 'aliexpress' | 'mercadolivre' | 'outros';
+rules_version = '2';
 
-export interface Product {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  imageUrl: string;
-  gallery?: string[];
-  affiliateUrl: string;
-  category: string;
-  platform: PlatformType;
-  badge?: string;
-  badgeIcon?: string; // Icon name from the shared icon set (same as category icons)
-  hasFreeShipping?: boolean; // Product characteristic (like price) — rendered as a plain indicator, never as a badge/selo
-  highlightId?: string; // Links product to special events like "dia-dos-pais", "dia-dos-namorados"
-  isFeatured: boolean;
-  isActive: boolean;
-  clicksCount: number;
-  rating: number;
-  reviewsCount: number;
-  createdAt: string;
-  updatedAt: string;
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public catalog: storefront can read, but cannot create/delete/edit catalog data.
+    match /products/{productId} {
+      allow read: if true;
+      allow update: if
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clicksCount']) &&
+        request.resource.data.clicksCount == resource.data.clicksCount + 1;
+      allow create, delete: if false;
+    }
+
+    match /highlights/{highlightId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /settings/store {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Public actions performed by the storefront.
+    match /clickLogs/{logId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
+    match /subscribers/{subscriberId} {
+      allow create, delete: if true;
+      allow read, update: if false;
+    }
+
+    // Everything else is inaccessible from the public storefront.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
 }
-
-export interface Highlight {
-  id: string;
-  title: string;
-  subtitle: string;
-  badge: string;
-  bannerUrl: string;
-  themeColor: string; // Tailwind gradient class or color code
-  iconName?: string;
-  isActive: boolean;
-  tagFilter?: string; // Optional filter string
-  productIds?: string[];
-}
-
-export interface ClickLog {
-  id: string;
-  productId: string;
-  productTitle: string;
-  platform: PlatformType;
-  timestamp: string;
-  referrer?: string;
-  userAgent?: string;
-}
-
-export interface MetricSummary {
-  totalClicks: number;
-  totalProducts: number;
-  activeProducts: number;
-  totalHighlights: number;
-  topProducts: {
-    id: string;
-    title: string;
-    clicksCount: number;
-    category: string;
-    imageUrl: string;
-    price: number;
-    platform: PlatformType;
-  }[];
-  platformDistribution: {
-    platform: string;
-    count: number;
-  }[];
-  categoryDistribution: {
-    category: string;
-    count: number;
-    clicks: number;
-  }[];
-  recentClicks: ClickLog[];
-  dailyClicks: {
-    date: string;
-    clicks: number;
-  }[];
-}
-
-export interface CategoryOption {
-  id: string;
-  name: string;
-  icon: string;
-  count?: number;
-}
-
-export interface StoreSettings {
-  storeName: string;
-  storeSlogan: string;
-  logoUrl: string;
-  bannerHeadline: string;
-  bannerHeadlineGradient: string;
-  badgeTag1: string;
-  badgeTag2: string;
-  promoPillText: string;
-  topNoticeText?: string;
-  themePrimaryColor?: string; // Main brand color (buttons, links, active states)
-  themeAccentColor?: string; // Secondary brand color (gradients, highlights)
-  updatedAt?: string;
-}
-
-export const DEFAULT_STORE_SETTINGS: StoreSettings = {
-  storeName: 'Woobox Shop',
-  storeSlogan: 'O Seu Guia de Achadinhos e Ofertas Secretas',
-  logoUrl: 'https://i.pinimg.com/280x280_RS/44/4a/ed/444aed68b0abf3f41e9707e9d2c8c22d.jpg',
-  bannerHeadline: 'Os melhores produtos reunidos com os',
-  bannerHeadlineGradient: 'melhores preços.',
-  badgeTag1: 'Curadoria Exclusiva',
-  badgeTag2: 'Ofertas Verificadas',
-  promoPillText: 'Até 40% OFF',
-  topNoticeText: '',
-  themePrimaryColor: '#ec4899',
-  themeAccentColor: '#f59e0b',
-};
-

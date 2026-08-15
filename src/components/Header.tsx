@@ -9,7 +9,6 @@ import {
   X,
   Home,
   Flame,
-  Trophy,
   Sparkles,
   Tag,
   ChevronRight,
@@ -271,21 +270,6 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className="flex items-center gap-3">
                       <Flame className="w-4 h-4 text-amber-500" />
                       <span>Ofertas Imperdíveis</span>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-zinc-400" />
-                  </button>
-
-                  <button
-                    onClick={() => handleNavClick('mais-vendidos')}
-                    className={`w-full p-3 rounded-2xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
-                      activeTab === 'mais-vendidos'
-                        ? 'bg-[var(--wb-primary)]/20 text-[var(--wb-primary)] border border-[var(--wb-primary)]/30'
-                        : 'bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Trophy className="w-4 h-4 text-yellow-400" />
-                      <span>Mais Vendidos</span>
                     </div>
                     <ChevronRight className="w-4 h-4 text-zinc-400" />
                   </button>

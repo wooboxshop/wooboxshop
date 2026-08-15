@@ -75,22 +75,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        {/* Left Image Section */}
-        <div className="md:w-1/2 relative bg-zinc-950 aspect-[4/3] md:aspect-auto md:min-h-full shrink-0">
+        {/* Left Image Section — standardized height on mobile (capped to max-h-[34vh]) so product info is always immediately visible */}
+        <div className="w-full h-52 xs:h-56 sm:h-64 md:h-auto md:w-1/2 max-h-[34vh] md:max-h-none relative bg-zinc-950 shrink-0 overflow-hidden">
           <img
             src={product.imageUrl}
             alt={product.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
             referrerPolicy="no-referrer"
             decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent md:hidden" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent md:hidden pointer-events-none" />
           <div className="absolute inset-0 shadow-[inset_0_0_48px_20px_rgba(5,5,8,0.4)] pointer-events-none" />
 
           {/* Badges on Image — compact horizontal row */}
-          <div className="absolute top-3 left-3 right-3 pr-11 flex flex-wrap items-center gap-1.5 z-10">
-            <span className={`px-2 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide shadow-md flex items-center gap-1 ${platformBadge.bg} ${platformBadge.text}`}>
-              <PlatformIcon platform={product.platform} className="w-3.5 h-3.5 shrink-0 rounded-[4px]" />
+          <div className="absolute top-3 left-3 right-3 pr-11 flex flex-wrap items-center gap-1.5 z-10 pointer-events-none">
+            <span className={`px-2 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide shadow-md flex items-center gap-1.5 ${platformBadge.bg} ${platformBadge.text}`}>
+              <PlatformIcon platform={product.platform} className="w-4 h-4 shrink-0 rounded-[4px]" />
               {platformBadge.label}
             </span>
             {product.badge && (
@@ -107,8 +107,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             )}
           </div>
 
-          {/* Clicks counter — compact corner badge, no longer duplicating the price panel below */}
-          <div className="absolute bottom-3 right-3 z-10">
+          {/* Clicks counter — compact corner badge */}
+          <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
             <span className="text-[10px] bg-zinc-950/95 border border-zinc-800 px-2.5 py-1 rounded-xl flex items-center gap-1 font-bold text-pink-400">
               <Flame className="w-3.5 h-3.5 text-pink-500 fill-pink-500" />
               {product.clicksCount} acessos
@@ -117,7 +117,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </div>
 
         {/* Right Info Section */}
-        <div className="md:w-1/2 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto space-y-6 flex-1 min-h-0 md:flex-none">
+        <div className="md:w-1/2 p-5 sm:p-7 md:p-8 flex flex-col justify-between overflow-y-auto space-y-5 sm:space-y-6 flex-1 min-h-0 md:flex-none">
           <div className="space-y-4">
             {/* Category & Ratings — sober, minimal treatment */}
             <div className="flex items-center justify-between gap-3 pb-3 border-b border-zinc-800/70 md:pr-9">
