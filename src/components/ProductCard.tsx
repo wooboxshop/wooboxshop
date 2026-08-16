@@ -139,17 +139,29 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
 
         {/* Pricing & Buy Button */}
         <div className="pt-3 border-t border-zinc-800/80 space-y-3">
-          <div className="flex flex-col justify-end min-h-[38px]">
-            {product.originalPrice && product.originalPrice > product.price ? (
-              <span className="text-[11px] text-zinc-400 line-through font-medium leading-tight">
-                {formatCurrency(product.originalPrice)}
-              </span>
-            ) : (
-              <span className="text-[11px] opacity-0 leading-tight select-none pointer-events-none">
-                &nbsp;
-              </span>
-            )}
-            <div className="flex items-center gap-2 flex-wrap mt-0.5">
+          <div className="flex flex-col justify-end min-h-[38px] space-y-1">
+            {/* Top row: Previous Price (left) & Free Shipping (right, above %off) */}
+            <div className="flex items-center justify-between gap-1.5 min-h-[16px]">
+              {product.originalPrice && product.originalPrice > product.price ? (
+                <span className="text-[11px] text-zinc-400 line-through font-medium leading-tight">
+                  {formatCurrency(product.originalPrice)}
+                </span>
+              ) : (
+                <span className="text-[11px] opacity-0 select-none pointer-events-none leading-tight">
+                  &nbsp;
+                </span>
+              )}
+
+              {product.hasFreeShipping && (
+                <div className="flex items-center gap-1 text-emerald-400 text-[10px] font-bold shrink-0 whitespace-nowrap">
+                  <Truck className="w-3 h-3 shrink-0" />
+                  <span>Frete grátis</span>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom row: Current Price (left) & Discount Badge (right, below free shipping) */}
+            <div className="flex items-center justify-between gap-2">
               <span className="text-base sm:text-lg font-black text-white tracking-tight leading-none">
                 {formatCurrency(product.price)}
               </span>
@@ -159,12 +171,6 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
                 </span>
               )}
             </div>
-            {product.hasFreeShipping && (
-              <div className="flex items-center gap-1 text-emerald-400 text-[10px] font-bold mt-1">
-                <Truck className="w-3 h-3 shrink-0" />
-                <span>Frete grátis</span>
-              </div>
-            )}
           </div>
 
           {/* Primary Action Button */}
