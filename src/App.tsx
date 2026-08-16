@@ -353,7 +353,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050508] text-zinc-100 font-sans selection:bg-pink-500 selection:text-white">
+    <div className="min-h-screen bg-[#050508] text-zinc-100 font-sans">
       {/* Header Bar */}
       <Header
         searchQuery={searchQuery}
@@ -464,7 +464,7 @@ export default function App() {
                 </button>
 
                 <div className="hidden lg:flex items-center gap-2">
-                  <Sparkles className="w-4.5 h-4.5 text-pink-500 fill-pink-500/20" />
+                  <Sparkles className="w-4.5 h-4.5 text-[var(--wb-primary)] fill-[var(--wb-primary)]/20" />
                   <h2 className="text-sm font-extrabold text-white">
                     {selectedCategory !== 'todos'
                       ? visibleCategories.find((c) => c.id === selectedCategory)?.name
@@ -490,7 +490,7 @@ export default function App() {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
                       selectedCategory === cat.id
-                        ? 'bg-pink-500/15 text-pink-100 border-pink-500/60 shadow-sm shadow-pink-500/10'
+                        ? 'bg-[var(--wb-primary)]/15 text-[var(--wb-primary-light)] border-[var(--wb-primary)]/60 shadow-sm shadow-[var(--wb-primary)]/10'
                         : 'bg-zinc-900/90 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
                     }`}
                   >
@@ -503,14 +503,14 @@ export default function App() {
             {/* Loading Spinner */}
             {loading ? (
               <div className="py-20 flex flex-col items-center justify-center space-y-3 text-zinc-400">
-                <RefreshCcw className="w-8 h-8 animate-spin text-pink-500" />
+                <RefreshCcw className="w-8 h-8 animate-spin text-[var(--wb-primary)]" />
                 <p className="text-xs font-bold">Carregando produtos...</p>
               </div>
             ) : processedProducts.length === 0 ? (
               /* Empty Search or Filters State */
               <div className="py-16 text-center bg-[#0d0c15] rounded-3xl border border-zinc-800 p-8 space-y-4 shadow-xl">
-                <div className="w-16 h-16 mx-auto bg-pink-500/10 text-pink-400 rounded-full flex items-center justify-center border border-pink-500/20">
-                  {showFavoritesOnly ? <Heart className="w-8 h-8 text-pink-500 fill-pink-500/30" /> : <PackageSearch className="w-8 h-8" />}
+                <div className="w-16 h-16 mx-auto bg-[var(--wb-primary)]/10 text-[var(--wb-primary)] rounded-full flex items-center justify-center border border-[var(--wb-primary)]/20">
+                  {showFavoritesOnly ? <Heart className="w-8 h-8 text-[var(--wb-primary)] fill-[var(--wb-primary)]/30" /> : <PackageSearch className="w-8 h-8" />}
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-lg font-black text-white">
@@ -524,7 +524,7 @@ export default function App() {
                 </div>
                 <button
                   onClick={handleResetFilters}
-                  className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white font-bold text-xs rounded-2xl shadow-lg transition-transform active:scale-95 inline-flex items-center gap-2 cursor-pointer"
+                  className="px-5 py-2.5 bg-[var(--wb-primary)] hover:brightness-110 text-white font-bold text-xs rounded-2xl shadow-lg transition-transform active:scale-95 inline-flex items-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-white" />
                   {showFavoritesOnly ? 'Explorar Catálogo de Ofertas' : 'Limpar Todos os Filtros'}

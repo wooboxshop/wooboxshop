@@ -17,7 +17,12 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
   onExploreClick,
   storeSettings = DEFAULT_STORE_SETTINGS,
 }) => {
-  const promoHighlight = highlights.find((h) => h.isActive) || highlights[0];
+  // Only show a highlight that is explicitly marked active. Previously this fell
+  // back to `highlights[0]` regardless of its active state, which meant a
+  // deactivated (or even fully removed-from-rotation) highlight would keep
+  // showing up on the storefront with no way to turn it off from the admin
+  // panel. Now, disabling every highlight correctly hides this pill.
+  const promoHighlight = highlights.find((h) => h.isActive);
 
   return (
     <section className="mb-4 space-y-3">
@@ -51,7 +56,16 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
 
               <h1 className="text-base sm:text-xl font-black text-white tracking-tight leading-tight">
                 {storeSettings.bannerHeadline || 'Os melhores produtos reunidos com os'}{' '}
-                <span className="text-[var(--wb-primary)]">
+                <span
+                  className="font-black inline-block"
+                  style={{
+                    backgroundImage: `linear-gradient(135deg, ${storeSettings.bannerGradientFrom || 'var(--wb-primary)'}, ${storeSettings.bannerGradientTo || 'var(--wb-accent)'})`,
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    color: 'transparent',
+                  }}
+                >
                   {storeSettings.bannerHeadlineGradient || 'melhores preços.'}
                 </span>
               </h1>

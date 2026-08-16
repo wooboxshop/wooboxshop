@@ -90,6 +90,8 @@ export interface StoreSettings {
   logoUrl: string;
   bannerHeadline: string;
   bannerHeadlineGradient: string;
+  bannerGradientFrom?: string; // Gradient starting hex color (e.g. #fbbf24)
+  bannerGradientTo?: string; // Gradient ending hex color (e.g. #fb7185)
   badgeTag1: string;
   badgeTag2: string;
   promoPillText: string;
@@ -105,6 +107,8 @@ export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   logoUrl: 'https://i.pinimg.com/280x280_RS/44/4a/ed/444aed68b0abf3f41e9707e9d2c8c22d.jpg',
   bannerHeadline: 'Os melhores produtos reunidos com os',
   bannerHeadlineGradient: 'melhores preços.',
+  bannerGradientFrom: '#fbbf24',
+  bannerGradientTo: '#fb7185',
   badgeTag1: 'Curadoria Exclusiva',
   badgeTag2: 'Ofertas Verificadas',
   promoPillText: 'Até 40% OFF',
