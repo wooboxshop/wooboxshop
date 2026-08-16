@@ -109,9 +109,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* Clicks counter — compact corner badge */}
           <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
-            <span className="text-[10px] bg-zinc-950/95 border border-zinc-800 px-2.5 py-1 rounded-xl flex items-center gap-1 font-bold text-pink-400">
-              <Flame className="w-3.5 h-3.5 text-pink-500 fill-pink-500" />
-              {product.clicksCount} acessos
+            <span className="text-[10px] bg-zinc-950/95 border border-zinc-700/60 px-2.5 py-1 rounded-full flex items-center gap-1 font-bold text-white backdrop-blur-sm shadow-md">
+              <Flame className="w-3.5 h-3.5 text-[var(--wb-primary)] fill-[var(--wb-primary)]" />
+              {product.clicksCount === 1 ? '1 acesso' : `${product.clicksCount} acessos`}
             </span>
           </div>
         </div>

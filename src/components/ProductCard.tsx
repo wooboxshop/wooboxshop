@@ -104,9 +104,9 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
 
         {/* Bottom Right Image Badge: Clicks Counter */}
         <div className="absolute bottom-3 right-3 z-10">
-          <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-700/60 text-zinc-200 text-[9px] font-semibold flex items-center gap-1 shrink-0 backdrop-blur-sm">
-            <Flame className="w-3 h-3 text-pink-400 fill-pink-400" />
-            {product.clicksCount || 0} viram
+          <span className="px-2 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-700/60 text-white text-[9px] font-bold flex items-center gap-1 shrink-0 backdrop-blur-sm shadow-md">
+            <Flame className="w-3 h-3 text-[var(--wb-primary)] fill-[var(--wb-primary)]" />
+            {product.clicksCount === 1 ? '1 acesso' : `${product.clicksCount || 0} acessos`}
           </span>
         </div>
       </div>
