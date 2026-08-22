@@ -98,10 +98,10 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
                     {formatCurrency(product.originalPrice)}
                   </span>
                 )}
-                <span className="text-lg font-black text-white leading-none">{formatCurrency(product.price)}</span>
+                <span className="text-lg font-black text-white leading-none [font-variant-numeric:tabular-nums]">{formatCurrency(product.price)}</span>
               </div>
               {discount > 0 && (
-                <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[9px] font-black">
+                <span className="shrink-0 min-w-[48px] text-center px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[9px] font-black [font-variant-numeric:tabular-nums]">
                   -{discount}%
                 </span>
               )}
@@ -219,19 +219,19 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
 
           {/* Description snippet */}
           {isFeaturedCard && (
-            <p className="text-xs sm:text-sm text-zinc-400 line-clamp-2 sm:line-clamp-3 mt-2.5 font-normal leading-relaxed">
+            <p className="hidden sm:block text-sm text-zinc-400 line-clamp-3 mt-2.5 font-normal leading-relaxed">
               {product.description}
             </p>
           )}
         </div>
 
         {/* Pricing & Buy Button */}
-        <div className={`${isFeaturedCard ? 'mt-4 sm:mt-5 pt-3 sm:pt-4' : 'mt-3 pt-3'} border-t border-zinc-800/80 space-y-3`}>
-          <div className="space-y-1.5">
+        <div className={`${isFeaturedCard ? 'mt-3 sm:mt-5' : 'mt-3'} space-y-3`}>
+          <div className="p-2.5 sm:p-3 rounded-xl bg-zinc-950/55 border border-zinc-800/70 space-y-2">
             {/* Top row: Preço original riscado + Frete grátis (ou Economia se não tiver frete grátis) */}
             <div className="flex items-center justify-between gap-2 min-h-4">
               {product.originalPrice && product.originalPrice > product.price ? (
-                <span className="text-[11px] text-zinc-400 line-through font-medium leading-tight">
+                <span className="text-[10px] text-zinc-500 line-through font-medium leading-tight [font-variant-numeric:tabular-nums]">
                   {formatCurrency(product.originalPrice)}
                 </span>
               ) : (
@@ -246,19 +246,19 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
                   <span>Frete grátis</span>
                 </div>
               ) : product.originalPrice && product.originalPrice > product.price ? (
-                <span className="text-[10px] text-emerald-400 font-bold whitespace-nowrap leading-tight shrink-0">
+                <span className="text-[10px] text-emerald-400 font-bold whitespace-nowrap leading-tight shrink-0 [font-variant-numeric:tabular-nums]">
                   Economize {formatCurrency(product.originalPrice - product.price)}
                 </span>
               ) : null}
             </div>
 
             {/* Bottom row: Preço atual em destaque + Badge de desconto */}
-            <div className="flex items-center gap-2 min-h-6">
-              <span className={`${isFeaturedCard ? 'text-2xl sm:text-3xl' : 'text-xl'} font-black text-white tracking-tight leading-none`}>
+            <div className="flex items-end justify-between gap-3 min-h-6">
+              <span className={`${isFeaturedCard ? 'text-2xl sm:text-3xl' : 'text-xl'} font-black text-white tracking-tight leading-none [font-variant-numeric:tabular-nums]`}>
                 {formatCurrency(product.price)}
               </span>
               {discount > 0 && (
-                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-sm whitespace-nowrap shrink-0">
+                <span className="min-w-[58px] text-center px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-sm whitespace-nowrap shrink-0 [font-variant-numeric:tabular-nums]">
                   -{discount}% OFF
                 </span>
               )}
