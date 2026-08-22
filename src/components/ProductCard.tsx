@@ -102,12 +102,16 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
                     <span className="text-[8px] text-zinc-500 font-semibold">Preço especial</span>
                   )}
 
-                  {product.hasFreeShipping && (
+                  {product.hasFreeShipping ? (
                     <span className="shrink-0 flex items-center gap-1 text-[8px] font-black text-emerald-400 whitespace-nowrap">
                       <Truck className="w-2.5 h-2.5" />
                       Frete grátis
                     </span>
-                  )}
+                  ) : product.originalPrice && product.originalPrice > product.price ? (
+                    <span className="shrink-0 text-right text-[8px] font-black text-emerald-400 whitespace-nowrap [font-variant-numeric:tabular-nums]">
+                      Economize {formatCurrency(product.originalPrice - product.price)}
+                    </span>
+                  ) : null}
                 </div>
               ) : null}
 

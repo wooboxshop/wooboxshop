@@ -70,11 +70,11 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-zinc-800/80">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-9 md:gap-8 pb-10 border-b border-zinc-800/80 text-center md:text-left">
           
           {/* Brand Info */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2.5">
+          <div className="space-y-4 flex flex-col items-center md:items-start">
+            <div className="flex items-center justify-center md:justify-start gap-2.5">
               <img
                 src={logoUrl}
                 alt={storeName}
@@ -87,7 +87,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                   <>
                     <div className="text-xl font-black tracking-tight">
                       <span className="text-white">WOO</span>
-                      <span className="bg-gradient-to-r from-[var(--wb-primary)] to-[var(--wb-accent)] bg-clip-text text-transparent">BOX</span>
+                      <span className="text-[var(--wb-primary-light)]">BOX</span>
                     </div>
                     <span className="text-xs text-zinc-300 font-black uppercase tracking-[0.22em] text-center w-full mt-0.5">
                       SHOP
@@ -106,7 +106,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
             </p>
 
             {/* Social Icons */}
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center justify-center md:justify-start gap-2 pt-1">
               <a
                 href="https://www.tiktok.com/@woobox.shop"
                 target="_blank"
@@ -143,7 +143,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
 
           {/* Verification & Security */}
           <div className="space-y-3">
-            <h4 className="text-xs font-black uppercase tracking-widest text-white flex items-center gap-1.5">
+            <h4 className="text-xs font-black uppercase tracking-widest text-white flex items-center justify-center md:justify-start gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-400" /> Qualidade & Segurança
             </h4>
             <p className="text-xs text-zinc-400 leading-relaxed">
@@ -168,7 +168,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                 <span>Seu e-mail foi removido da lista de novidades.</span>
               </div>
             ) : (
-              <form onSubmit={isUnsubscribeMode ? handleUnsubscribe : handleSubscribe} className="space-y-1.5">
+              <form onSubmit={isUnsubscribeMode ? handleUnsubscribe : handleSubscribe} className="space-y-1.5 max-w-sm mx-auto md:mx-0">
                 <div className="flex items-center gap-2">
                   <input
                     type="email"
@@ -213,7 +213,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 text-center sm:text-left">
           <div className="flex items-center gap-3">
             <p>© {new Date().getFullYear()} Woobox Shop. Todos os direitos reservados.</p>
           </div>
@@ -226,4 +226,3 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
     </footer>
   );
 };
-

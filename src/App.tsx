@@ -340,6 +340,20 @@ export default function App() {
     sortBy,
   ]);
 
+  // Products marked in the admin compose the curated area. Keeping this as a
+  // collection (instead of always taking the first item) allows any number of
+  // featured products without duplicating them in the regular catalog.
+  const featuredProducts = useMemo(() => {
+    if (processedProducts.length === 0) return [];
+    const selected = processedProducts.filter((product) => product.isFeatured);
+    return selected.length > 0 ? selected : [processedProducts[0]];
+  }, [processedProducts]);
+
+  const regularProducts = useMemo(() => {
+    const featuredIds = new Set(featuredProducts.map((product) => product.id));
+    return processedProducts.filter((product) => !featuredIds.has(product.id));
+  }, [processedProducts, featuredProducts]);
+
   // Reset all filters handler
   const handleResetFilters = () => {
     setSelectedCategory('todos');
@@ -532,32 +546,72 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-5 sm:space-y-7">
-                {/* Editorial lead: one clear recommendation instead of five competing cards. */}
+                {/* Products selected as featured in the admin form the curated area. */}
                 <section className="space-y-3">
                   <div className="flex items-end justify-between gap-3 px-1">
                     <div>
                       <span className="text-[9px] font-black uppercase tracking-[0.16em] text-[var(--wb-primary-light)]">
                         Seleção Woobox
                       </span>
-                      <h2 className="text-base sm:text-lg font-black text-white mt-0.5">Destaque da curadoria</h2>
+                      <h2 className="text-base sm:text-lg font-black text-white mt-0.5">
+                        {featuredProducts.length > 1 ? 'Destaques da curadoria' : 'Destaque da curadoria'}
+                      </h2>
                     </div>
-                    <span className="hidden sm:inline text-[11px] text-zinc-500">Escolhido por popularidade e avaliação</span>
+                    <span className="hidden sm:inline text-[11px] text-zinc-500">
+                      {featuredProducts.length} produto{featuredProducts.length !== 1 ? 's' : ''} selecionado{featuredProducts.length !== 1 ? 's' : ''}
+                    </span>
                   </div>
 
                   <ProductCard
-                    key={processedProducts[0].id}
-                    product={processedProducts[0]}
+                    key={featuredProducts[0].id}
+                    product={featuredProducts[0]}
                     variant="featured"
-                    rankIndex={sortBy === 'populares' ? 1 : undefined}
+                    rankIndex={sortBy === 'populares' ? processedProducts.indexOf(featuredProducts[0]) + 1 : undefined}
                     onClickProduct={handleProductClick}
                     onBuyClick={handleBuyClick}
-                    isFavorite={favorites.includes(processedProducts[0].id)}
+                    isFavorite={favorites.includes(featuredProducts[0].id)}
                     onToggleFavorite={handleToggleFavorite}
                     onShareClick={handleShareClick}
                   />
+
+                  {featuredProducts.length > 1 && (
+                    <>
+                      <div className="grid grid-cols-1 gap-3 sm:hidden">
+                        {featuredProducts.slice(1).map((product) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            variant="compact"
+                            rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
+                            onClickProduct={handleProductClick}
+                            onBuyClick={handleBuyClick}
+                            isFavorite={favorites.includes(product.id)}
+                            onToggleFavorite={handleToggleFavorite}
+                            onShareClick={handleShareClick}
+                          />
+                        ))}
+                      </div>
+
+                      <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 xl:gap-5 items-stretch">
+                        {featuredProducts.slice(1).map((product) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            variant="standard"
+                            rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
+                            onClickProduct={handleProductClick}
+                            onBuyClick={handleBuyClick}
+                            isFavorite={favorites.includes(product.id)}
+                            onToggleFavorite={handleToggleFavorite}
+                            onShareClick={handleShareClick}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </section>
 
-                {processedProducts.length > 1 && (
+                {regularProducts.length > 0 && (
                   <section className="space-y-3">
                     <div className="flex items-end justify-between gap-3 px-1">
                       <div>
@@ -567,18 +621,18 @@ export default function App() {
                         <h2 className="text-base sm:text-lg font-black text-white mt-0.5">Mais achadinhos para você</h2>
                       </div>
                       <span className="text-[11px] text-zinc-500">
-                        {processedProducts.length - 1} produto{processedProducts.length - 1 !== 1 ? 's' : ''}
+                        {regularProducts.length} produto{regularProducts.length !== 1 ? 's' : ''}
                       </span>
                     </div>
 
                     {/* Mobile: compact horizontal cards reveal more of the catalog per screen. */}
                     <div className="grid grid-cols-1 gap-3 sm:hidden">
-                      {processedProducts.slice(1).map((product, index) => (
+                      {regularProducts.map((product) => (
                         <ProductCard
                           key={product.id}
                           product={product}
                           variant="compact"
-                          rankIndex={sortBy === 'populares' ? index + 2 : undefined}
+                          rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
                           onClickProduct={handleProductClick}
                           onBuyClick={handleBuyClick}
                           isFavorite={favorites.includes(product.id)}
@@ -590,12 +644,12 @@ export default function App() {
 
                     {/* Tablet/Desktop: simplified cards without long descriptions. */}
                     <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 xl:gap-5 items-stretch">
-                      {processedProducts.slice(1).map((product, index) => (
+                      {regularProducts.map((product) => (
                         <ProductCard
                           key={product.id}
                           product={product}
                           variant="standard"
-                          rankIndex={sortBy === 'populares' ? index + 2 : undefined}
+                          rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
                           onClickProduct={handleProductClick}
                           onBuyClick={handleBuyClick}
                           isFavorite={favorites.includes(product.id)}
