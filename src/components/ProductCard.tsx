@@ -52,15 +52,15 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
     return (
       <div
         onClick={() => onClickProduct(product)}
-        className={`group relative min-h-[154px] w-full min-w-0 bg-[#0d0c15] border border-zinc-800/80 hover:border-zinc-700 overflow-hidden cursor-pointer rounded-2xl shadow-sm flex transition-colors ${
+        className={`group relative h-[178px] w-full min-w-0 bg-[#0d0c15] border border-zinc-800/80 hover:border-zinc-700 overflow-hidden cursor-pointer rounded-2xl shadow-sm grid grid-cols-[40%_minmax(0,1fr)] transition-colors ${
           rankIndex === 1 ? 'woobox-hot-glow' : ''
         }`}
       >
-        <div className="relative w-[38%] max-w-[148px] shrink-0 overflow-hidden bg-zinc-900 isolate">
+        <div className="relative h-full min-w-0 overflow-hidden bg-zinc-900 isolate">
           <img
             src={product.imageUrl}
             alt={product.title}
-            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
             loading="lazy"
             decoding="async"
             referrerPolicy="no-referrer"
@@ -75,7 +75,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
-        <div className="min-w-0 flex-1 p-3 flex flex-col justify-between gap-2">
+        <div className="min-w-0 h-full p-3 flex flex-col">
           <div className="min-w-0">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <span className="min-w-0 truncate text-[8px] uppercase tracking-wide font-bold text-[var(--wb-primary-light)]">
@@ -85,12 +85,12 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
                 <Star className="w-3 h-3 fill-amber-400" /> {product.rating.toFixed(1)}
               </span>
             </div>
-            <h3 className="text-[13px] font-extrabold leading-snug text-white line-clamp-2">
+            <h3 className="min-h-[2.2rem] text-[13px] font-extrabold leading-snug text-white line-clamp-2">
               {product.title}
             </h3>
           </div>
 
-          <div className="space-y-2">
+          <div className="mt-auto space-y-2">
             <div className="flex items-end justify-between gap-2">
               <div className="min-w-0">
                 {product.originalPrice && product.originalPrice > product.price && (
