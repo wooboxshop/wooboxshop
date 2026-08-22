@@ -91,20 +91,36 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
           </div>
 
           <div className="mt-auto space-y-2">
-            <div className="flex items-end justify-between gap-2">
-              <div className="min-w-0">
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="block text-[9px] text-zinc-500 line-through leading-none mb-1">
-                    {formatCurrency(product.originalPrice)}
+            <div className="space-y-1.5">
+              {(product.originalPrice && product.originalPrice > product.price) || product.hasFreeShipping ? (
+                <div className="min-h-3 flex items-center justify-between gap-1.5">
+                  {product.originalPrice && product.originalPrice > product.price ? (
+                    <span className="min-w-0 truncate text-[9px] text-zinc-500 line-through leading-none [font-variant-numeric:tabular-nums]">
+                      {formatCurrency(product.originalPrice)}
+                    </span>
+                  ) : (
+                    <span className="text-[8px] text-zinc-500 font-semibold">Preço especial</span>
+                  )}
+
+                  {product.hasFreeShipping && (
+                    <span className="shrink-0 flex items-center gap-1 text-[8px] font-black text-emerald-400 whitespace-nowrap">
+                      <Truck className="w-2.5 h-2.5" />
+                      Frete grátis
+                    </span>
+                  )}
+                </div>
+              ) : null}
+
+              <div className="flex items-end justify-between gap-2">
+                <span className="text-lg font-black text-white leading-none [font-variant-numeric:tabular-nums]">
+                  {formatCurrency(product.price)}
+                </span>
+                {discount > 0 && (
+                  <span className="shrink-0 min-w-[48px] text-center px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[9px] font-black [font-variant-numeric:tabular-nums]">
+                    -{discount}%
                   </span>
                 )}
-                <span className="text-lg font-black text-white leading-none [font-variant-numeric:tabular-nums]">{formatCurrency(product.price)}</span>
               </div>
-              {discount > 0 && (
-                <span className="shrink-0 min-w-[48px] text-center px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[9px] font-black [font-variant-numeric:tabular-nums]">
-                  -{discount}%
-                </span>
-              )}
             </div>
 
             <button
