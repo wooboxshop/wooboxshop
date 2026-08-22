@@ -386,7 +386,7 @@ export default function App() {
       )}
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+      <main className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-8">
         
         {/* Seasonal Highlights / Events Banners */}
         {!showFavoritesOnly && (
@@ -452,18 +452,18 @@ export default function App() {
           {/* Right Main Content */}
           <div className="flex-1 min-w-0 w-full space-y-5">
             
-            {/* Top Toolbar for Mobile Drawer Trigger & Category Pills */}
-            <div id="catalogo" className="bg-[#0e0d16]/80 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-zinc-800/80 shadow-lg flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
+            {/* Compact catalog navigation: categories stay in the sidebar on desktop. */}
+            <div id="catalogo" className="sticky top-[65px] sm:top-[73px] lg:static z-30 bg-[#0e0d16]/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3.5 border border-zinc-800/80 shadow-lg flex items-center gap-2.5">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setIsMobileFilterOpen(true)}
-                  className="lg:hidden px-3 py-1.5 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white font-semibold text-xs rounded-xl border border-zinc-800/80 flex items-center gap-1.5 transition-all active:scale-95 shrink-0 cursor-pointer shadow-sm"
+                  className="lg:hidden px-3 py-2 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white font-semibold text-xs rounded-xl border border-zinc-800/80 flex items-center gap-1.5 transition-all active:scale-95 shrink-0 cursor-pointer shadow-sm"
                 >
                   <Filter className="w-3.5 h-3.5 text-zinc-400" />
                   <span>Filtros</span>
                 </button>
 
-                <div className="hidden lg:flex items-center gap-2">
+                <div className="hidden lg:flex items-center gap-2 px-1">
                   <Sparkles className="w-4.5 h-4.5 text-[var(--wb-primary)] fill-[var(--wb-primary)]/20" />
                   <h2 className="text-sm font-extrabold text-white">
                     {selectedCategory !== 'todos'
@@ -483,7 +483,7 @@ export default function App() {
               </div>
 
               {/* Horizontal Category Pill Scrollbar */}
-              <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 lg:pb-0 scrollbar-none">
+              <div className="flex lg:hidden min-w-0 flex-1 items-center gap-1.5 overflow-x-auto max-w-full scrollbar-none">
                 {visibleCategories.map((cat) => (
                   <button
                     key={cat.id}
@@ -531,20 +531,81 @@ export default function App() {
                 </button>
               </div>
             ) : (
-              /* Products Grid (4 columns on desktop inside right panel) */
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {processedProducts.map((product, index) => (
+              <div className="space-y-5 sm:space-y-7">
+                {/* Editorial lead: one clear recommendation instead of five competing cards. */}
+                <section className="space-y-3">
+                  <div className="flex items-end justify-between gap-3 px-1">
+                    <div>
+                      <span className="text-[9px] font-black uppercase tracking-[0.16em] text-[var(--wb-primary-light)]">
+                        Seleção Woobox
+                      </span>
+                      <h2 className="text-base sm:text-lg font-black text-white mt-0.5">Destaque da curadoria</h2>
+                    </div>
+                    <span className="hidden sm:inline text-[11px] text-zinc-500">Escolhido por popularidade e avaliação</span>
+                  </div>
+
                   <ProductCard
-                    key={product.id}
-                    product={product}
-                    rankIndex={sortBy === 'populares' ? index + 1 : undefined}
+                    key={processedProducts[0].id}
+                    product={processedProducts[0]}
+                    variant="featured"
+                    rankIndex={sortBy === 'populares' ? 1 : undefined}
                     onClickProduct={handleProductClick}
                     onBuyClick={handleBuyClick}
-                    isFavorite={favorites.includes(product.id)}
+                    isFavorite={favorites.includes(processedProducts[0].id)}
                     onToggleFavorite={handleToggleFavorite}
                     onShareClick={handleShareClick}
                   />
-                ))}
+                </section>
+
+                {processedProducts.length > 1 && (
+                  <section className="space-y-3">
+                    <div className="flex items-end justify-between gap-3 px-1">
+                      <div>
+                        <span className="text-[9px] font-black uppercase tracking-[0.16em] text-zinc-500">
+                          Continue explorando
+                        </span>
+                        <h2 className="text-base sm:text-lg font-black text-white mt-0.5">Mais achadinhos para você</h2>
+                      </div>
+                      <span className="text-[11px] text-zinc-500">
+                        {processedProducts.length - 1} produto{processedProducts.length - 1 !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+
+                    {/* Mobile: compact horizontal cards reveal more of the catalog per screen. */}
+                    <div className="grid grid-cols-1 gap-3 sm:hidden">
+                      {processedProducts.slice(1).map((product, index) => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          variant="compact"
+                          rankIndex={sortBy === 'populares' ? index + 2 : undefined}
+                          onClickProduct={handleProductClick}
+                          onBuyClick={handleBuyClick}
+                          isFavorite={favorites.includes(product.id)}
+                          onToggleFavorite={handleToggleFavorite}
+                          onShareClick={handleShareClick}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Tablet/Desktop: simplified cards without long descriptions. */}
+                    <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 xl:gap-5 items-stretch">
+                      {processedProducts.slice(1).map((product, index) => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          variant="standard"
+                          rankIndex={sortBy === 'populares' ? index + 2 : undefined}
+                          onClickProduct={handleProductClick}
+                          onBuyClick={handleBuyClick}
+                          isFavorite={favorites.includes(product.id)}
+                          onToggleFavorite={handleToggleFavorite}
+                          onShareClick={handleShareClick}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
             )}
 

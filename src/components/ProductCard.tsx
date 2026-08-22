@@ -22,6 +22,7 @@ interface ProductCardProps {
   onShareClick?: (product: Product, e: React.MouseEvent) => void;
   rankIndex?: number;
   activeTab?: string;
+  variant?: 'featured' | 'standard' | 'compact';
 }
 
 const ProductCardComponent: React.FC<ProductCardProps> = ({
@@ -30,6 +31,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
   onBuyClick,
   onShareClick,
   rankIndex,
+  variant = 'standard',
 }) => {
   const [copied, setCopied] = useState(false);
   const discount = calculateDiscount(product.price, product.originalPrice);
@@ -46,10 +48,85 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
     }
   };
 
+  if (variant === 'compact') {
+    return (
+      <div
+        onClick={() => onClickProduct(product)}
+        className={`group relative min-h-[154px] w-full min-w-0 bg-[#0d0c15] border border-zinc-800/80 hover:border-zinc-700 overflow-hidden cursor-pointer rounded-2xl shadow-sm flex transition-colors ${
+          rankIndex === 1 ? 'woobox-hot-glow' : ''
+        }`}
+      >
+        <div className="relative w-[38%] max-w-[148px] shrink-0 overflow-hidden bg-zinc-900 isolate">
+          <img
+            src={product.imageUrl}
+            alt={product.title}
+            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/25 pointer-events-none" />
+          <div className="absolute top-2 left-2 shadow-md rounded-lg overflow-hidden">
+            <PlatformIcon platform={product.platform} className="w-6 h-6" />
+          </div>
+          <span className="absolute bottom-2 left-2 px-1.5 py-0.5 rounded-full bg-zinc-950/85 border border-zinc-700/60 text-[8px] font-bold text-white flex items-center gap-1">
+            <Flame className="w-2.5 h-2.5 text-[var(--wb-primary)] fill-[var(--wb-primary)]" />
+            {product.clicksCount || 0}
+          </span>
+        </div>
+
+        <div className="min-w-0 flex-1 p-3 flex flex-col justify-between gap-2">
+          <div className="min-w-0">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <span className="min-w-0 truncate text-[8px] uppercase tracking-wide font-bold text-[var(--wb-primary-light)]">
+                {product.category}
+              </span>
+              <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-amber-400">
+                <Star className="w-3 h-3 fill-amber-400" /> {product.rating.toFixed(1)}
+              </span>
+            </div>
+            <h3 className="text-[13px] font-extrabold leading-snug text-white line-clamp-2">
+              {product.title}
+            </h3>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-end justify-between gap-2">
+              <div className="min-w-0">
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <span className="block text-[9px] text-zinc-500 line-through leading-none mb-1">
+                    {formatCurrency(product.originalPrice)}
+                  </span>
+                )}
+                <span className="text-lg font-black text-white leading-none">{formatCurrency(product.price)}</span>
+              </div>
+              {discount > 0 && (
+                <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[9px] font-black">
+                  -{discount}%
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={(e) => onBuyClick(product, e)}
+              className="w-full min-h-8 px-3 bg-[var(--wb-primary)] hover:brightness-110 text-white text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-transform active:scale-[0.98]"
+            >
+              Ver oferta <ExternalLink className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isFeaturedCard = variant === 'featured';
+
   return (
     <div
       onClick={() => onClickProduct(product)}
-      className={`group relative bg-[#0d0c15]/95 border transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between overflow-hidden cursor-pointer rounded-2xl shadow-md ${
+      className={`group relative h-full min-w-0 bg-[#0d0c15]/95 border transition-all duration-300 hover:-translate-y-0.5 flex overflow-hidden cursor-pointer shadow-md ${
+        isFeaturedCard ? 'flex-col sm:flex-row rounded-3xl' : 'flex-col rounded-2xl'
+      } ${
         rankIndex === 1 ? 'woobox-hot-glow' : ''
       } ${
         !product.isActive
@@ -60,7 +137,11 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
       }`}
     >
       {/* Product Image Box */}
-      <div className="relative aspect-square w-full overflow-hidden bg-[#0d0c15] isolate">
+      <div className={`relative overflow-hidden bg-[#0d0c15] isolate ${
+        isFeaturedCard
+          ? 'aspect-[16/10] w-full sm:aspect-auto sm:w-[48%] sm:min-h-[320px] xl:min-h-[340px] shrink-0'
+          : 'aspect-square w-full'
+      }`}>
         <img
           src={product.imageUrl}
           alt={product.title}
@@ -112,14 +193,19 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Product Content */}
-      <div className="p-4 pt-3.5 flex-1 flex flex-col justify-between space-y-4 bg-[#0d0c15] relative z-10 -mt-px">
-        <div>
+      <div className={`${isFeaturedCard ? 'p-4 sm:p-6 sm:justify-center' : 'p-4 pt-3.5'} flex-1 flex flex-col bg-[#0d0c15] relative z-10 -mt-px`}>
+        <div className="min-w-0">
+          {isFeaturedCard && (
+            <span className="hidden sm:inline-flex mb-3 px-2.5 py-1 rounded-full bg-[var(--wb-primary)]/15 border border-[var(--wb-primary)]/30 text-[var(--wb-primary-light)] text-[9px] font-black uppercase tracking-wider">
+              Escolha da curadoria
+            </span>
+          )}
           {/* Category & Rating */}
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mb-2">
-            <span className="text-[var(--wb-primary-light)] font-bold text-[8px] uppercase tracking-[0.08em]">
+          <div className="flex items-center justify-between gap-3 text-xs text-zinc-400 font-medium mb-2">
+            <span className="min-w-0 truncate text-[var(--wb-primary-light)] font-bold text-[9px] uppercase tracking-[0.08em]" title={product.category}>
               {product.category}
             </span>
-            <div className="flex items-center gap-1 text-amber-400 font-bold">
+            <div className="flex items-center gap-1 text-amber-400 font-bold shrink-0">
               <Star className="w-3.5 h-3.5 fill-amber-400" />
               <span>{product.rating.toFixed(1)}</span>
               <span className="text-zinc-500 font-normal text-[10px]">({product.reviewsCount})</span>
@@ -127,46 +213,52 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Title */}
-          <h3 className="font-bold text-sm text-zinc-100 line-clamp-2 group-hover:text-[var(--wb-primary-light)] transition-colors leading-snug">
+          <h3 className={`${isFeaturedCard ? 'text-lg sm:text-2xl line-clamp-3' : 'min-h-[2.4rem] text-sm line-clamp-2'} font-black text-zinc-100 group-hover:text-[var(--wb-primary-light)] transition-colors leading-tight`}>
             {product.title}
           </h3>
 
           {/* Description snippet */}
-          <p className="text-xs text-zinc-400 line-clamp-2 mt-1.5 font-normal leading-relaxed">
-            {product.description}
-          </p>
+          {isFeaturedCard && (
+            <p className="text-xs sm:text-sm text-zinc-400 line-clamp-2 sm:line-clamp-3 mt-2.5 font-normal leading-relaxed">
+              {product.description}
+            </p>
+          )}
         </div>
 
         {/* Pricing & Buy Button */}
-        <div className="pt-3 border-t border-zinc-800/80 space-y-3">
-          <div className="flex flex-col justify-end min-h-[38px] space-y-1">
-            {/* Top row: Previous Price (left) & Free Shipping (right, above %off) */}
-            <div className="flex items-center justify-between gap-1.5 min-h-[16px]">
+        <div className={`${isFeaturedCard ? 'mt-4 sm:mt-5 pt-3 sm:pt-4' : 'mt-3 pt-3'} border-t border-zinc-800/80 space-y-3`}>
+          <div className="space-y-1.5">
+            {/* Top row: Preço original riscado + Frete grátis (ou Economia se não tiver frete grátis) */}
+            <div className="flex items-center justify-between gap-2 min-h-4">
               {product.originalPrice && product.originalPrice > product.price ? (
                 <span className="text-[11px] text-zinc-400 line-through font-medium leading-tight">
                   {formatCurrency(product.originalPrice)}
                 </span>
               ) : (
-                <span className="text-[11px] opacity-0 select-none pointer-events-none leading-tight">
-                  &nbsp;
+                <span className="text-[10px] text-zinc-500 font-semibold leading-tight">
+                  Preço especial
                 </span>
               )}
 
-              {product.hasFreeShipping && (
-                <div className="flex items-center gap-1 text-emerald-400 text-[10px] font-bold shrink-0 whitespace-nowrap">
+              {product.hasFreeShipping ? (
+                <div className="flex items-center gap-1 text-emerald-400 text-[10px] font-bold whitespace-nowrap shrink-0">
                   <Truck className="w-3 h-3 shrink-0" />
                   <span>Frete grátis</span>
                 </div>
-              )}
+              ) : product.originalPrice && product.originalPrice > product.price ? (
+                <span className="text-[10px] text-emerald-400 font-bold whitespace-nowrap leading-tight shrink-0">
+                  Economize {formatCurrency(product.originalPrice - product.price)}
+                </span>
+              ) : null}
             </div>
 
-            {/* Bottom row: Current Price (left) & Discount Badge (right, below free shipping) */}
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-base sm:text-lg font-black text-white tracking-tight leading-none">
+            {/* Bottom row: Preço atual em destaque + Badge de desconto */}
+            <div className="flex items-center gap-2 min-h-6">
+              <span className={`${isFeaturedCard ? 'text-2xl sm:text-3xl' : 'text-xl'} font-black text-white tracking-tight leading-none`}>
                 {formatCurrency(product.price)}
               </span>
               {discount > 0 && (
-                <span className="px-2 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-sm shrink-0 whitespace-nowrap">
+                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500 text-zinc-950 text-[10px] font-black shadow-sm whitespace-nowrap shrink-0">
                   -{discount}% OFF
                 </span>
               )}
@@ -177,17 +269,17 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={(e) => onBuyClick(product, e)}
-              className="flex-1 py-2.5 px-3 bg-[var(--wb-primary)] hover:brightness-110 text-white text-xs font-black rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
+              className="flex-1 min-h-10 py-2.5 px-3 bg-[var(--wb-primary)] hover:brightness-110 text-white text-xs font-black rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 group/btn"
             >
               <ShoppingBag className="w-3.5 h-3.5 group-hover/btn:rotate-12 transition-transform" />
-              <span>Comprar</span>
+              <span>{isFeaturedCard ? 'Ver oferta em destaque' : 'Ver oferta'}</span>
               <ExternalLink className="w-3 h-3 opacity-80" />
             </button>
 
             {/* Share Link Button */}
             <button
               onClick={handleShare}
-              className="p-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 rounded-xl transition-colors cursor-pointer"
+              className="w-10 h-10 shrink-0 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 rounded-xl transition-colors cursor-pointer flex items-center justify-center"
               title="Compartilhar produto"
             >
               {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
