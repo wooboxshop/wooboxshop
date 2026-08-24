@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product, StoreSettings } from '../types';
 import { formatCurrency, calculateDiscount, getPlatformBadgeColor } from '../utils/helpers';
 import { PlatformIcon } from './PlatformIcon';
 import {
-  Star,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
@@ -36,10 +35,11 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
     return active.slice(0, 4);
   }, [products]);
 
+  const AUTOPLAY_INTERVAL_MS = 8000;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [copied, setCopied] = useState(false);
-  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const activeProduct = featuredList[currentIndex] || featuredList[0];
 
@@ -62,18 +62,17 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
 
   useEffect(() => {
     if (featuredList.length <= 1 || isPaused) {
-      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
       return;
     }
 
-    autoPlayRef.current = setInterval(() => {
+    const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % featuredList.length);
-    }, 6000);
+    }, AUTOPLAY_INTERVAL_MS);
 
     return () => {
-      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+      clearInterval(timer);
     };
-  }, [featuredList.length, isPaused]);
+  }, [featuredList.length, isPaused, currentIndex]);
 
   if (!activeProduct) {
     return null;
