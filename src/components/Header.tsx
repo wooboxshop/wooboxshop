@@ -81,6 +81,18 @@ export const Header: React.FC<HeaderProps> = ({
     setIsMobileMenuOpen(false);
   };
 
+  const handleLogoClick = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (onSelectTab) {
+      onSelectTab('inicio');
+    }
+    if (onSearchChange) {
+      onSearchChange('');
+    }
+    setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       <header className="sticky top-0 z-40 bg-[#0c0c10]/95 backdrop-blur-md border-b border-zinc-800/50 text-white transition-colors">
@@ -97,17 +109,20 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             {/* Logo */}
-            <a href="#" className="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink group">
+            <button
+              onClick={handleLogoClick}
+              className="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink group cursor-pointer text-left focus-visible:outline-none"
+            >
               <img
                 src={logoUrl}
                 alt={storeName}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover shrink-0"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover shrink-0 group-hover:opacity-90 transition-opacity"
                 referrerPolicy="no-referrer"
               />
-              <span className="text-white text-sm sm:text-base font-bold tracking-tight truncate">
+              <span className="text-white text-sm sm:text-base font-bold tracking-tight truncate group-hover:text-zinc-200 transition-colors">
                 {renderedStoreName}
               </span>
-            </a>
+            </button>
 
             {/* Search Bar */}
             <div className="flex-1 max-w-lg mx-auto relative hidden sm:block">
@@ -216,21 +231,24 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="relative w-[min(88vw,320px)] bg-[#0c0c10] border-r border-zinc-800/60 h-full overflow-y-auto p-4 shadow-xl z-10 custom-scrollbar">
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
-                <div className="flex items-center gap-2.5">
+                <button
+                  onClick={handleLogoClick}
+                  className="flex items-center gap-2.5 text-left cursor-pointer group hover:opacity-90 transition-opacity focus-visible:outline-none"
+                >
                   <img
                     src={logoUrl}
                     alt={storeName}
-                    className="w-8 h-8 rounded-lg object-cover bg-transparent"
+                    className="w-8 h-8 rounded-lg object-cover bg-transparent shrink-0"
                     referrerPolicy="no-referrer"
                   />
-                  <span className="text-white text-base font-bold">
+                  <span className="text-white text-base font-bold truncate">
                     {renderedStoreName}
                   </span>
-                </div>
+                </button>
 
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-1.5 text-zinc-400 hover:text-white bg-zinc-900 rounded-lg border border-zinc-800"
+                  className="p-1.5 text-zinc-400 hover:text-white bg-zinc-900 rounded-lg border border-zinc-800 cursor-pointer transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>

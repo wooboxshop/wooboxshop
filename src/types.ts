@@ -106,7 +106,7 @@ export interface StoreSettings {
 
 export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   storeName: 'Woobox Shop',
-  storeSlogan: 'O Seu Guia de Achadinhos e Ofertas Secretas',
+  storeSlogan: 'O Seu Guia de Ofertas Secretas',
   logoUrl: `${import.meta.env.BASE_URL}wooboxlogo.svg`,
   bannerHeadline: 'Os melhores produtos reunidos com os',
   bannerHeadlineGradient: 'melhores preços.',
@@ -126,8 +126,11 @@ export function normalizeStoreSettingsTheme(settings: StoreSettings): StoreSetti
   const accent = settings.themeAccentColor?.toLowerCase();
   const legacyLogoUrl = 'https://i.pinimg.com/280x280_RS/44/4a/ed/444aed68b0abf3f41e9707e9d2c8c22d.jpg';
 
+  const isOldSlogan = !settings.storeSlogan || settings.storeSlogan.toLowerCase().includes('achadinhos');
+
   return {
     ...settings,
+    storeSlogan: isOldSlogan ? DEFAULT_STORE_SETTINGS.storeSlogan : settings.storeSlogan,
     logoUrl: !settings.logoUrl || settings.logoUrl === legacyLogoUrl
       ? DEFAULT_STORE_SETTINGS.logoUrl
       : settings.logoUrl,

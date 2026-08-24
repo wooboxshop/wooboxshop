@@ -373,8 +373,8 @@ export default function App() {
       {/* Main Page Layout */}
       <main className="max-w-[1480px] mx-auto px-2 sm:px-6 lg:px-8 py-3.5 sm:py-6 space-y-4 sm:space-y-8 overflow-hidden">
         
-        {/* Favorites Header Banner */}
-        {showFavoritesOnly && (
+        {/* Favorites Header Banner (only when there are saved favorites) */}
+        {showFavoritesOnly && validFavorites.length > 0 && (
           <div className="p-3.5 sm:p-5 bg-[#111116] text-white rounded-2xl sm:rounded-3xl flex items-center justify-between gap-3 ring-1 ring-white/[0.08]">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="p-2 sm:p-3 bg-rose-500/10 rounded-xl sm:rounded-2xl shrink-0">
@@ -382,8 +382,7 @@ export default function App() {
               </div>
               <div className="min-w-0">
                 <h2 className="text-sm sm:text-xl font-black leading-tight">
-                  <span className="sm:hidden">Seus Achadinhos</span>
-                  <span className="hidden sm:inline">Seus Achadinhos Salvos</span>
+                  <span>Seus Produtos Salvos</span>
                 </h2>
                 <p className="text-[11px] sm:text-xs text-zinc-400 truncate">
                   {validFavorites.length} produto{validFavorites.length !== 1 ? 's' : ''} salvo{validFavorites.length !== 1 ? 's' : ''}
@@ -518,7 +517,7 @@ export default function App() {
                     className="px-5 py-2.5 bg-white hover:bg-zinc-100 text-zinc-950 font-bold text-xs rounded-xl shadow-lg transition-transform active:scale-95 inline-flex items-center gap-2 cursor-pointer"
                   >
                     <Sparkles className="w-4 h-4" />
-                    <span>{showFavoritesOnly ? 'Explorar achadinhos' : 'Limpar filtros'}</span>
+                    <span>{showFavoritesOnly ? 'Explorar Ofertas' : 'Limpar filtros'}</span>
                   </button>
                 </div>
               ) : (
@@ -547,7 +546,17 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer storeSettings={storeSettings} />
+      <Footer
+        storeSettings={storeSettings}
+        onNavigateHome={() => {
+          setActiveTab('inicio');
+          setSubTab('em-alta');
+          setSelectedCategory('todos');
+          setSelectedPlatform(null);
+          setShowFavoritesOnly(false);
+          setSearchQuery('');
+        }}
+      />
 
       {/* Modals */}
       <ProductDetailModal

@@ -5,9 +5,10 @@ import { StoreSettings, DEFAULT_STORE_SETTINGS } from '../types';
 
 interface FooterProps {
   storeSettings?: StoreSettings;
+  onNavigateHome?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SETTINGS }) => {
+export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SETTINGS, onNavigateHome }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [unsubscribed, setUnsubscribed] = useState(false);
@@ -75,11 +76,17 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
           
           {/* Brand Info */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => {
+                if (onNavigateHome) onNavigateHome();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2.5 text-left cursor-pointer group hover:opacity-90 transition-opacity focus-visible:outline-none"
+            >
               <img
                 src={logoUrl}
                 alt={storeName}
-                className="w-8 h-8 object-contain"
+                className="w-8 h-8 object-contain shrink-0"
                 referrerPolicy="no-referrer"
               />
               <span className="text-white text-base font-bold">
@@ -90,7 +97,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings = DEFAULT_STORE_SE
                   </>
                 ) : storeName}
               </span>
-            </div>
+            </button>
 
             <p className="text-xs text-zinc-400 leading-relaxed max-w-sm">
               {storeSlogan}
