@@ -17,6 +17,7 @@ import { CategoryOption, PlatformType, StoreSettings, DEFAULT_STORE_SETTINGS } f
 import { PlatformIcon } from './PlatformIcon';
 import { PriceRangeFilter, PriceRangeValue } from './PriceRangeFilter';
 import { STORE_PLATFORMS } from '../utils/platforms';
+import { renderCategoryIcon } from '../utils/categoryIcons';
 
 interface HeaderProps {
   searchQuery: string;
@@ -212,14 +213,14 @@ export const Header: React.FC<HeaderProps> = ({
             className="fixed inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in transition-opacity"
           />
 
-          <div className="relative w-[min(88vw,320px)] bg-[#111116] border-r border-zinc-800/70 h-full overflow-y-auto p-4 shadow-xl z-10 custom-scrollbar">
+          <div className="relative w-[min(88vw,320px)] bg-[#0c0c10] border-r border-zinc-800/60 h-full overflow-y-auto p-4 shadow-xl z-10 custom-scrollbar">
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
                 <div className="flex items-center gap-2.5">
                   <img
                     src={logoUrl}
                     alt={storeName}
-                    className="w-8 h-8 rounded-lg object-cover"
+                    className="w-8 h-8 rounded-lg object-cover bg-transparent"
                     referrerPolicy="no-referrer"
                   />
                   <span className="text-white text-base font-bold">
@@ -322,7 +323,9 @@ export const Header: React.FC<HeaderProps> = ({
                           isSelected ? 'bg-white/[0.07] text-white font-semibold' : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
                         }`}
                       >
-                        {category.id === 'todos' ? <LayoutGrid className="w-4 h-4" /> : <Tag className="w-4 h-4" />}
+                        <span className={`shrink-0 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
+                          {renderCategoryIcon(category.icon, 'w-4 h-4')}
+                        </span>
                         <span className="truncate">{category.name}</span>
                       </button>
                     );

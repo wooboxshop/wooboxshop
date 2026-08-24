@@ -23,8 +23,6 @@ import {
   RefreshCcw,
   CheckCircle2,
   X,
-  ChevronLeft,
-  ChevronRight,
   Flame,
 } from 'lucide-react';
 import { PriceRangeValue } from './components/PriceRangeFilter';
@@ -307,16 +305,6 @@ export default function App() {
     return processedProducts.filter((p) => !featuredProductIds.has(p.id));
   }, [processedProducts, featuredProductIds, showFavoritesOnly]);
 
-  // Horizontal scroll ref for navigation buttons
-  const productsScrollRef = useRef<HTMLDivElement>(null);
-
-  const handleScroll = (direction: 'left' | 'right') => {
-    if (productsScrollRef.current) {
-      const scrollAmount = direction === 'left' ? -320 : 320;
-      productsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
   const handleResetFilters = () => {
     setSelectedCategory('todos');
     setSelectedPlatform(null);
@@ -461,86 +449,47 @@ export default function App() {
               </div>
             )}
 
-            {/* Section: "Nossa Vitrine" */}
+            {/* Section: Vitrine */}
             <section id="catalogo-section" className="space-y-4 scroll-mt-24 min-w-0">
               
               {/* Section Header Row */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
+              <div className="flex items-center justify-between gap-3 pb-1">
                 
-                {/* Section Title */}
-                <div className="flex items-center gap-2">
-                  <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                    Nossa Vitrine
-                  </h2>
+                {/* Filter Pills Tabs (Left) */}
+                <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5 pr-2 sm:pr-0">
+                  <button
+                    onClick={() => { setActiveTab('inicio'); setSubTab('em-alta'); }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                      subTab === 'em-alta'
+                        ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
+                        : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                    }`}
+                  >
+                    Em alta
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab('inicio'); setSubTab('novidades'); }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                      subTab === 'novidades'
+                        ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
+                        : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                    }`}
+                  >
+                    Novidades
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab('inicio'); setSubTab('descontos'); }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                      subTab === 'descontos'
+                        ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
+                        : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                    }`}
+                  >
+                    Descontos
+                  </button>
                 </div>
-
-                {/* Filter Pills Tabs */}
-                <div className="flex items-center justify-between sm:justify-end gap-3 min-w-0 w-full sm:w-auto">
-                  <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5 w-full sm:w-auto pr-2 sm:pr-0">
-                    <button
-                      onClick={() => { setActiveTab('inicio'); setSubTab('em-alta'); }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
-                        subTab === 'em-alta'
-                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
-                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-                      }`}
-                    >
-                      Em alta
-                    </button>
-
-                    <button
-                      onClick={() => { setActiveTab('inicio'); setSubTab('novidades'); }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
-                        subTab === 'novidades'
-                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
-                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-                      }`}
-                    >
-                      Novidades
-                    </button>
-
-                    <button
-                      onClick={() => { setActiveTab('inicio'); setSubTab('descontos'); }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
-                        subTab === 'descontos'
-                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
-                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-                      }`}
-                    >
-                      Descontos
-                    </button>
-                  </div>
-
-                  {/* Right Carousel Controls (Desktop) */}
-                  <div className="hidden sm:flex items-center gap-1.5">
-                    <button
-                      onClick={() => {
-                        setSelectedCategory('todos');
-                        setSelectedPlatform(null);
-                      }}
-                      className="text-xs font-medium text-zinc-400 hover:text-white transition-colors cursor-pointer mr-1"
-                    >
-                      Ver todos &rarr;
-                    </button>
-
-                    <button
-                      onClick={() => handleScroll('left')}
-                      className="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-                      aria-label="Anterior"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-
-                    <button
-                      onClick={() => handleScroll('right')}
-                      className="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-                      aria-label="Próximo"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
               </div>
 
               {/* Products Display */}
@@ -573,10 +522,7 @@ export default function App() {
                   </button>
                 </div>
               ) : (
-                <div
-                  ref={productsScrollRef}
-                  className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 lg:gap-5 items-stretch"
-                >
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 lg:gap-5 items-stretch">
                   {catalogProducts.map((product, index) => (
                     <ProductCard
                       key={product.id}
