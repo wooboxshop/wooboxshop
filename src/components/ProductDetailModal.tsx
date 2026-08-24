@@ -160,7 +160,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               className="w-full h-11 px-4 bg-[var(--wb-offer-button)] hover:brightness-95 text-[var(--wb-offer-button-text)] font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--wb-interface)]"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Ver oferta na {platformBadge.label}</span>
+              <span>Ver oferta {platformBadge.prep} {platformBadge.label}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
 

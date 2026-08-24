@@ -43,6 +43,46 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
 
   const activeProduct = featuredList[currentIndex] || featuredList[0];
 
+  const touchStartXRef = React.useRef<number | null>(null);
+  const touchStartYRef = React.useRef<number | null>(null);
+  const touchEndXRef = React.useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.targetTouches[0].clientX;
+    touchStartYRef.current = e.targetTouches[0].clientY;
+    touchEndXRef.current = null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const currentX = e.targetTouches[0].clientX;
+    const currentY = e.targetTouches[0].clientY;
+    const diffX = Math.abs(currentX - touchStartXRef.current);
+    const diffY = Math.abs(currentY - touchStartYRef.current);
+
+    if (diffX > diffY) {
+      touchEndXRef.current = currentX;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartXRef.current !== null && touchEndXRef.current !== null) {
+      const distance = touchStartXRef.current - touchEndXRef.current;
+      const minSwipeDistance = 40;
+
+      if (distance > minSwipeDistance) {
+        // Deslizou para a esquerda -> Próximo
+        setCurrentIndex((prev) => (prev + 1) % featuredList.length);
+      } else if (distance < -minSwipeDistance) {
+        // Deslizou para a direita -> Anterior
+        setCurrentIndex((prev) => (prev - 1 + featuredList.length) % featuredList.length);
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+    touchEndXRef.current = null;
+  };
+
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
     const url = window.location.href;
@@ -80,7 +120,8 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
 
   const discount = calculateDiscount(activeProduct.price, activeProduct.originalPrice);
   const isFavorite = favorites.includes(activeProduct.id);
-  const platformLabel = getPlatformBadgeColor(activeProduct.platform).label;
+  const platformBadge = getPlatformBadgeColor(activeProduct.platform);
+  const platformLabel = platformBadge.label;
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -96,7 +137,10 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
     <article
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full rounded-2xl bg-[#111116] ring-1 ring-white/[0.07] overflow-hidden group"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      className="relative w-full rounded-2xl bg-[#111116] ring-1 ring-white/[0.07] overflow-hidden group touch-pan-y"
     >
       <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.88fr)_minmax(420px,1.12fr)] min-h-0 md:min-h-[360px]">
         <div className="order-2 md:order-1 p-3.5 sm:p-6 lg:p-7 flex flex-col justify-center min-w-0">
@@ -156,7 +200,7 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
               className="flex-1 sm:flex-none h-11 px-5 bg-[var(--wb-offer-button)] hover:brightness-95 text-[var(--wb-offer-button-text)] font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <span className="min-[360px]:hidden">Ver oferta</span>
-              <span className="hidden min-[360px]:inline">Ver na {platformLabel}</span>
+              <span className="hidden min-[360px]:inline">Ver {platformBadge.prep} {platformLabel}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
 
@@ -223,7 +267,7 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
           )}
 
           {featuredList.length > 1 && (
-            <div className="absolute top-3 right-3 flex items-center gap-1.5">
+            <div className="hidden md:flex absolute top-3 right-3 items-center gap-1.5">
               <button
                 onClick={handlePrev}
                 className="w-9 h-9 rounded-xl bg-black/60 hover:bg-black/80 backdrop-blur-md text-zinc-200 ring-1 ring-white/10 flex items-center justify-center transition-colors cursor-pointer"

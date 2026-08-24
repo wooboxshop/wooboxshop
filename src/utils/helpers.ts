@@ -25,7 +25,7 @@ export function formatDate(dateString: string): string {
   }
 }
 
-export function getPlatformBadgeColor(platform: string): { bg: string; text: string; border: string; label: string; shortLabel: string } {
+export function getPlatformBadgeColor(platform: string): { bg: string; text: string; border: string; label: string; shortLabel: string; prep: string } {
   switch (platform.toLowerCase()) {
     case 'tiktok':
       return {
@@ -34,6 +34,7 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
         border: 'border-cyan-500/30',
         label: 'TikTok Shop',
         shortLabel: 'TikTok',
+        prep: 'no',
       };
     case 'instagram':
       return {
@@ -42,6 +43,7 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
         border: 'border-pink-300/40',
         label: 'Instagram',
         shortLabel: 'Insta',
+        prep: 'no',
       };
     case 'shopee':
       return {
@@ -50,6 +52,7 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
         border: 'border-orange-400/30',
         label: 'Shopee',
         shortLabel: 'Shopee',
+        prep: 'na',
       };
     case 'amazon':
       return {
@@ -58,6 +61,7 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
         border: 'border-amber-400/30',
         label: 'Amazon',
         shortLabel: 'Amazon',
+        prep: 'na',
       };
     case 'mercadolivre':
       return {
@@ -66,6 +70,7 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
         border: 'border-yellow-300/40',
         label: 'Mercado Livre',
         shortLabel: 'M.Livre',
+        prep: 'no',
       };
     case 'aliexpress':
       return {
@@ -74,6 +79,7 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
         border: 'border-red-500/30',
         label: 'AliExpress',
         shortLabel: 'AliEx',
+        prep: 'no',
       };
     default:
       return {
@@ -82,6 +88,7 @@ export function getPlatformBadgeColor(platform: string): { bg: string; text: str
         border: 'border-pink-500/30',
         label: 'Afiliado Oficial',
         shortLabel: 'Loja',
+        prep: 'na',
       };
   }
 }
