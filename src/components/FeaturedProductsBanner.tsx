@@ -81,15 +81,15 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
       className="relative w-full rounded-2xl bg-[#111116] ring-1 ring-white/[0.07] overflow-hidden group"
     >
       <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.88fr)_minmax(420px,1.12fr)] min-h-0 md:min-h-[360px]">
-        <div className="order-2 md:order-1 p-4 sm:p-6 lg:p-7 flex flex-col justify-center min-w-0">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--wb-interface-light)]">Escolha da curadoria</span>
+        <div className="order-2 md:order-1 p-3.5 sm:p-6 lg:p-7 flex flex-col justify-center min-w-0">
+          <div className="flex items-center gap-2 mb-2 sm:mb-4">
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--wb-interface-light)]">Destaques da semana</span>
             {featuredList.length > 1 && (
               <span className="text-[10px] text-zinc-500">{currentIndex + 1} de {featuredList.length}</span>
             )}
           </div>
 
-          <div className="flex items-center flex-wrap gap-2 text-[11px] text-zinc-400 mb-2.5">
+          <div className="flex items-center flex-wrap gap-2 text-[11px] text-zinc-400 mb-1.5 sm:mb-2.5">
             <span className="inline-flex items-center gap-1.5 text-zinc-200 font-medium">
               <PlatformIcon platform={activeProduct.platform} className="w-4 h-4" />
               {platformLabel}
@@ -107,39 +107,39 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
 
           <h2
             onClick={() => onClickProduct(activeProduct)}
-            className="text-xl sm:text-2xl lg:text-[28px] font-bold text-white tracking-tight leading-[1.15] line-clamp-2 hover:text-zinc-200 transition-colors cursor-pointer"
+            className="text-base sm:text-2xl lg:text-[28px] font-bold text-white tracking-tight leading-snug sm:leading-[1.15] line-clamp-2 hover:text-zinc-200 transition-colors cursor-pointer"
           >
             {activeProduct.title}
           </h2>
 
-          <p className="mt-3 text-xs sm:text-sm text-zinc-400 line-clamp-2 leading-relaxed max-w-lg">
+          <p className="hidden md:block mt-3 text-xs sm:text-sm text-zinc-400 line-clamp-2 leading-relaxed max-w-lg">
             {activeProduct.description || 'Produto selecionado com excelente avaliação e custo-benefício.'}
           </p>
 
           {activeProduct.hasFreeShipping && (
-            <div className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-[var(--wb-positive)]">
+            <div className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-[var(--wb-positive)]">
               <Truck className="w-3.5 h-3.5" />
               <span>Frete grátis disponível</span>
             </div>
           )}
 
-          <div className="mt-5 flex items-end gap-2.5 flex-wrap">
-            <span className="text-2xl sm:text-[28px] font-bold text-white tracking-tight">
+          <div className="mt-3 sm:mt-5 flex items-end gap-2.5 flex-wrap">
+            <span className="text-xl sm:text-[28px] font-bold text-white tracking-tight">
               {formatCurrency(activeProduct.price)}
             </span>
             {activeProduct.originalPrice && activeProduct.originalPrice > activeProduct.price && (
-              <span className="pb-1 text-xs text-zinc-500 line-through">
+              <span className="pb-0.5 sm:pb-1 text-xs text-zinc-500 line-through">
                 {formatCurrency(activeProduct.originalPrice)}
               </span>
             )}
             {discount > 0 && (
-              <span className="mb-0.5 px-2 py-1 rounded-lg bg-[var(--wb-positive)]/10 text-[var(--wb-positive)] ring-1 ring-[var(--wb-positive)]/20 text-[11px] font-bold">
+              <span className="mb-0.5 px-2 py-0.5 sm:py-1 rounded-lg bg-[var(--wb-positive)]/10 text-[var(--wb-positive)] ring-1 ring-[var(--wb-positive)]/20 text-[10px] sm:text-[11px] font-bold">
                 -{discount}%
               </span>
             )}
           </div>
 
-          <div className="mt-5 flex items-center gap-2 w-full">
+          <div className="mt-3.5 sm:mt-5 flex items-center gap-2 w-full">
             <button
               onClick={(event) => onBuyClick(activeProduct, event)}
               className="flex-1 sm:flex-none h-11 px-5 bg-[var(--wb-offer-button)] hover:brightness-95 text-[var(--wb-offer-button-text)] font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"

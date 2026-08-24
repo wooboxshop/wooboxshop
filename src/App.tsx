@@ -293,17 +293,21 @@ export default function App() {
     subTab,
   ]);
 
-  // Top Curated Offer product (featured or first in popularity)
-  const curatedOfferProduct = useMemo(() => {
-    if (products.length === 0) return null;
-    const featured = products.find((p) => p.isFeatured && p.isActive);
-    return featured || products.find((p) => p.isActive) || products[0];
+  // Featured products shown in the top banner
+  const featuredProductIds = useMemo(() => {
+    const active = products.filter((p) => p.isActive);
+    const explicitlyFeatured = active.filter((p) => p.isFeatured);
+    const list = explicitlyFeatured.length > 0 ? explicitlyFeatured : active.slice(0, 4);
+    return new Set(list.map((p) => p.id));
   }, [products]);
 
-  // Catalog products (excluding or including curated item as needed)
+  // Catalog products (excluding featured products so they are not repeated in "Nossa Vitrine")
   const catalogProducts = useMemo(() => {
-    return processedProducts;
-  }, [processedProducts]);
+    if (showFavoritesOnly) {
+      return processedProducts;
+    }
+    return processedProducts.filter((p) => !featuredProductIds.has(p.id));
+  }, [processedProducts, featuredProductIds, showFavoritesOnly]);
 
   // Horizontal scroll ref for navigation buttons
   const productsScrollRef = useRef<HTMLDivElement>(null);
@@ -459,7 +463,7 @@ export default function App() {
               </div>
             )}
 
-            {/* Section: "Mais achadinhos para você" */}
+            {/* Section: "Nossa Vitrine" */}
             <section id="catalogo-section" className="space-y-4 scroll-mt-24 min-w-0">
               
               {/* Section Header Row */}
@@ -468,7 +472,7 @@ export default function App() {
                 {/* Section Title */}
                 <div className="flex items-center gap-2">
                   <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                    Mais achadinhos para você
+                    Nossa Vitrine
                   </h2>
                 </div>
 
