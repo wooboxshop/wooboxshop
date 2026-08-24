@@ -42,10 +42,10 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   return (
-    <div className={`bg-zinc-900/90 p-3.5 rounded-2xl border border-zinc-800/80 space-y-2.5 ${className}`}>
+    <div className={`bg-zinc-900/60 p-3.5 rounded-2xl border border-zinc-800/80 space-y-2.5 ${className}`}>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-zinc-400 font-medium">Preço Máximo:</span>
-        <span className="font-black text-[var(--wb-accent)] bg-[var(--wb-accent)]/10 px-2 py-0.5 rounded-lg border border-[var(--wb-accent)]/20">
+        <span className="text-zinc-400 font-bold text-[11px]">Preço Máximo:</span>
+        <span className="font-black text-[var(--wb-accent)] bg-[var(--wb-accent)]/15 px-2 py-0.5 rounded-lg border border-[var(--wb-accent)]/25 text-xs">
           Até {formatBRL(localVal)}
         </span>
       </div>
@@ -60,11 +60,11 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
           onChange={handleInputChange}
           onMouseUp={handleCommit}
           onTouchEnd={handleCommit}
-          className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[var(--wb-primary)] focus:outline-none touch-action-none"
+          className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[var(--wb-primary)] focus:outline-none touch-action-none"
         />
       </div>
 
-      <div className="flex justify-between items-center text-[10px] text-zinc-500 font-bold">
+      <div className="flex justify-between items-center text-[10px] text-zinc-500 font-extrabold">
         <span>Min: {formatBRL(min)}</span>
         <span>Max: {formatBRL(max)}</span>
       </div>

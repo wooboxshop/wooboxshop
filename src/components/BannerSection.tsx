@@ -25,46 +25,45 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
   const promoHighlight = highlights.find((h) => h.isActive);
 
   return (
-    <section className="mb-1 sm:mb-4 space-y-3">
-      {/* Compact Main Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#0d0c14] border border-zinc-800 p-3 sm:p-5 shadow-lg">
+    <section className="mb-2 sm:mb-5">
+      {/* Premium Curated Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#14121e] to-[#0c0b12] border border-zinc-800/80 p-4 sm:p-6 shadow-xl">
         
-        {/* Glow Effect — decorative only; skipped on mobile/tablet where blur is expensive */}
-        <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[120px] bg-[var(--wb-primary)]/10 blur-[80px] pointer-events-none rounded-full" />
+        {/* Subtle decorative glow */}
+        <div className="absolute -top-12 -right-12 w-64 h-64 bg-[var(--wb-primary)]/10 blur-[90px] pointer-events-none rounded-full" />
+        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-[var(--wb-accent)]/10 blur-[90px] pointer-events-none rounded-full" />
         
-        <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Left: Brand Identity & Concise Headline */}
-          <div className="flex min-w-0 items-center gap-3.5 text-left">
-            <img
-              src={storeSettings.logoUrl || DEFAULT_STORE_SETTINGS.logoUrl}
-              alt={storeSettings.storeName || DEFAULT_STORE_SETTINGS.storeName}
-              className="w-12 h-12 rounded-2xl object-cover ring-1 ring-[var(--wb-primary)]/40 shadow-md shrink-0 hidden xs:block"
-              referrerPolicy="no-referrer"
-            />
+          <div className="flex min-w-0 items-center gap-3.5 sm:gap-4 text-left">
+            <div className="relative shrink-0 hidden xs:block">
+              <img
+                src={storeSettings.logoUrl || DEFAULT_STORE_SETTINGS.logoUrl}
+                alt={storeSettings.storeName || DEFAULT_STORE_SETTINGS.storeName}
+                className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover ring-1 ring-zinc-700/70 shadow-lg"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute -bottom-1 -right-1 p-1 bg-zinc-900 rounded-full ring-1 ring-zinc-800 text-emerald-400">
+                <ShieldCheck className="w-3 h-3" />
+              </div>
+            </div>
             
-            <div className="min-w-0 space-y-1 sm:space-y-0.5">
-              <div className="flex items-center justify-start gap-2">
-                <span className="px-2 py-0.5 rounded-full bg-[var(--wb-primary)]/20 text-[var(--wb-primary)] text-[8px] sm:text-[10px] font-black uppercase tracking-wider border border-[var(--wb-primary)]/30 flex items-center gap-1 whitespace-nowrap">
-                  <Sparkles className="w-3 h-3 text-[var(--wb-primary)]" />
+            <div className="min-w-0 space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-[var(--wb-primary)]/15 text-[var(--wb-primary-light)] text-[9px] sm:text-[10px] font-black uppercase tracking-wider border border-[var(--wb-primary)]/30 flex items-center gap-1.5 whitespace-nowrap">
+                  <Sparkles className="w-3 h-3 text-[var(--wb-primary-light)]" />
                   {storeSettings.badgeTag1 || 'Curadoria Exclusiva'}
                 </span>
-                <span className="hidden sm:flex text-[11px] text-emerald-400 font-bold items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> {storeSettings.badgeTag2 || 'Ofertas Verificadas'}
+                <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" /> {storeSettings.badgeTag2 || 'Ofertas Verificadas'}
                 </span>
               </div>
 
-              <h1 className="text-[13px] sm:text-xl font-black text-white tracking-tight leading-tight line-clamp-2">
+              <h1 className="text-sm sm:text-lg md:text-xl font-black text-white tracking-tight leading-snug">
                 {storeSettings.bannerHeadline || 'Os melhores produtos reunidos com os'}{' '}
                 <span
-                  className="font-black inline-block"
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, ${storeSettings.bannerGradientFrom || 'var(--wb-primary)'}, ${storeSettings.bannerGradientTo || 'var(--wb-accent)'})`,
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    color: 'transparent',
-                  }}
+                  className="font-black inline-block bg-gradient-to-r from-[var(--wb-primary-light)] via-[var(--wb-primary)] to-[var(--wb-accent)] bg-clip-text text-transparent"
                 >
                   {storeSettings.bannerHeadlineGradient || 'melhores preços.'}
                 </span>
@@ -73,28 +72,28 @@ export const BannerSection: React.FC<BannerSectionProps> = ({
           </div>
 
           {/* Right: Quick CTA & Promo Pill */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0 self-end md:self-center">
             {promoHighlight && (
               <button
                 onClick={() => onSelectHighlight(selectedHighlightId === promoHighlight.id ? null : promoHighlight.id)}
-                className={`hidden md:flex px-3 py-1.5 rounded-xl text-xs font-bold border transition-all items-center gap-1.5 ${
+                className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
                   selectedHighlightId === promoHighlight.id
-                    ? 'bg-[var(--wb-accent)]/20 border-[var(--wb-accent)] text-[var(--wb-accent)]'
-                    : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:text-white'
+                    ? 'bg-[var(--wb-accent)]/20 border-[var(--wb-accent)] text-[var(--wb-accent)] shadow-sm'
+                    : 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700'
                 }`}
               >
                 <Tag className="w-3.5 h-3.5 text-[var(--wb-accent)]" />
-                <span className="hidden md:inline">{promoHighlight.title}</span>
+                <span className="hidden sm:inline">{promoHighlight.title}</span>
                 <span className="text-[var(--wb-accent)] font-extrabold">{storeSettings.promoPillText || 'Até 40% OFF'}</span>
               </button>
             )}
 
             <button
               onClick={onExploreClick}
-              className="px-3 sm:px-4 py-2 bg-[var(--wb-primary)] hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2.5 bg-[var(--wb-primary)] hover:brightness-110 text-white font-black text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-2 shrink-0 cursor-pointer"
               aria-label="Explorar catálogo"
             >
-              <span className="hidden sm:inline">Explorar</span>
+              <span>Explorar</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

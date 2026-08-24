@@ -32,3 +32,15 @@ Facilitar a sua experiência de compra online, economizando seu tempo e ajudando
 
 ## Refinamento visual
 Esta versão parte da versão mais recente `wooboxshop.zip` e mantém a lógica/Firebase, com refinamentos de hierarquia visual, contraste e redução de efeitos chamativos.
+
+## Publicação independente no GitHub Pages
+
+Este diretório é um projeto independente. Envie somente o conteúdo da pasta `shop` para o repositório da loja.
+
+1. Crie um repositório no GitHub e envie estes arquivos para a branch `main`.
+2. Em **Settings → Pages → Build and deployment**, escolha **GitHub Actions**.
+3. O fluxo em `.github/workflows/deploy.yml` instala, verifica, compila e publica a loja automaticamente.
+
+O caminho do repositório e um eventual domínio personalizado são detectados durante o build, portanto não é necessário editar o `vite.config.ts` para cada endereço.
+
+Os dados continuam vindo diretamente do Firebase. Não envie arquivos `.env`, `node_modules` ou `dist`; eles são ignorados e recriados automaticamente.

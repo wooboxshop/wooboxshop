@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { X, Check, Copy, Share2, Send, Instagram, MessageCircle, Facebook, Globe } from 'lucide-react';
+import { X, Check, Copy, Share2, Instagram, Facebook, Globe } from 'lucide-react';
 import { formatCurrency } from '../utils/helpers';
 
 interface ShareModalProps {
@@ -69,48 +69,52 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 lg:bg-black/80 lg:backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+    >
       <div
-        className="relative bg-[#0d0c15] text-zinc-100 w-full max-w-md rounded-3xl shadow-2xl p-6 border border-zinc-800 space-y-6"
+        className="relative bg-[#111116] text-zinc-100 w-full max-w-sm max-h-[calc(100vh-2rem)] overflow-y-auto custom-scrollbar rounded-2xl shadow-[0_24px_80px_rgba(0,0,0,0.48)] p-4 sm:p-5 ring-1 ring-white/[0.08] space-y-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700/60 transition-colors cursor-pointer"
+          className="absolute top-3.5 right-3.5 w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-zinc-400 hover:text-white ring-1 ring-white/[0.08] transition-colors cursor-pointer flex items-center justify-center"
+          aria-label="Fechar compartilhamento"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-pink-500/10 text-pink-400 rounded-2xl border border-pink-500/20">
-            <Share2 className="w-6 h-6" />
+          <div className="w-10 h-10 bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] rounded-xl ring-1 ring-[var(--wb-interface)]/20 flex items-center justify-center">
+            <Share2 className="w-4.5 h-4.5" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-white">Compartilhar Produto</h3>
+            <h3 className="text-base font-bold text-white">Compartilhar produto</h3>
             <p className="text-xs text-zinc-400">Escolha onde deseja enviar a oferta</p>
           </div>
         </div>
 
         {/* Product Card Preview */}
-        <div className="flex items-center gap-3 p-3 bg-zinc-950 rounded-2xl border border-zinc-800">
+        <div className="flex items-center gap-3 p-2.5 bg-white/[0.03] rounded-xl ring-1 ring-white/[0.07]">
           <img
             src={product.imageUrl}
             alt={product.title}
-            className="w-14 h-14 object-cover rounded-xl shrink-0"
+            className="w-12 h-12 object-cover rounded-lg shrink-0"
             referrerPolicy="no-referrer"
           />
           <div className="min-w-0 flex-1">
             <h4 className="text-xs font-bold text-white line-clamp-1">{product.title}</h4>
-            <p className="text-sm font-black text-amber-400 mt-0.5">{formatCurrency(product.price)}</p>
+            <p className="text-sm font-bold text-white mt-0.5">{formatCurrency(product.price)}</p>
           </div>
         </div>
 
         {/* Status Notification */}
         {copiedStatus && (
-          <div className="p-3 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 rounded-2xl text-xs font-bold flex items-center gap-2 animate-in fade-in duration-200">
-            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="p-3 bg-[var(--wb-positive)]/10 ring-1 ring-[var(--wb-positive)]/25 text-[var(--wb-positive)] rounded-xl text-xs font-bold flex items-center gap-2 animate-in fade-in duration-200">
+            <Check className="w-4 h-4 shrink-0" />
             <span>
               {copiedStatus === 'link' && 'Link do produto copiado com sucesso!'}
               {copiedStatus === 'instagram' && 'Texto e link copiados! Abrindo Instagram...'}
@@ -124,7 +128,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
           {/* WhatsApp */}
           <button
             onClick={handleWhatsApp}
-            className="p-3 bg-[#128C7E]/20 hover:bg-[#128C7E]/30 border border-[#25D366]/40 rounded-2xl flex flex-col items-center gap-1.5 text-white transition-all group cursor-pointer"
+            className="p-3 bg-white/[0.035] hover:bg-white/[0.07] ring-1 ring-white/[0.08] hover:ring-[var(--wb-interface)]/30 rounded-xl flex flex-col items-center gap-1.5 text-zinc-200 transition-all group cursor-pointer"
           >
             <div className="p-2.5 bg-[#25D366] text-zinc-950 rounded-xl font-bold group-hover:scale-110 transition-transform">
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -137,7 +141,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
           {/* Instagram */}
           <button
             onClick={handleInstagram}
-            className="p-3 bg-gradient-to-tr from-purple-900/30 via-pink-900/30 to-rose-900/30 hover:brightness-125 border border-pink-500/40 rounded-2xl flex flex-col items-center gap-1.5 text-white transition-all group cursor-pointer"
+            className="p-3 bg-white/[0.035] hover:bg-white/[0.07] ring-1 ring-white/[0.08] hover:ring-[var(--wb-interface)]/30 rounded-xl flex flex-col items-center gap-1.5 text-zinc-200 transition-all group cursor-pointer"
           >
             <div className="p-2.5 bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 text-white rounded-xl group-hover:scale-110 transition-transform">
               <Instagram className="w-4 h-4" />
@@ -148,7 +152,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
           {/* TikTok */}
           <button
             onClick={handleTikTok}
-            className="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 rounded-2xl flex flex-col items-center gap-1.5 text-white transition-all group cursor-pointer"
+            className="p-3 bg-white/[0.035] hover:bg-white/[0.07] ring-1 ring-white/[0.08] hover:ring-[var(--wb-interface)]/30 rounded-xl flex flex-col items-center gap-1.5 text-zinc-200 transition-all group cursor-pointer"
           >
             <div className="p-2.5 bg-zinc-950 text-white border border-zinc-700 rounded-xl group-hover:scale-110 transition-transform">
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -161,7 +165,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
           {/* Telegram */}
           <button
             onClick={handleTelegram}
-            className="p-3 bg-blue-950/40 hover:bg-blue-900/50 border border-blue-500/40 rounded-2xl flex flex-col items-center gap-1.5 text-white transition-all group cursor-pointer"
+            className="p-3 bg-white/[0.035] hover:bg-white/[0.07] ring-1 ring-white/[0.08] hover:ring-[var(--wb-interface)]/30 rounded-xl flex flex-col items-center gap-1.5 text-zinc-200 transition-all group cursor-pointer"
           >
             <div className="p-2.5 bg-sky-500 text-white rounded-xl font-bold group-hover:scale-110 transition-transform">
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -174,7 +178,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
           {/* Facebook */}
           <button
             onClick={handleFacebook}
-            className="p-3 bg-blue-900/20 hover:bg-blue-900/30 border border-blue-600/40 rounded-2xl flex flex-col items-center gap-1.5 text-white transition-all group cursor-pointer"
+            className="p-3 bg-white/[0.035] hover:bg-white/[0.07] ring-1 ring-white/[0.08] hover:ring-[var(--wb-interface)]/30 rounded-xl flex flex-col items-center gap-1.5 text-zinc-200 transition-all group cursor-pointer"
           >
             <div className="p-2.5 bg-blue-600 text-white rounded-xl font-bold group-hover:scale-110 transition-transform">
               <Facebook className="w-4 h-4" />
@@ -185,9 +189,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
           {/* Outros / Native */}
           <button
             onClick={handleNativeShare}
-            className="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 rounded-2xl flex flex-col items-center gap-1.5 text-white transition-all group cursor-pointer"
+            className="p-3 bg-white/[0.035] hover:bg-white/[0.07] ring-1 ring-white/[0.08] hover:ring-[var(--wb-interface)]/30 rounded-xl flex flex-col items-center gap-1.5 text-zinc-200 transition-all group cursor-pointer"
           >
-            <div className="p-2.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl group-hover:scale-110 transition-transform">
+            <div className="p-2.5 bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] ring-1 ring-[var(--wb-interface)]/20 rounded-xl group-hover:scale-105 transition-transform">
               <Globe className="w-4 h-4" />
             </div>
             <span className="text-[11px] font-bold">Outros</span>
@@ -197,17 +201,17 @@ export const ShareModal: React.FC<ShareModalProps> = ({ product, isOpen = true, 
         {/* Copy Link Direct Button */}
         <button
           onClick={() => handleCopyLink('link', shareUrl)}
-          className="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white rounded-2xl flex items-center justify-center gap-2 text-xs font-bold transition-all cursor-pointer hover:border-pink-500/50"
+          className="w-full py-3 px-4 bg-white hover:bg-zinc-100 text-zinc-950 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-colors cursor-pointer"
         >
-          <Copy className="w-4 h-4 text-pink-400" />
-          <span>Copiar Link Direto do Produto</span>
+          <Copy className="w-4 h-4" />
+          <span>Copiar link do produto</span>
         </button>
 
         {/* Footer info */}
         <div className="pt-1 text-center">
           <button
             onClick={onClose}
-            className="w-full py-2 bg-zinc-950 hover:bg-zinc-900 text-zinc-400 hover:text-white rounded-xl text-xs font-bold transition-colors cursor-pointer border border-zinc-800"
+            className="w-full py-2 text-zinc-500 hover:text-white rounded-xl text-xs font-medium transition-colors cursor-pointer"
           >
             Fechar
           </button>

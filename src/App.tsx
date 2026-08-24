@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo, useCallback, useDeferredValue } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useDeferredValue, useRef } from 'react';
 import { Header } from './components/Header';
-import { BannerSection } from './components/BannerSection';
-import { FilterBar } from './components/FilterBar';
+import { Sidebar } from './components/Sidebar';
+import { FeaturedProductsBanner } from './components/FeaturedProductsBanner';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { ShareModal } from './components/ShareModal';
 import { Footer } from './components/Footer';
-import { Product, Highlight, CategoryOption, StoreSettings, DEFAULT_STORE_SETTINGS } from './types';
+import { Product, Highlight, CategoryOption, PlatformType, StoreSettings, DEFAULT_STORE_SETTINGS, getReadableTextColor, normalizeStoreSettingsTheme } from './types';
 import { INITIAL_CATEGORIES } from './data/initialData';
 import {
   trackProductClick,
@@ -16,7 +16,18 @@ import {
   subscribeToCategories,
   subscribeToStoreSettings,
 } from './services/api';
-import { Sparkles, Heart, PackageSearch, RefreshCcw, Filter, CheckCircle2, X } from 'lucide-react';
+import {
+  Sparkles,
+  Heart,
+  PackageSearch,
+  RefreshCcw,
+  CheckCircle2,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+} from 'lucide-react';
+import { PriceRangeValue } from './components/PriceRangeFilter';
 
 export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,6 +36,15 @@ export default function App() {
   const [storeSettings, setStoreSettings] = useState<StoreSettings>(DEFAULT_STORE_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [unsubscribedNotice, setUnsubscribedNotice] = useState<string | null>(null);
+
+  // Filters state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('todos');
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('inicio');
+  const [subTab, setSubTab] = useState<'em-alta' | 'mais-vendidos' | 'novidades' | 'descontos'>('em-alta');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [priceRange, setPriceRange] = useState<PriceRangeValue | null>(null);
 
   // Check URL parameters for newsletter unsubscribe
   useEffect(() => {
@@ -43,100 +63,6 @@ export default function App() {
     }
   }, []);
 
-  // Filters state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('todos');
-  const [selectedHighlightId, setSelectedHighlightId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState('populares');
-  const [onlyPromos, setOnlyPromos] = useState(false);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [activeTab, setActiveTab] = useState('inicio');
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-  // Dynamic price limits calculated from active registered products
-  const { minPossiblePrice, maxPossiblePrice } = useMemo(() => {
-    const activeProducts = products.filter((p) => p.isActive);
-    if (!activeProducts || activeProducts.length === 0) {
-      return { minPossiblePrice: 0, maxPossiblePrice: 500 };
-    }
-    const prices = activeProducts.map((p) => p.price);
-    const min = Math.floor(Math.min(...prices));
-    const max = Math.ceil(Math.max(...prices));
-    return { minPossiblePrice: min, maxPossiblePrice: max };
-  }, [products]);
-
-  const [maxPriceLimit, setMaxPriceLimit] = useState<number>(500);
-
-  // Update maxPriceLimit when maxPossiblePrice is computed
-  useEffect(() => {
-    if (maxPossiblePrice > 0) {
-      setMaxPriceLimit(maxPossiblePrice);
-    }
-  }, [maxPossiblePrice]);
-
-  // Category product counts for sidebar badges
-  const categoryCounts = useMemo(() => {
-    const activeProds = products.filter((p) => p.isActive);
-    const counts: Record<string, number> = {
-      todos: activeProds.length,
-    };
-
-    categories.forEach((cat) => {
-      if (cat.id === 'todos') return;
-      counts[cat.id] = activeProds.filter((p) => {
-        const pCat = p.category.toLowerCase();
-        const cName = cat.name.toLowerCase();
-        return pCat === cName || pCat.includes(cat.id.toLowerCase()) || cName.includes(pCat);
-      }).length;
-    });
-
-    return counts;
-  }, [products, categories]);
-
-  // Filter out categories with 0 active registered products from the public homepage
-  const visibleCategories = useMemo(() => {
-    return categories.filter((cat) => {
-      if (cat.id === 'todos') return true;
-      return (categoryCounts[cat.id] || 0) > 0;
-    });
-  }, [categories, categoryCounts]);
-
-  // Reset selected category to 'todos' if the selected category has 0 products
-  useEffect(() => {
-    if (selectedCategory !== 'todos') {
-      const isStillVisible = visibleCategories.some((c) => c.id === selectedCategory);
-      if (!isStillVisible) {
-        setSelectedCategory('todos');
-      }
-    }
-  }, [visibleCategories, selectedCategory]);
-
-  // Sub-navigation tabs click handler
-  const handleSelectTab = (tab: string) => {
-    setActiveTab(tab);
-    if (tab === 'ofertas') {
-      setOnlyPromos(true);
-      setSelectedCategory('todos');
-      setSortBy('maior-desconto');
-    } else if (tab === 'mais-vendidos') {
-      setSortBy('populares');
-      setOnlyPromos(false);
-      setSelectedCategory('todos');
-    } else if (tab === 'lancamentos') {
-      setSortBy('recentes');
-      setOnlyPromos(false);
-      setSelectedCategory('todos');
-    } else if (tab === 'categorias') {
-      const catEl = document.getElementById('catalogo');
-      if (catEl) catEl.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      // inicio / home
-      setSortBy('populares');
-      setOnlyPromos(false);
-      setSelectedCategory('todos');
-    }
-  };
-
   // Favorites state persisted in localStorage
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
@@ -147,17 +73,6 @@ export default function App() {
     }
   });
 
-  // Calculate valid active favorites matching existing products
-  const validFavorites = useMemo(() => {
-    return favorites.filter((id) =>
-      products.some((p) => p.id === id && p.isActive)
-    );
-  }, [favorites, products]);
-
-  // Detail & Share Modals
-  const [selectedProductDetail, setSelectedProductDetail] = useState<Product | null>(null);
-  const [sharingProduct, setSharingProduct] = useState<Product | null>(null);
-
   // Save favorites to localStorage
   useEffect(() => {
     try {
@@ -167,7 +82,7 @@ export default function App() {
     }
   }, [favorites]);
 
-  // Real-time live synchronization with Firestore Database across all devices (PC, Mobile, Tablet)
+  // Real-time live synchronization with Firestore Database
   useEffect(() => {
     setLoading(true);
     let initialLoads = 0;
@@ -192,7 +107,7 @@ export default function App() {
     });
 
     const unsubSettings = subscribeToStoreSettings((settingsData) => {
-      if (settingsData) setStoreSettings(settingsData);
+      if (settingsData) setStoreSettings(normalizeStoreSettingsTheme(settingsData));
     });
 
     return () => {
@@ -203,13 +118,21 @@ export default function App() {
     };
   }, []);
 
-  // Apply the store's configurable theme colors as CSS variables so the whole
-  // app (buttons, gradients, active states) reflects what's set in the admin panel.
+  // Apply store theme colors as CSS variables
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--wb-primary', storeSettings.themePrimaryColor || DEFAULT_STORE_SETTINGS.themePrimaryColor!);
     root.style.setProperty('--wb-accent', storeSettings.themeAccentColor || DEFAULT_STORE_SETTINGS.themeAccentColor!);
-  }, [storeSettings.themePrimaryColor, storeSettings.themeAccentColor]);
+    root.style.setProperty('--wb-interface', storeSettings.themePrimaryColor || DEFAULT_STORE_SETTINGS.themePrimaryColor!);
+    root.style.setProperty('--wb-positive', storeSettings.themeAccentColor || DEFAULT_STORE_SETTINGS.themeAccentColor!);
+    const offerButtonColor = storeSettings.themeOfferButtonColor || DEFAULT_STORE_SETTINGS.themeOfferButtonColor!;
+    root.style.setProperty('--wb-offer-button', offerButtonColor);
+    root.style.setProperty('--wb-offer-button-text', getReadableTextColor(offerButtonColor));
+  }, [storeSettings.themePrimaryColor, storeSettings.themeAccentColor, storeSettings.themeOfferButtonColor]);
+
+  // Modals state
+  const [selectedProductDetail, setSelectedProductDetail] = useState<Product | null>(null);
+  const [sharingProduct, setSharingProduct] = useState<Product | null>(null);
 
   // Toggle favorite item
   const handleToggleFavorite = useCallback((id: string, e?: React.MouseEvent) => {
@@ -223,23 +146,14 @@ export default function App() {
   const handleBuyClick = useCallback(async (product: Product, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
 
-    // Increment local clicks counter instantly (only the clicked product's object
-    // reference changes — untouched cards keep their same reference, so a memoized
-    // ProductCard correctly skips re-rendering for everything else).
     setProducts((prev) =>
       prev.map((p) => (p.id === product.id ? { ...p, clicksCount: (p.clicksCount || 0) + 1 } : p))
     );
 
-    // Call backend API to persist click log
     trackProductClick(product.id, 'app_card');
-
-    // Open affiliate link in new tab
     window.open(product.affiliateUrl, '_blank', 'noopener,noreferrer');
   }, []);
 
-  // Stable handlers passed down to every ProductCard — kept referentially stable via
-  // useCallback so React.memo on ProductCard can actually skip re-rendering cards that
-  // aren't affected by a given state change (e.g. opening another card's detail modal).
   const handleProductClick = useCallback((p: Product) => {
     setSelectedProductDetail(p);
   }, []);
@@ -249,12 +163,39 @@ export default function App() {
     setSharingProduct(p);
   }, []);
 
-  const deferredMaxPriceLimit = useDeferredValue(maxPriceLimit);
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  // Filtered and Sorted Products computation
+  // Calculate valid active favorites
+  const validFavorites = useMemo(() => {
+    return favorites.filter((id) =>
+      products.some((p) => p.id === id && p.isActive)
+    );
+  }, [favorites, products]);
+
+  const activeProducts = useMemo(() => products.filter((product) => product.isActive), [products]);
+
+  const availablePlatforms = useMemo(
+    () => Array.from(new Set(activeProducts.map((product) => product.platform))) as PlatformType[],
+    [activeProducts]
+  );
+
+  const priceBounds = useMemo<PriceRangeValue>(() => {
+    if (activeProducts.length === 0) return { min: 0, max: 0 };
+    const prices = activeProducts.map((product) => product.price);
+    return {
+      min: Math.floor(Math.min(...prices)),
+      max: Math.ceil(Math.max(...prices)),
+    };
+  }, [activeProducts]);
+
+  useEffect(() => {
+    setPriceRange(priceBounds);
+  }, [priceBounds.min, priceBounds.max]);
+
+  const effectivePriceRange = priceRange || priceBounds;
+
+  // Main filtered products computation
   const processedProducts = useMemo(() => {
-    // Only show active products for the public store
     let result = products.filter((p) => p.isActive);
 
     // Favorites filter
@@ -286,43 +227,55 @@ export default function App() {
       }
     }
 
-    // Highlight Event filter
-    if (selectedHighlightId) {
-      const currentHL = highlights.find((h) => h.id === selectedHighlightId);
-      result = result.filter((p) => {
-        if (p.highlightId === selectedHighlightId) return true;
-        if (currentHL?.tagFilter && p.badge?.toLowerCase().includes(currentHL.tagFilter.toLowerCase())) return true;
-        return false;
-      });
+    // Partner Platform filter
+    if (selectedPlatform) {
+      result = result.filter((p) => p.platform.toLowerCase() === selectedPlatform.toLowerCase());
     }
 
-    // Only Promos filter
-    if (onlyPromos) {
+    result = result.filter(
+      (product) => product.price >= effectivePriceRange.min && product.price <= effectivePriceRange.max
+    );
+
+    // Navigation Tab Filters
+    if (activeTab === 'ofertas') {
       result = result.filter((p) => p.originalPrice && p.originalPrice > p.price);
     }
 
-    // Dynamic price limit filter (+ 0.99 tolerance so R$ 34.90 is included when min slider limit is 34)
-    if (deferredMaxPriceLimit < maxPossiblePrice) {
-      result = result.filter((p) => p.price <= deferredMaxPriceLimit + 0.99);
-    }
-
-    // Sorting logic based on filter selection
+    // Sub-tab sorting / filtering
     result.sort((a, b) => {
-      if (sortBy === 'menor-preco') return a.price - b.price;
-      if (sortBy === 'maior-preco') return b.price - a.price;
-      if (sortBy === 'maior-desconto') {
+      if (activeTab === 'ofertas') {
         const descA = a.originalPrice ? (a.originalPrice - a.price) / a.originalPrice : 0;
         const descB = b.originalPrice ? (b.originalPrice - b.price) / b.originalPrice : 0;
         return descB - descA;
       }
-      if (sortBy === 'recentes') {
+      if (activeTab === 'novidades') {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
+      if (activeTab === 'mais-vendidos') {
+        return (b.clicksCount || 0) - (a.clicksCount || 0);
+      }
 
-      // Default / 'populares': Strictly sort by popularity (clicks count) then rating/reviews engagement
-      const clicksDiff = (b.clicksCount || 0) - (a.clicksCount || 0);
-      if (clicksDiff !== 0) return clicksDiff;
-      return (b.rating * b.reviewsCount) - (a.rating * a.reviewsCount);
+      if (subTab === 'descontos') {
+        const descA = a.originalPrice ? (a.originalPrice - a.price) / a.originalPrice : 0;
+        const descB = b.originalPrice ? (b.originalPrice - b.price) / b.originalPrice : 0;
+        return descB - descA;
+      }
+      if (subTab === 'novidades') {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+      if (subTab === 'mais-vendidos') {
+        return (b.clicksCount || 0) - (a.clicksCount || 0);
+      }
+
+      // Início / Em alta: curadoria primeiro, depois qualidade e engajamento.
+      const featuredDiff = Number(b.isFeatured) - Number(a.isFeatured);
+      if (featuredDiff !== 0) return featuredDiff;
+
+      const curationScoreA = (a.rating * a.reviewsCount) + ((a.clicksCount || 0) * 8);
+      const curationScoreB = (b.rating * b.reviewsCount) + ((b.clicksCount || 0) * 8);
+      if (curationScoreB !== curationScoreA) return curationScoreB - curationScoreA;
+
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
 
     return result;
@@ -332,43 +285,49 @@ export default function App() {
     favorites,
     deferredSearchQuery,
     selectedCategory,
-    selectedHighlightId,
-    highlights,
-    onlyPromos,
-    deferredMaxPriceLimit,
-    maxPossiblePrice,
-    sortBy,
+    selectedPlatform,
+    effectivePriceRange.min,
+    effectivePriceRange.max,
+    categories,
+    activeTab,
+    subTab,
   ]);
 
-  // Products marked in the admin compose the curated area. Keeping this as a
-  // collection (instead of always taking the first item) allows any number of
-  // featured products without duplicating them in the regular catalog.
-  const featuredProducts = useMemo(() => {
-    if (processedProducts.length === 0) return [];
-    const selected = processedProducts.filter((product) => product.isFeatured);
-    return selected.length > 0 ? selected : [processedProducts[0]];
+  // Top Curated Offer product (featured or first in popularity)
+  const curatedOfferProduct = useMemo(() => {
+    if (products.length === 0) return null;
+    const featured = products.find((p) => p.isFeatured && p.isActive);
+    return featured || products.find((p) => p.isActive) || products[0];
+  }, [products]);
+
+  // Catalog products (excluding or including curated item as needed)
+  const catalogProducts = useMemo(() => {
+    return processedProducts;
   }, [processedProducts]);
 
-  const regularProducts = useMemo(() => {
-    const featuredIds = new Set(featuredProducts.map((product) => product.id));
-    return processedProducts.filter((product) => !featuredIds.has(product.id));
-  }, [processedProducts, featuredProducts]);
+  // Horizontal scroll ref for navigation buttons
+  const productsScrollRef = useRef<HTMLDivElement>(null);
 
-  // Reset all filters handler
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (productsScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -320 : 320;
+      productsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   const handleResetFilters = () => {
     setSelectedCategory('todos');
-    setSelectedHighlightId(null);
-    setSortBy('populares');
-    setOnlyPromos(false);
+    setSelectedPlatform(null);
+    setActiveTab('inicio');
+    setSubTab('em-alta');
     setShowFavoritesOnly(false);
     setSearchQuery('');
-    setMaxPriceLimit(maxPossiblePrice);
-    setActiveTab('inicio');
+    setPriceRange(priceBounds);
   };
 
   return (
-    <div className="min-h-screen bg-[#050508] text-zinc-100 font-sans">
-      {/* Header Bar */}
+    <div className="min-h-screen bg-[#09090d] text-zinc-100 font-sans selection:bg-[var(--wb-interface)]/30 selection:text-white">
+      {/* Header */}
       <Header
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -376,12 +335,34 @@ export default function App() {
         onToggleFavoritesOnly={() => setShowFavoritesOnly((prev) => !prev)}
         showFavoritesOnly={showFavoritesOnly}
         activeTab={activeTab}
-        onSelectTab={handleSelectTab}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          if (tab === 'inicio') setSubTab('em-alta');
+          if (tab === 'mais-vendidos') setSubTab('mais-vendidos');
+          if (tab === 'ofertas') setSubTab('descontos');
+          if (tab === 'novidades') setSubTab('novidades');
+          if (tab === 'inicio') {
+            setSelectedCategory('todos');
+            setSelectedPlatform(null);
+          }
+        }}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={(category) => {
+          setSelectedCategory(category);
+          setSelectedPlatform(null);
+          setShowFavoritesOnly(false);
+        }}
+        selectedPlatform={selectedPlatform}
+        onSelectPlatform={(platform) => {
+          setSelectedPlatform(platform);
+          setShowFavoritesOnly(false);
+        }}
+        availablePlatforms={availablePlatforms}
+        priceBounds={priceBounds}
+        priceRange={effectivePriceRange}
+        onPriceRangeChange={setPriceRange}
         storeSettings={storeSettings}
-        maxPriceLimit={maxPriceLimit}
-        onPriceLimitChange={setMaxPriceLimit}
-        minPossiblePrice={minPossiblePrice}
-        maxPossiblePrice={maxPossiblePrice}
       />
 
       {/* Unsubscribe Notice Banner */}
@@ -399,269 +380,228 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Container */}
-      <main className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-8">
+      {/* Main Page Layout */}
+      <main className="max-w-[1480px] mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-5 sm:space-y-8 overflow-hidden">
         
-        {/* Seasonal Highlights / Events Banners */}
-        {!showFavoritesOnly && (
-          <BannerSection
-            highlights={highlights}
-            selectedHighlightId={selectedHighlightId}
-            onSelectHighlight={setSelectedHighlightId}
-            onExploreClick={() => {
-              const catEl = document.getElementById('catalogo');
-              if (catEl) catEl.scrollIntoView({ behavior: 'smooth' });
-            }}
-            storeSettings={storeSettings}
-          />
-        )}
-
         {/* Favorites Header Banner */}
         {showFavoritesOnly && (
-          <div className="p-6 bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 text-white rounded-3xl shadow-xl flex items-center justify-between border border-pink-500/30">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-md">
-                <Heart className="w-6 h-6 fill-white" />
+          <div className="p-3.5 sm:p-5 bg-[#111116] text-white rounded-2xl sm:rounded-3xl flex items-center justify-between gap-3 ring-1 ring-white/[0.08]">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="p-2 sm:p-3 bg-rose-500/10 rounded-xl sm:rounded-2xl shrink-0">
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6 fill-rose-400 text-rose-400" />
               </div>
-              <div>
-                <h2 className="text-xl font-black">Seus Achadinhos Salvos</h2>
-                <p className="text-xs text-rose-100">
-                  {validFavorites.length} produto{validFavorites.length !== 1 ? 's' : ''} salvo{validFavorites.length !== 1 ? 's' : ''} na sua lista de desejos.
+              <div className="min-w-0">
+                <h2 className="text-sm sm:text-xl font-black leading-tight">
+                  <span className="sm:hidden">Seus Achadinhos</span>
+                  <span className="hidden sm:inline">Seus Achadinhos Salvos</span>
+                </h2>
+                <p className="text-[11px] sm:text-xs text-zinc-400 truncate">
+                  {validFavorites.length} produto{validFavorites.length !== 1 ? 's' : ''} salvo{validFavorites.length !== 1 ? 's' : ''}
                 </p>
               </div>
             </div>
 
             <button
               onClick={() => setShowFavoritesOnly(false)}
-              className="px-4 py-2 bg-zinc-950 text-white border border-pink-500/40 text-xs font-bold rounded-2xl hover:bg-zinc-900 transition-colors"
+              className="px-3 sm:px-4 py-2 bg-zinc-950 text-white text-[11px] sm:text-xs font-bold rounded-xl sm:rounded-2xl hover:bg-zinc-900 transition-colors cursor-pointer shrink-0"
             >
-              Ver Catálogo Completo
+              <span className="sm:hidden">Ver catálogo</span>
+              <span className="hidden sm:inline">Ver catálogo completo</span>
             </button>
           </div>
         )}
 
-        {/* Main Split Layout: Sidebar (Left) + Products Grid (Right) */}
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Master Flex Container: Left Sidebar + Right Main Stream */}
+        <div className="flex flex-col lg:flex-row gap-5 sm:gap-6 items-start">
           
-          {/* Left Sidebar Filters */}
-          <FilterBar
-            categories={visibleCategories}
+          {/* Left Sidebar */}
+          <Sidebar
+            categories={categories}
             selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            maxPriceLimit={maxPriceLimit}
-            onPriceLimitChange={setMaxPriceLimit}
-            minPossiblePrice={minPossiblePrice}
-            maxPossiblePrice={maxPossiblePrice}
-            onlyPromos={onlyPromos}
-            onTogglePromos={() => setOnlyPromos((prev) => !prev)}
-            totalResults={processedProducts.length}
-            categoryCounts={categoryCounts}
-            onResetFilters={handleResetFilters}
-            isOpenMobile={isMobileFilterOpen}
-            onCloseMobile={() => setIsMobileFilterOpen(false)}
+            onSelectCategory={(catId) => {
+              setSelectedCategory(catId);
+              setShowFavoritesOnly(false);
+            }}
+            activeTab={activeTab}
+            onSelectTab={(tab) => {
+              setActiveTab(tab);
+              if (tab === 'inicio') setSubTab('em-alta');
+              if (tab === 'mais-vendidos') setSubTab('mais-vendidos');
+              if (tab === 'ofertas') setSubTab('descontos');
+              if (tab === 'novidades') setSubTab('novidades');
+              setShowFavoritesOnly(false);
+            }}
+            selectedPlatform={selectedPlatform}
+            onSelectPlatform={(platform) => {
+              setSelectedPlatform(platform);
+              setShowFavoritesOnly(false);
+            }}
+            availablePlatforms={availablePlatforms}
+            priceBounds={priceBounds}
+            priceRange={effectivePriceRange}
+            onPriceRangeChange={setPriceRange}
           />
 
-          {/* Right Main Content */}
-          <div className="flex-1 min-w-0 w-full space-y-5">
+          {/* Right Main Body Content */}
+          <div className="flex-1 min-w-0 w-full space-y-6">
             
-            {/* Compact catalog navigation: categories stay in the sidebar on desktop. */}
-            <div id="catalogo" className="sticky top-[65px] sm:top-[73px] lg:static z-30 bg-[#0e0d16]/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3.5 border border-zinc-800/80 shadow-lg flex items-center gap-2.5">
-              <div className="flex items-center gap-2 shrink-0">
-                <button
-                  onClick={() => setIsMobileFilterOpen(true)}
-                  className="lg:hidden px-3 py-2 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white font-semibold text-xs rounded-xl border border-zinc-800/80 flex items-center gap-1.5 transition-all active:scale-95 shrink-0 cursor-pointer shadow-sm"
-                >
-                  <Filter className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>Filtros</span>
-                </button>
-
-                <div className="hidden lg:flex items-center gap-2 px-1">
-                  <Sparkles className="w-4.5 h-4.5 text-[var(--wb-primary)] fill-[var(--wb-primary)]/20" />
-                  <h2 className="text-sm font-extrabold text-white">
-                    {selectedCategory !== 'todos'
-                      ? visibleCategories.find((c) => c.id === selectedCategory)?.name
-                      : sortBy === 'populares'
-                      ? 'Mais Populares'
-                      : sortBy === 'recentes'
-                      ? 'Lançamentos Recentes'
-                      : sortBy === 'maior-desconto'
-                      ? 'Maiores Ofertas'
-                      : 'Vitrine de Produtos'}
-                  </h2>
-                  <span className="text-xs text-zinc-400 font-normal">
-                    ({processedProducts.length} itens)
-                  </span>
-                </div>
-              </div>
-
-              {/* Horizontal Category Pill Scrollbar */}
-              <div className="flex lg:hidden min-w-0 flex-1 items-center gap-1.5 overflow-x-auto max-w-full scrollbar-none">
-                {visibleCategories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
-                      selectedCategory === cat.id
-                        ? 'bg-[var(--wb-primary)]/15 text-[var(--wb-primary-light)] border-[var(--wb-primary)]/60 shadow-sm shadow-[var(--wb-primary)]/10'
-                        : 'bg-zinc-900/90 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-                    }`}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Loading Spinner */}
-            {loading ? (
-              <div className="py-20 flex flex-col items-center justify-center space-y-3 text-zinc-400">
-                <RefreshCcw className="w-8 h-8 animate-spin text-[var(--wb-primary)]" />
-                <p className="text-xs font-bold">Carregando produtos...</p>
-              </div>
-            ) : processedProducts.length === 0 ? (
-              /* Empty Search or Filters State */
-              <div className="py-16 text-center bg-[#0d0c15] rounded-3xl border border-zinc-800 p-8 space-y-4 shadow-xl">
-                <div className="w-16 h-16 mx-auto bg-[var(--wb-primary)]/10 text-[var(--wb-primary)] rounded-full flex items-center justify-center border border-[var(--wb-primary)]/20">
-                  {showFavoritesOnly ? <Heart className="w-8 h-8 text-[var(--wb-primary)] fill-[var(--wb-primary)]/30" /> : <PackageSearch className="w-8 h-8" />}
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-lg font-black text-white">
-                    {showFavoritesOnly ? 'Sua lista de favoritos está vazia' : 'Nenhum produto encontrado'}
-                  </h3>
-                  <p className="text-xs text-zinc-400 max-w-sm mx-auto">
-                    {showFavoritesOnly
-                      ? 'Clique no ícone de coração nos produtos para salvá-los e acessá-los rapidamente quando quiser!'
-                      : 'Tente ajustar a barra de preço, pesquisar por outro termo ou trocar de categoria.'}
-                  </p>
-                </div>
-                <button
-                  onClick={handleResetFilters}
-                  className="px-5 py-2.5 bg-[var(--wb-primary)] hover:brightness-110 text-white font-bold text-xs rounded-2xl shadow-lg transition-transform active:scale-95 inline-flex items-center gap-2 cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4 text-white" />
-                  {showFavoritesOnly ? 'Explorar Catálogo de Ofertas' : 'Limpar Todos os Filtros'}
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-5 sm:space-y-7">
-                {/* Products selected as featured in the admin form the curated area. */}
-                <section className="space-y-3">
-                  <div className="flex items-end justify-between gap-3 px-1">
-                    <div>
-                      <span className="text-[9px] font-black uppercase tracking-[0.16em] text-[var(--wb-primary-light)]">
-                        Seleção Woobox
-                      </span>
-                      <h2 className="text-base sm:text-lg font-black text-white mt-0.5">
-                        {featuredProducts.length > 1 ? 'Destaques da curadoria' : 'Destaque da curadoria'}
-                      </h2>
-                    </div>
-                    <span className="hidden sm:inline text-[11px] text-zinc-500">
-                      {featuredProducts.length} produto{featuredProducts.length !== 1 ? 's' : ''} selecionado{featuredProducts.length !== 1 ? 's' : ''}
-                    </span>
-                  </div>
-
-                  <ProductCard
-                    key={featuredProducts[0].id}
-                    product={featuredProducts[0]}
-                    variant="featured"
-                    rankIndex={sortBy === 'populares' ? processedProducts.indexOf(featuredProducts[0]) + 1 : undefined}
-                    onClickProduct={handleProductClick}
-                    onBuyClick={handleBuyClick}
-                    isFavorite={favorites.includes(featuredProducts[0].id)}
-                    onToggleFavorite={handleToggleFavorite}
-                    onShareClick={handleShareClick}
-                  />
-
-                  {featuredProducts.length > 1 && (
-                    <>
-                      <div className="grid grid-cols-1 gap-3 sm:hidden">
-                        {featuredProducts.slice(1).map((product) => (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            variant="compact"
-                            rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
-                            onClickProduct={handleProductClick}
-                            onBuyClick={handleBuyClick}
-                            isFavorite={favorites.includes(product.id)}
-                            onToggleFavorite={handleToggleFavorite}
-                            onShareClick={handleShareClick}
-                          />
-                        ))}
-                      </div>
-
-                      <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 xl:gap-5 items-stretch">
-                        {featuredProducts.slice(1).map((product) => (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            variant="standard"
-                            rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
-                            onClickProduct={handleProductClick}
-                            onBuyClick={handleBuyClick}
-                            isFavorite={favorites.includes(product.id)}
-                            onToggleFavorite={handleToggleFavorite}
-                            onShareClick={handleShareClick}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </section>
-
-                {regularProducts.length > 0 && (
-                  <section className="space-y-3">
-                    <div className="flex items-end justify-between gap-3 px-1">
-                      <div>
-                        <span className="text-[9px] font-black uppercase tracking-[0.16em] text-zinc-500">
-                          Continue explorando
-                        </span>
-                        <h2 className="text-base sm:text-lg font-black text-white mt-0.5">Mais achadinhos para você</h2>
-                      </div>
-                      <span className="text-[11px] text-zinc-500">
-                        {regularProducts.length} produto{regularProducts.length !== 1 ? 's' : ''}
-                      </span>
-                    </div>
-
-                    {/* Mobile: compact horizontal cards reveal more of the catalog per screen. */}
-                    <div className="grid grid-cols-1 gap-3 sm:hidden">
-                      {regularProducts.map((product) => (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          variant="compact"
-                          rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
-                          onClickProduct={handleProductClick}
-                          onBuyClick={handleBuyClick}
-                          isFavorite={favorites.includes(product.id)}
-                          onToggleFavorite={handleToggleFavorite}
-                          onShareClick={handleShareClick}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Tablet/Desktop: simplified cards without long descriptions. */}
-                    <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 xl:gap-5 items-stretch">
-                      {regularProducts.map((product) => (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          variant="standard"
-                          rankIndex={sortBy === 'populares' ? processedProducts.indexOf(product) + 1 : undefined}
-                          onClickProduct={handleProductClick}
-                          onBuyClick={handleBuyClick}
-                          isFavorite={favorites.includes(product.id)}
-                          onToggleFavorite={handleToggleFavorite}
-                          onShareClick={handleShareClick}
-                        />
-                      ))}
-                    </div>
-                  </section>
-                )}
+            {/* Top Featured Banner */}
+            {!showFavoritesOnly && (
+              <div>
+                <FeaturedProductsBanner
+                  products={products}
+                  onClickProduct={handleProductClick}
+                  onBuyClick={handleBuyClick}
+                  favorites={favorites}
+                  onToggleFavorite={handleToggleFavorite}
+                  storeSettings={storeSettings}
+                />
               </div>
             )}
+
+            {/* Section: "Mais achadinhos para você" */}
+            <section id="catalogo-section" className="space-y-4 scroll-mt-24 min-w-0">
+              
+              {/* Section Header Row */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
+                
+                {/* Section Title */}
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                    Mais achadinhos para você
+                  </h2>
+                </div>
+
+                {/* Filter Pills Tabs */}
+                <div className="flex items-center justify-between sm:justify-end gap-3 min-w-0 w-full sm:w-auto">
+                  <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5 w-full sm:w-auto pr-2 sm:pr-0">
+                    <button
+                      onClick={() => { setActiveTab('inicio'); setSubTab('em-alta'); }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                        subTab === 'em-alta'
+                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
+                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                      }`}
+                    >
+                      Em alta
+                    </button>
+
+                    <button
+                      onClick={() => { setActiveTab('inicio'); setSubTab('mais-vendidos'); }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                        subTab === 'mais-vendidos'
+                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
+                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                      }`}
+                    >
+                      Mais vendidos
+                    </button>
+
+                    <button
+                      onClick={() => { setActiveTab('inicio'); setSubTab('novidades'); }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                        subTab === 'novidades'
+                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
+                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                      }`}
+                    >
+                      Novidades
+                    </button>
+
+                    <button
+                      onClick={() => { setActiveTab('inicio'); setSubTab('descontos'); }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                        subTab === 'descontos'
+                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
+                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                      }`}
+                    >
+                      Descontos
+                    </button>
+                  </div>
+
+                  {/* Right Carousel Controls (Desktop) */}
+                  <div className="hidden sm:flex items-center gap-1.5">
+                    <button
+                      onClick={() => {
+                        setSelectedCategory('todos');
+                        setSelectedPlatform(null);
+                      }}
+                      className="text-xs font-medium text-zinc-400 hover:text-white transition-colors cursor-pointer mr-1"
+                    >
+                      Ver todos &rarr;
+                    </button>
+
+                    <button
+                      onClick={() => handleScroll('left')}
+                      className="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                      aria-label="Anterior"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() => handleScroll('right')}
+                      className="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                      aria-label="Próximo"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Products Display */}
+              {loading ? (
+                <div className="py-20 flex flex-col items-center justify-center space-y-3 text-zinc-400">
+                  <RefreshCcw className="w-8 h-8 animate-spin text-[var(--wb-interface-light)]" />
+                  <p className="text-xs font-bold">Carregando catálogo...</p>
+                </div>
+              ) : catalogProducts.length === 0 ? (
+                <div className="py-10 sm:py-12 text-center bg-[#0e0d16] rounded-2xl sm:rounded-3xl ring-1 ring-white/[0.06] px-5 space-y-4">
+                  <div className={`w-14 h-14 mx-auto rounded-2xl flex items-center justify-center ring-1 ${showFavoritesOnly ? 'bg-rose-500/10 text-rose-300 ring-rose-400/20' : 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] ring-[var(--wb-interface)]/20'}`}>
+                    {showFavoritesOnly ? <Heart className="w-7 h-7 fill-current/25" /> : <PackageSearch className="w-7 h-7" />}
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-base sm:text-lg font-bold text-white">
+                      {showFavoritesOnly ? 'Sua lista de favoritos está vazia' : 'Nenhum produto encontrado'}
+                    </h3>
+                    <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+                      {showFavoritesOnly
+                        ? 'Salve os produtos que você quer encontrar de novo.'
+                        : 'Tente pesquisar por outro termo ou trocar de categoria.'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleResetFilters}
+                    className="px-5 py-2.5 bg-white hover:bg-zinc-100 text-zinc-950 font-bold text-xs rounded-xl shadow-lg transition-transform active:scale-95 inline-flex items-center gap-2 cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span>{showFavoritesOnly ? 'Explorar achadinhos' : 'Limpar filtros'}</span>
+                  </button>
+                </div>
+              ) : (
+                <div
+                  ref={productsScrollRef}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch"
+                >
+                  {catalogProducts.map((product, index) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      variant="standard"
+                      rankIndex={subTab === 'mais-vendidos' || subTab === 'em-alta' ? index + 1 : undefined}
+                      onClickProduct={handleProductClick}
+                      onBuyClick={handleBuyClick}
+                      isFavorite={favorites.includes(product.id)}
+                      onToggleFavorite={handleToggleFavorite}
+                      onShareClick={handleShareClick}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
 
           </div>
 
@@ -672,7 +612,7 @@ export default function App() {
       {/* Footer */}
       <Footer storeSettings={storeSettings} />
 
-      {/* Modals & Overlays */}
+      {/* Modals */}
       <ProductDetailModal
         product={selectedProductDetail}
         onClose={() => setSelectedProductDetail(null)}
