@@ -245,7 +245,7 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
           )}
         </div>
 
-        <div className="order-1 md:order-2 relative min-h-[230px] sm:min-h-[300px] md:min-h-[360px] overflow-hidden bg-zinc-950">
+        <div className="order-1 md:order-2 relative aspect-[4/3] sm:aspect-[16/10] md:aspect-auto min-h-[220px] sm:min-h-[280px] md:min-h-[360px] md:h-full overflow-hidden bg-zinc-950">
           <div
             onClick={() => onClickProduct(activeProduct)}
             className="absolute inset-0 cursor-pointer group/img"
@@ -254,7 +254,7 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
               key={activeProduct.id}
               src={activeProduct.imageUrl}
               alt={activeProduct.title}
-              className="w-full h-full object-cover group-hover/img:scale-[1.035] transition-transform duration-200 ease-out"
+              className="w-full h-full object-cover object-center group-hover/img:scale-[1.035] transition-transform duration-200 ease-out"
               referrerPolicy="no-referrer"
             />
             <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#111116] to-transparent hidden md:block" />

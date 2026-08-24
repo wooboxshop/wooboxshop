@@ -73,7 +73,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </button>
 
         {/* Left Image Section */}
-        <div className="w-full h-52 sm:h-64 md:h-auto md:w-1/2 relative bg-zinc-950 shrink-0 overflow-hidden">
+        <div className="w-full aspect-square max-h-[320px] sm:max-h-[380px] md:max-h-none md:w-1/2 md:aspect-square relative bg-zinc-950 shrink-0 overflow-hidden flex items-center justify-center">
           <img
             src={product.imageUrl}
             alt={product.title}
