@@ -37,17 +37,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
   const [copied, setCopied] = useState(false);
   const discount = calculateDiscount(product.price, product.originalPrice);
 
-  const platformLabel: Record<string, string> = {
-    shopee: 'Shopee',
-    mercadolivre: 'Mercado Livre',
-    tiktok: 'TikTok Shop',
-    amazon: 'Amazon',
-    aliexpress: 'AliExpress',
-  };
-
-  const ctaLabel = platformLabel[product.platform]
-    ? `Ver na ${platformLabel[product.platform]}`
-    : 'Ver oferta';
+  const ctaLabel = 'Ver produto';
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -127,13 +117,43 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
     );
   }
 
+  // Medals styling for top 3
+  const getRankBadge = (rank: number) => {
+    if (rank === 1) {
+      return (
+        <span className="h-5 sm:h-6 px-1.5 sm:px-2 rounded-md text-[9px] sm:text-[10px] font-black bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-zinc-950 shadow-[0_2px_8px_rgba(245,158,11,0.4)] flex items-center border border-yellow-300">
+          #1
+        </span>
+      );
+    }
+    if (rank === 2) {
+      return (
+        <span className="h-5 sm:h-6 px-1.5 sm:px-2 rounded-md text-[9px] sm:text-[10px] font-black bg-gradient-to-r from-slate-200 via-zinc-100 to-slate-300 text-zinc-950 shadow-[0_2px_8px_rgba(226,232,240,0.3)] flex items-center border border-white">
+          #2
+        </span>
+      );
+    }
+    if (rank === 3) {
+      return (
+        <span className="h-5 sm:h-6 px-1.5 sm:px-2 rounded-md text-[9px] sm:text-[10px] font-black bg-gradient-to-r from-amber-700 via-amber-600 to-amber-800 text-amber-50 shadow-[0_2px_8px_rgba(180,83,9,0.35)] flex items-center border border-amber-500/70">
+          #3
+        </span>
+      );
+    }
+    return (
+      <span className="h-5 sm:h-6 px-1.5 sm:px-2 rounded-md text-[9px] sm:text-[10px] font-bold bg-black/75 backdrop-blur-md text-zinc-300 border border-white/10 flex items-center">
+        #{rank}
+      </span>
+    );
+  };
+
   return (
     <div
       onClick={() => onClickProduct(product)}
-      className="group relative h-full min-w-0 bg-[#111116] border border-zinc-800/60 hover:border-[var(--wb-interface)]/25 transition-all duration-200 hover:-translate-y-0.5 flex flex-col overflow-hidden cursor-pointer rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.14)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.24)]"
+      className="group relative w-full h-full min-w-0 max-w-full bg-[#111116] border border-zinc-800/60 hover:border-[var(--wb-interface)]/25 transition-all duration-200 hover:-translate-y-0.5 flex flex-col overflow-hidden cursor-pointer rounded-xl sm:rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.14)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.24)]"
     >
       {/* Product Image Area */}
-      <div className="relative aspect-[4/3] sm:aspect-square w-full overflow-hidden bg-zinc-950">
+      <div className="relative aspect-square w-full overflow-hidden bg-zinc-950 shrink-0">
         <img
           src={product.imageUrl}
           alt={product.title}
@@ -144,30 +164,24 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
         />
 
         {/* Top Badges: Platform (Left) & Optional Ranking (Right) */}
-        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1 z-10 pointer-events-none">
-          <div className="shrink-0 rounded-lg backdrop-blur-md bg-black/60 p-1 border border-white/10">
-            <PlatformIcon platform={product.platform} className="w-5 h-5 shrink-0" />
+        <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2.5 sm:left-2.5 sm:right-2.5 flex items-center justify-between gap-1 z-10 pointer-events-none">
+          <div className="shrink-0 drop-shadow-md">
+            <PlatformIcon platform={product.platform} className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-md" />
           </div>
 
           {product.isFeatured ? (
-            <span className="h-7 px-2.5 rounded-lg text-[10px] font-bold bg-cyan-50 text-zinc-950 shadow-sm flex items-center gap-1">
-              <Sparkles className="w-3 h-3" /> Escolha Woobox
+            <span className="h-5 sm:h-6 px-1.5 sm:px-2 rounded-md text-[9px] sm:text-[10px] font-bold bg-cyan-50 text-zinc-950 shadow-sm flex items-center gap-1">
+              <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> <span className="hidden xs:inline">Destaque</span>
             </span>
-          ) : rankIndex !== undefined && rankIndex > 0 && rankIndex <= 3 ? (
-            <span className="h-7 px-2.5 rounded-lg text-[10px] font-bold bg-black/75 backdrop-blur-md text-amber-300 border border-amber-500/25 flex items-center">
-              #{rankIndex} Mais vendido
-            </span>
-          ) : product.badge ? (
-            <span className="h-7 px-2.5 rounded-lg text-[10px] font-semibold bg-black/75 backdrop-blur-md text-zinc-200 border border-white/10 flex items-center">
-              {product.badge}
-            </span>
+          ) : rankIndex !== undefined && rankIndex > 0 ? (
+            getRankBadge(rankIndex)
           ) : null}
         </div>
 
         {onToggleFavorite && (
           <button
             onClick={(e) => onToggleFavorite(product.id, e)}
-            className={`absolute right-2.5 bottom-2.5 w-9 h-9 rounded-xl flex items-center justify-center backdrop-blur-md border transition-all duration-200 cursor-pointer ${
+            className={`absolute right-1.5 bottom-1.5 sm:right-2.5 sm:bottom-2.5 w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center backdrop-blur-md border transition-all duration-200 cursor-pointer ${
               isFavorite
                 ? 'bg-rose-500 text-white border-rose-300/25 scale-105'
                 : 'bg-black/65 text-zinc-200 border-white/10 hover:bg-black/85 hover:text-white'
@@ -175,80 +189,68 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
             title={isFavorite ? 'Remover dos salvos' : 'Salvar produto'}
             aria-label={isFavorite ? 'Remover dos salvos' : 'Salvar produto'}
           >
-            <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+            <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavorite ? 'fill-current' : ''}`} />
           </button>
         )}
       </div>
 
       {/* Content Area */}
-      <div className="p-4 sm:p-4.5 flex-1 flex flex-col justify-between bg-[#111116] gap-5">
-        <div className="space-y-2">
-          {/* Category & Rating */}
-          <div className="flex items-center justify-between gap-3 text-[11px] text-zinc-400">
-            <span className="truncate font-medium capitalize tracking-wide">
-              {product.category}
-            </span>
-            {product.rating > 0 && (
-              <div className="flex items-center gap-1 text-zinc-200 font-semibold shrink-0 text-[11px]">
-                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                <span>{product.rating.toFixed(1)}</span>
-                <span className="text-zinc-400 font-normal">({product.reviewsCount})</span>
-              </div>
-            )}
-          </div>
-
+      <div className="p-2 sm:p-3.5 flex-1 flex flex-col justify-between bg-[#111116] gap-2 min-w-0">
+        <div className="space-y-1 min-w-0">
           {/* Title */}
-          <h3 className="text-sm sm:text-[15px] font-semibold text-zinc-100 group-hover:text-white transition-colors leading-snug line-clamp-2 min-h-[2.6rem]">
+          <h3 className="text-xs sm:text-[14px] font-semibold text-zinc-100 group-hover:text-white transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.4rem]">
             {product.title}
           </h3>
 
           {product.hasFreeShipping && (
-            <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[var(--wb-positive)]">
-              <Truck className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-[var(--wb-positive)]">
+              <Truck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               <span>Frete grátis</span>
             </div>
           )}
         </div>
 
         {/* Pricing Area */}
-        <div className="space-y-3">
-          <div className="flex items-end justify-between gap-3">
-            <div className="min-w-0">
-              <div className="flex items-baseline gap-2 flex-wrap">
-              <span className="text-xl sm:text-[22px] font-bold text-white tracking-tight">
+        <div className="space-y-1.5 min-w-0">
+          <div className="min-w-0">
+            {product.originalPrice && product.originalPrice > product.price ? (
+              <div className="text-[10px] sm:text-xs text-zinc-500 line-through leading-tight">
+                {formatCurrency(product.originalPrice)}
+              </div>
+            ) : (
+              <div className="text-[10px] sm:text-xs text-transparent select-none leading-tight">
+                &nbsp;
+              </div>
+            )}
+
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <span className="text-sm sm:text-lg lg:text-xl font-bold text-white tracking-tight leading-tight">
                 {formatCurrency(product.price)}
               </span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-xs text-zinc-400 line-through">
-                  {formatCurrency(product.originalPrice)}
+              {discount > 0 && (
+                <span className="px-1.5 py-0.5 rounded-md bg-[var(--wb-positive)]/10 text-[var(--wb-positive)] border border-[var(--wb-positive)]/20 text-[9px] sm:text-[10px] font-bold leading-none shrink-0">
+                  -{discount}%
                 </span>
               )}
-              </div>
             </div>
-
-            {discount > 0 && (
-              <span className="h-7 px-2 rounded-lg bg-[var(--wb-positive)]/10 text-[var(--wb-positive)] border border-[var(--wb-positive)]/20 text-[11px] font-bold flex items-center shrink-0">
-                -{discount}%
-              </span>
-            )}
           </div>
 
           {/* Action Button Row */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 w-full min-w-0 pt-0.5">
             <button
               onClick={(e) => onBuyClick(product, e)}
-              className="flex-1 h-11 px-3 bg-[var(--wb-offer-button)] hover:brightness-95 active:brightness-90 text-[var(--wb-offer-button-text)] text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--wb-interface)]"
+              className="flex-1 min-w-0 h-7.5 sm:h-9 px-1.5 sm:px-2.5 bg-[var(--wb-offer-button)] hover:brightness-95 active:brightness-90 text-[var(--wb-offer-button-text)] text-[10px] sm:text-xs font-bold rounded-lg sm:rounded-xl flex items-center justify-center gap-1 transition-all duration-200 cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--wb-interface)]"
             >
-              <span>{ctaLabel}</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-65" />
+              <span className="truncate">{ctaLabel}</span>
+              <ExternalLink className="w-2.5 h-2.5 sm:w-3 sm:h-3 opacity-70 shrink-0" />
             </button>
 
             <button
               onClick={handleShare}
-              className="w-11 h-11 shrink-0 bg-zinc-900/70 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800/70 rounded-xl transition-colors cursor-pointer flex items-center justify-center"
+              className="w-7.5 h-7.5 sm:w-9 sm:h-9 shrink-0 bg-zinc-900/70 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800/70 rounded-lg sm:rounded-xl transition-colors cursor-pointer flex items-center justify-center"
               title="Compartilhar"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Share2 className="w-3 h-3" />}
             </button>
           </div>
         </div>

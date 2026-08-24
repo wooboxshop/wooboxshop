@@ -8,7 +8,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Heart,
-  Eye,
+  Share2,
+  Check,
   Truck,
 } from 'lucide-react';
 
@@ -37,9 +38,27 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [copied, setCopied] = useState(false);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const activeProduct = featuredList[currentIndex] || featuredList[0];
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({
+        title: activeProduct.title,
+        text: `Confira este produto: ${activeProduct.title}`,
+        url,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    }
+  };
 
   useEffect(() => {
     if (featuredList.length <= 1 || isPaused) {
@@ -95,14 +114,7 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
               {platformLabel}
             </span>
             <span className="w-1 h-1 rounded-full bg-zinc-700" />
-            <span>{activeProduct.category}</span>
-            {activeProduct.rating > 0 && (
-              <span className="inline-flex items-center gap-1 text-zinc-300">
-                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                <strong>{activeProduct.rating.toFixed(1)}</strong>
-                <span className="text-zinc-500">({activeProduct.reviewsCount})</span>
-              </span>
-            )}
+            <span className="capitalize">{activeProduct.category}</span>
           </div>
 
           <h2
@@ -150,11 +162,12 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
             </button>
 
             <button
-              onClick={() => onClickProduct(activeProduct)}
-              className="h-11 px-3 text-zinc-400 hover:text-white hover:bg-white/[0.05] font-medium text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              onClick={handleShare}
+              className="w-11 h-11 rounded-xl flex items-center justify-center transition-colors cursor-pointer text-zinc-400 hover:text-white hover:bg-white/[0.05]"
+              title="Compartilhar produto"
+              aria-label="Compartilhar produto"
             >
-              <Eye className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Detalhes</span>
+              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             </button>
 
             {onToggleFavorite && (
@@ -202,10 +215,6 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
               referrerPolicy="no-referrer"
             />
             <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#111116] to-transparent hidden md:block" />
-          </div>
-
-          <div className="absolute top-3 left-3 rounded-xl backdrop-blur-md bg-black/60 p-1.5 ring-1 ring-white/10">
-            <PlatformIcon platform={activeProduct.platform} className="w-5 h-5" />
           </div>
 
           {discount > 0 && (

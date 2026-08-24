@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#09090d]/90 backdrop-blur-md border-b border-zinc-800/60 text-white transition-colors">
+      <header className="sticky top-0 z-40 bg-[#0c0c10]/95 backdrop-blur-md border-b border-zinc-800/50 text-white transition-colors">
         <div className="max-w-[1480px] mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3">
           <div className="flex items-center justify-between gap-2.5 sm:gap-4">
             
@@ -117,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="Buscar produtos..."
-                  className="w-full pl-10 pr-9 py-2 text-xs sm:text-sm bg-zinc-900/80 hover:bg-zinc-900 text-zinc-100 placeholder-zinc-500 rounded-xl border border-zinc-800 focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all outline-none"
+                  className="w-full pl-10 pr-9 py-2 text-xs sm:text-sm bg-zinc-900 hover:bg-zinc-900/90 text-zinc-100 placeholder-zinc-500 rounded-xl border border-zinc-800 focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all outline-none"
                 />
 
                 {searchQuery ? (
@@ -139,7 +139,7 @@ export const Header: React.FC<HeaderProps> = ({
                 href="https://www.tiktok.com/@woobox.shop"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 text-zinc-400 hover:text-white hover:bg-zinc-800/60 border border-zinc-800/80 rounded-lg transition-colors hidden md:flex items-center justify-center"
+                className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors hidden md:flex"
                 title="TikTok"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -152,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({
                 href="https://www.instagram.com/wooboxshop/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 text-zinc-400 hover:text-white hover:bg-zinc-800/60 border border-zinc-800/80 rounded-lg transition-colors hidden md:flex items-center justify-center"
+                className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors hidden md:flex"
                 title="Instagram"
               >
                 <Instagram className="w-4 h-4" />
@@ -252,21 +252,6 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className="flex items-center gap-2.5">
                       <Home className="w-4 h-4" />
                       <span>Início</span>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-zinc-600" />
-                  </button>
-
-                  <button
-                    onClick={() => handleNavClick('mais-vendidos')}
-                    className={`w-full p-2.5 rounded-lg text-xs font-medium flex items-center justify-between transition-colors cursor-pointer ${
-                      activeTab === 'mais-vendidos'
-                        ? 'bg-white/[0.07] text-white'
-                        : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Trophy className="w-4 h-4 text-amber-400" />
-                      <span>Mais Populares</span>
                     </div>
                     <ChevronRight className="w-4 h-4 text-zinc-600" />
                   </button>

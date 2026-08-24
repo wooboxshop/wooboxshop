@@ -11,8 +11,10 @@ export interface Product {
   affiliateUrl: string;
   category: string;
   platform: PlatformType;
+  /** @deprecated Legacy Firestore field; the storefront no longer renders product tags. */
   badge?: string;
-  badgeIcon?: string; // Icon name from the shared icon set (same as category icons)
+  /** @deprecated Legacy Firestore field; the storefront no longer renders product tags. */
+  badgeIcon?: string;
   hasFreeShipping?: boolean; // Product characteristic (like price) — rendered as a plain indicator, never as a badge/selo
   highlightId?: string; // Links product to special events like "dia-dos-pais", "dia-dos-namorados"
   isFeatured: boolean;

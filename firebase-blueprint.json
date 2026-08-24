@@ -57,12 +57,10 @@
         "storeName": { "type": "string" },
         "storeSlogan": { "type": "string" },
         "logoUrl": { "type": "string" },
-        "bannerHeadline": { "type": "string" },
-        "bannerHeadlineGradient": { "type": "string" },
-        "badgeTag1": { "type": "string" },
-        "badgeTag2": { "type": "string" },
-        "promoPillText": { "type": "string" },
-        "topNoticeText": { "type": "string" }
+        "topNoticeText": { "type": "string" },
+        "themePrimaryColor": { "type": "string" },
+        "themeAccentColor": { "type": "string" },
+        "themeOfferButtonColor": { "type": "string" }
       }
     },
     "subscribers": {

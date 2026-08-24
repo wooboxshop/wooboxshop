@@ -210,8 +210,7 @@ export default function App() {
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.description.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          (p.badge && p.badge.toLowerCase().includes(q))
+          p.category.toLowerCase().includes(q)
       );
     }
 
@@ -267,13 +266,12 @@ export default function App() {
         return (b.clicksCount || 0) - (a.clicksCount || 0);
       }
 
-      // Início / Em alta: curadoria primeiro, depois qualidade e engajamento.
-      const featuredDiff = Number(b.isFeatured) - Number(a.isFeatured);
-      if (featuredDiff !== 0) return featuredDiff;
+      // Início / Em alta: o ranking visual segue o contador real de acessos.
+      const clickDiff = (b.clicksCount || 0) - (a.clicksCount || 0);
+      if (clickDiff !== 0) return clickDiff;
 
-      const curationScoreA = (a.rating * a.reviewsCount) + ((a.clicksCount || 0) * 8);
-      const curationScoreB = (b.rating * b.reviewsCount) + ((b.clicksCount || 0) * 8);
-      if (curationScoreB !== curationScoreA) return curationScoreB - curationScoreA;
+      const qualityDiff = (b.rating * b.reviewsCount) - (a.rating * a.reviewsCount);
+      if (qualityDiff !== 0) return qualityDiff;
 
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
@@ -385,7 +383,7 @@ export default function App() {
       )}
 
       {/* Main Page Layout */}
-      <main className="max-w-[1480px] mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-5 sm:space-y-8 overflow-hidden">
+      <main className="max-w-[1480px] mx-auto px-2 sm:px-6 lg:px-8 py-3.5 sm:py-6 space-y-4 sm:space-y-8 overflow-hidden">
         
         {/* Favorites Header Banner */}
         {showFavoritesOnly && (
@@ -491,17 +489,6 @@ export default function App() {
                     </button>
 
                     <button
-                      onClick={() => { setActiveTab('inicio'); setSubTab('mais-vendidos'); }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
-                        subTab === 'mais-vendidos'
-                          ? 'bg-[var(--wb-interface)]/10 text-[var(--wb-interface-light)] border-[var(--wb-interface)]/30 font-semibold'
-                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-                      }`}
-                    >
-                      Mais vendidos
-                    </button>
-
-                    <button
                       onClick={() => { setActiveTab('inicio'); setSubTab('novidades'); }}
                       className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
                         subTab === 'novidades'
@@ -588,14 +575,14 @@ export default function App() {
               ) : (
                 <div
                   ref={productsScrollRef}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch"
+                  className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 lg:gap-5 items-stretch"
                 >
                   {catalogProducts.map((product, index) => (
                     <ProductCard
                       key={product.id}
                       product={product}
                       variant="standard"
-                      rankIndex={subTab === 'mais-vendidos' || subTab === 'em-alta' ? index + 1 : undefined}
+                      rankIndex={subTab === 'em-alta' ? index + 1 : undefined}
                       onClickProduct={handleProductClick}
                       onBuyClick={handleBuyClick}
                       isFavorite={favorites.includes(product.id)}

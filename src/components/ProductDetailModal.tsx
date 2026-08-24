@@ -97,19 +97,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         {/* Right Info Section */}
         <div className="md:w-1/2 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto space-y-4 flex-1 min-h-0 md:flex-none custom-scrollbar">
           <div className="space-y-3">
-            {/* Category & Ratings */}
+            {/* Category */}
             <div className="flex items-center justify-between text-xs text-zinc-400 pb-1 pr-6">
               <span className="capitalize font-medium">
                 {product.category}
               </span>
-
-              {product.rating > 0 && (
-                <div className="flex items-center gap-1 text-zinc-300 font-semibold">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span>{product.rating.toFixed(1)}</span>
-                  <span className="text-zinc-500 font-normal text-[11px]">({product.reviewsCount})</span>
-                </div>
-              )}
             </div>
 
             {/* Title */}

@@ -2,17 +2,13 @@ import React from 'react';
 import { CategoryOption, PlatformType } from '../types';
 import {
   Home,
-  Trophy,
   Tag,
   Sparkles,
-  LayoutGrid,
-  Heart,
-  Smartphone,
-  Flame,
 } from 'lucide-react';
 import { PlatformIcon } from './PlatformIcon';
 import { PriceRangeFilter, PriceRangeValue } from './PriceRangeFilter';
 import { STORE_PLATFORMS } from '../utils/platforms';
+import { renderCategoryIcon } from '../utils/categoryIcons';
 
 interface SidebarProps {
   categories: CategoryOption[];
@@ -41,15 +37,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   priceRange,
   onPriceRangeChange,
 }) => {
-  const getCategoryIcon = (_iconName: string, id: string) => {
-    if (id === 'todos') return <LayoutGrid className="w-4 h-4" />;
-    if (id === 'beleza') return <Heart className="w-4 h-4" />;
-    if (id === 'casa') return <Home className="w-4 h-4" />;
-    if (id === 'tech') return <Smartphone className="w-4 h-4" />;
-    if (id === 'tendencias') return <Flame className="w-4 h-4" />;
-    return <Tag className="w-4 h-4" />;
-  };
-
   const partnerStores = STORE_PLATFORMS.filter((store) => availablePlatforms.includes(store.id));
 
   return (
@@ -71,18 +58,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
-            onClick={() => onSelectTab('mais-vendidos')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-              activeTab === 'mais-vendidos'
-                ? 'bg-white/[0.07] text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
-            }`}
-          >
-            <Trophy className="w-4 h-4" />
-            <span>Mais Populares</span>
-          </button>
-
-          <button
             onClick={() => onSelectTab('ofertas')}
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
               activeTab === 'ofertas'
@@ -91,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             }`}
           >
             <Tag className="w-4 h-4" />
-            <span>Ofertas em Destaque</span>
+            <span>Ofertas</span>
           </button>
 
           <button
@@ -133,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   }`}
                 >
                   <span className={`shrink-0 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
-                    {getCategoryIcon(cat.icon, cat.id)}
+                    {renderCategoryIcon(cat.icon, 'w-4 h-4')}
                   </span>
                   <span className="truncate text-left">{cat.name}</span>
                 </button>

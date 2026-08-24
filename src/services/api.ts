@@ -124,7 +124,10 @@ export function subscribeToProducts(callback: (products: Product[]) => void): ()
     collection(db, 'products'),
     (snapshot) => {
       let products: Product[] = [];
-      snapshot.forEach((docSnap) => products.push(docSnap.data() as Product));
+      snapshot.forEach((docSnap) => products.push({
+        ...(docSnap.data() as Product),
+        id: docSnap.id,
+      }));
 
       if (products.length === 0) {
         products = [...INITIAL_PRODUCTS];
@@ -144,7 +147,10 @@ export function subscribeToHighlights(callback: (highlights: Highlight[]) => voi
     collection(db, 'highlights'),
     (snapshot) => {
       let highlights: Highlight[] = [];
-      snapshot.forEach((docSnap) => highlights.push(docSnap.data() as Highlight));
+      snapshot.forEach((docSnap) => highlights.push({
+        ...(docSnap.data() as Highlight),
+        id: docSnap.id,
+      }));
 
       if (highlights.length === 0) {
         highlights = [...INITIAL_HIGHLIGHTS];
@@ -164,7 +170,10 @@ export function subscribeToCategories(callback: (categories: CategoryOption[]) =
     collection(db, 'categories'),
     (snapshot) => {
       let categories: CategoryOption[] = [];
-      snapshot.forEach((docSnap) => categories.push(docSnap.data() as CategoryOption));
+      snapshot.forEach((docSnap) => categories.push({
+        ...(docSnap.data() as CategoryOption),
+        id: docSnap.id,
+      }));
 
       const result = categories.length > 0 ? categories : [...INITIAL_CATEGORIES];
       result.sort((a, b) => {
