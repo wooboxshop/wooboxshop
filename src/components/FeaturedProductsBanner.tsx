@@ -123,13 +123,13 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
   const platformBadge = getPlatformBadgeColor(activeProduct.platform);
   const platformLabel = platformBadge.label;
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handlePrev = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setCurrentIndex((prev) => (prev - 1 + featuredList.length) % featuredList.length);
   };
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setCurrentIndex((prev) => (prev + 1) % featuredList.length);
   };
 
@@ -266,23 +266,32 @@ export const FeaturedProductsBanner: React.FC<FeaturedProductsBannerProps> = ({
             </div>
           )}
 
+          {/* Discrete Navigation Arrows Floating Exclusively on the Image */}
           {featuredList.length > 1 && (
-            <div className="hidden md:flex absolute top-3 right-3 items-center gap-1.5">
+            <>
               <button
-                onClick={handlePrev}
-                className="w-9 h-9 rounded-xl bg-black/60 hover:bg-black/80 backdrop-blur-md text-zinc-200 ring-1 ring-white/10 flex items-center justify-center transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrev();
+                }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 hover:bg-black/85 backdrop-blur-md text-zinc-300 hover:text-white border border-white/15 flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer opacity-80 hover:opacity-100 hover:scale-105 active:scale-95"
                 aria-label="Destaque anterior"
+                title="Destaque anterior"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-4 h-4 -translate-x-0.5" />
               </button>
               <button
-                onClick={handleNext}
-                className="w-9 h-9 rounded-xl bg-black/60 hover:bg-black/80 backdrop-blur-md text-zinc-200 ring-1 ring-white/10 flex items-center justify-center transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 hover:bg-black/85 backdrop-blur-md text-zinc-300 hover:text-white border border-white/15 flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer opacity-80 hover:opacity-100 hover:scale-105 active:scale-95"
                 aria-label="Próximo destaque"
+                title="Próximo destaque"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 translate-x-0.5" />
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>

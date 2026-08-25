@@ -116,7 +116,7 @@ export const Header: React.FC<HeaderProps> = ({
               <img
                 src={logoUrl}
                 alt={storeName}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover shrink-0 group-hover:opacity-90 transition-opacity"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-contain shrink-0 group-hover:opacity-90 transition-opacity"
                 referrerPolicy="no-referrer"
               />
               <span className="text-white text-sm sm:text-base font-bold tracking-tight truncate group-hover:text-zinc-200 transition-colors">
@@ -238,7 +238,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <img
                     src={logoUrl}
                     alt={storeName}
-                    className="w-8 h-8 rounded-lg object-cover bg-transparent shrink-0"
+                    className="w-8 h-8 rounded-lg object-contain bg-transparent shrink-0"
                     referrerPolicy="no-referrer"
                   />
                   <span className="text-white text-base font-bold truncate">

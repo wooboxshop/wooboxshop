@@ -31,7 +31,15 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>(INITIAL_CATEGORIES);
-  const [storeSettings, setStoreSettings] = useState<StoreSettings>(DEFAULT_STORE_SETTINGS);
+  const [storeSettings, setStoreSettings] = useState<StoreSettings>(() => {
+    try {
+      const cached = localStorage.getItem('woobox_store_settings');
+      if (cached) {
+        return normalizeStoreSettingsTheme(JSON.parse(cached));
+      }
+    } catch (e) {}
+    return DEFAULT_STORE_SETTINGS;
+  });
   const [loading, setLoading] = useState(true);
   const [unsubscribedNotice, setUnsubscribedNotice] = useState<string | null>(null);
 
@@ -105,7 +113,13 @@ export default function App() {
     });
 
     const unsubSettings = subscribeToStoreSettings((settingsData) => {
-      if (settingsData) setStoreSettings(normalizeStoreSettingsTheme(settingsData));
+      if (settingsData) {
+        const normalized = normalizeStoreSettingsTheme(settingsData);
+        setStoreSettings(normalized);
+        try {
+          localStorage.setItem('woobox_store_settings', JSON.stringify(normalized));
+        } catch (e) {}
+      }
     });
 
     return () => {
